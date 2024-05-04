@@ -1,0 +1,27 @@
+USER MANUAL
+
+CLARIFICATION
+
+Read the README.md file and follow instructions.
+
+ACCESS TO THE SYSTEM
+
+After following the README.md instructions, user will access the system. A welcome screen will be found. User must insert a username and press enter.
+Then the terminal will apear as following:  user:$>
+there, an empty line will wait for user to insert a valid command. To do so user must write the command and press enter to execute it.
+
+COMMAND EXECUTION
+
+The available commands are the following:
+
+- clear: clears the shell screen.
+- exit: causes normal process termination.
+- help: explanation of command functionalities. Try 'help [command]' for specific information.
+- regs: shows the registers at the time the ALT key was pressed during the program.
+- size: use 'size +' to increase the font size and 'size -' to decrease it.
+- snake: game 'Snake'. When executed, amount of players will be asked. Only options are '1' or '2'. Later, level desired will be asked. Only options are '1', '2' or '3'. If playing with one player, keys to move snake are 'w', 'a', 's' and 'd'. If two players are connected, second players keys are 'i', 'j', 'k' and 'l'. In order to exit game once started, press 'x' key. If a player loses then user can leave game with 'x' key or play again with space key.
+- time: prints the current time.
+- ioexception: command to check the undefined instruction exception routine.
+- zeroexception: command to check the division by zero exception routine.
+
+If an invalid command tries to be executed, an error message will be printed on screen.

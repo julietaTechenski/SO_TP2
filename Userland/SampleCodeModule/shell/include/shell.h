@@ -1,0 +1,29 @@
+
+#ifndef SHELL_H
+#define SHELL_H
+
+#include "library.h"
+#include "help.h"
+#include "printTime.h"
+#include "size.h"
+#include "snake.h"
+#include "zeroexception.h"
+#include "ioexception.h"
+#include "introSys.h"
+#include <stdint.h>
+#include <stdarg.h>
+
+#define MAX_SIZE 100
+#define USERNAME_MAX_SIZE 20
+#define AMOUNT_COMMANDS 9
+
+
+typedef struct tcommand{
+    char * name;                //command
+    void (*fn)(char * args[]);  //function
+}tcommand;
+
+void shell();
+
+
+#endif //SHELL_H
