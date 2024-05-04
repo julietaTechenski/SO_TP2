@@ -11,7 +11,7 @@ OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 all: $(MODULE)
 
 $(MODULE): $(SOURCES) $(OBJECTS_ASM) $(SOURCES_MODULES) $(SOURCES_COMMANDS)
-	$(GCC) $(GCCFLAGS) -I./include -I./shell/include  -T sampleCodeModule.ld _loader.c $(SOURCES) $(SOURCES_MODULES) $(OBJECTS_ASM) $(SOURCES_COMMANDS) -o ../$(MODULE)
+	$(GCC) $(GCCFLAGS) -I./include -I./shell/include  -T sampleCodeModule.ld _loader.c $(SOURCES) $(SOURCES_MODULES) $(OBJECTS_ASM) $(SOURCES_COMMANDS) -o ../$(MODULE) -fno-pic
 
 %.o : %.asm
 	$(ASM) $(ASMFLAGS) $< -o $@
