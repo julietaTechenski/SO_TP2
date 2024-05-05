@@ -4,6 +4,6 @@
 
 void zeroexception(char *args[]){
     int i = 5;
-    i / 0;
+    i /= 0;
     return;
 }
