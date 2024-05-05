@@ -1,10 +1,14 @@
 #include "include/kernel.h"
+#define MM_SIZE 1024
+
+uint8_t *current;
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
 extern uint8_t bss;
 extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
+
 
 static const uint64_t PageSize = 0x1000;
 
@@ -32,15 +36,21 @@ void * initializeKernelBinary(){
 		sampleDataModuleAddress
 	};
 
-	loadModules(&endOfKernelBinary, moduleAddresses);
+	endOfModules = loadModules(&endOfKernelBinary, moduleAddresses);
 
 	clearBSS(&bss, &endOfKernel - &bss);
 
 	return getStackBase();
 }
 
+void mm_init(){
+    my_memory=0x900000;  /// checkear en archivo builing
+    current = my_memory;
+}
+
 int main() {
     load_idt();
+    // my_init();
     ((EntryPoint)sampleCodeModuleAddress)();   //call to shell
     return 0;
 }

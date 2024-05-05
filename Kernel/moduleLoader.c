@@ -6,22 +6,27 @@
 static void loadModule(uint8_t ** module, void * targetModuleAddress);
 static uint32_t readUint32(uint8_t ** address);
 
-void loadModules(void * payloadStart, void ** targetModuleAddress)
+void* loadModules(void * payloadStart, void ** targetModuleAddress)
 {
 	int i;
+
 	uint8_t * currentModule = (uint8_t*)payloadStart;
 	uint32_t moduleCount = readUint32(&currentModule);
 
+    void * endOfModules = currentModule;
 	for (i = 0; i < moduleCount; i++)
-		loadModule(&currentModule, targetModuleAddress[i]);
+		endOfModules+= loadModule(&currentModule, targetModuleAddress[i]);
+
+    return endOfModules;
 }
 
-static void loadModule(uint8_t ** module, void * targetModuleAddress)
+static uint32_t loadModule(uint8_t ** module, void * targetModuleAddress)
 {
 	uint32_t moduleSize = readUint32(module);
 
 	memcpy(targetModuleAddress, *module, moduleSize);
 	*module += moduleSize;
+    return moduleSize+sizeof(uint32_t);
 
 }
 
