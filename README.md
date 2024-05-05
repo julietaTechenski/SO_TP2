@@ -18,7 +18,7 @@ Execute the following commands to install Docker:
 
 Once installed, download the image necessary:
 
-    sudo docker pull agodio/itba-so:1.0
+    sudo docker pull agodio/itba-so:2.0
 
 On the project directory, start the container:
 
