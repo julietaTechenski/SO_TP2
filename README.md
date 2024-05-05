@@ -22,7 +22,7 @@ Once installed, download the image necessary:
 
 On the project directory, start the container:
 
-    sudo docker run -v ${PWD}:/root --privileged -ti --name SO agodio/itba-so:2.0
+    sudo docker run -v ${PWD}:/root --privileged -ti --name TPEFINAL agodio/itba-so:2.0
 
 
 
