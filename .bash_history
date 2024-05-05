@@ -11,3 +11,4 @@ ls
 ./run.sh -d
 ./run.sh
 exit
+exit
