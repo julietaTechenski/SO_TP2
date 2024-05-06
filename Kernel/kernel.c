@@ -1,13 +1,15 @@
 #include "include/kernel.h"
 #define MM_SIZE 1024
 
-uint8_t *current;
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
 extern uint8_t bss;
 extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
+
+uint8_t * endOfModules;
+MemoryManagerCDT * memoryManager;
 
 
 static const uint64_t PageSize = 0x1000;
@@ -37,6 +39,8 @@ void * initializeKernelBinary(){
 	};
 
 	endOfModules = loadModules(&endOfKernelBinary, moduleAddresses);
+    endOfModules = (endOfModules + 0xFFF) & ~0xFFF;     //alignment
+    mm_init();
 
 	clearBSS(&bss, &endOfKernel - &bss);
 
@@ -44,13 +48,17 @@ void * initializeKernelBinary(){
 }
 
 void mm_init(){
-    my_memory=0x900000;  /// checkear en archivo builing
-    current = my_memory;
+    memoryManager->nextAddress = endOfModules;
+}
+
+void * mm_malloc(uint64_t size){
+    uint8_t *answer = memoryManager->nextAddress;   //give requested address
+    memoryManager->nextAddress += size;             //increment current mem address
+    return (void *) answer;
 }
 
 int main() {
     load_idt();
-    // my_init();
     ((EntryPoint)sampleCodeModuleAddress)();   //call to shell
     return 0;
 }
