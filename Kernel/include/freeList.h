@@ -2,7 +2,16 @@
 // Created by Usuario on 15/5/2024.
 //
 
-#ifndef SO2_FREELIST_H
-#define SO2_FREELIST_H
+#include "memory_manager.h"
 
-#endif //SO2_FREELIST_H
+void slab_init() {
+    // Inicialización específica del gestor de memoria Slab
+}
+
+void* slab_alloc(size_t size) {
+    // Lógica de asignación para el gestor Slab
+}
+
+void slab_free(void* ptr) {
+    // Lógica de liberación para el gestor Slab
+}
