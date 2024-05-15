@@ -66,6 +66,8 @@ uint64_t sysCallHandler(Registers registers){
                 return 0;
             case 12:
                 return writeXY(registers->rdi, (char *) registers->rsi, registers->rdx, registers->rcx, registers->r8);
+            case 13:
+                return (uintptr_t)mm_malloc(registers->rdi);
 
         }
         return 0;

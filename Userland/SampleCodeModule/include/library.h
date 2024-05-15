@@ -17,7 +17,7 @@ extern void change_color(char r,  char g,  char b);
 extern void _sleep(unsigned int seconds);
 extern void _getRegs();
 extern int sys_writeXY(unsigned int fd, char * string, int count, int x, int y);
-
+extern void * system_malloc(unsigned int size);
 //FUNCTIONS -------------------------------------------------------------------------------
 
 
@@ -184,6 +184,13 @@ void sleep(unsigned int ms);
  * @def obtains the registers' current values at the time
  */
 void getRegs();
+
+/**
+ *
+ * @param size
+ * @return
+ */
+void *malloc(unsigned int size);
 
 
 #endif //LIBRARY_H
