@@ -4,7 +4,7 @@
 
 #include "include/memory_manager.h"
 
-void buddy_init() {
+void buddy_init(uint8_t * ptr) {
     // Inicialización específica del gestor de memoria Buddy
 }
 

@@ -4,7 +4,7 @@
 
 #include "include/memory_manager.h"
 
-void slab_init() {
+void slab_init(uint8_t * ptr) {
 
 }
 

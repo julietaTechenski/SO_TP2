@@ -4,6 +4,7 @@
 #include "moduleLoader.h"
 #include "videoDriver.h"
 #include "idtLoader.h"
+#include "memory_manager.h"
 
 typedef struct MemoryManagerCDT {
     uint8_t *nextAddress;

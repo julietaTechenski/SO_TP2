@@ -42,7 +42,7 @@ void * initializeKernelBinary(){
 	uintptr_t addr = (uintptr_t) loadModules(&endOfKernelBinary, moduleAddresses);
     addr = (addr + 0xFFF) & ~0xFFF;
     endOfModules = (uint8_t*) addr;
-//    mm_init();
+//    memory_manager_init();
 
 	clearBSS(&bss, &endOfKernel - &bss);
 
