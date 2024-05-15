@@ -11,6 +11,7 @@ GLOBAL _sleep                     ; system call 10
 GLOBAL _playSound                 ; system call 11
 GLOBAL sys_writeXY                ; system call 12
 GLOBAL getTimeRTC
+GLOBAL system_malloc              ; system call 13
 
 section .text
 
@@ -71,6 +72,9 @@ _playSound:
 
 sys_writeXY:
     sysCall 12
+
+system_malloc:
+    sysCall 13
 
 
 ;-------------------------------------------------------

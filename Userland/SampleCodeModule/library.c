@@ -305,3 +305,7 @@ void getRegs(){
 int getSeconds(){
     return get_seconds_elapsed();
 }
+
+void *malloc(unsigned int size){
+    return system_malloc(size);
+}
