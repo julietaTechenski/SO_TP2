@@ -2,6 +2,6 @@
 #define MODULELOADER_H
 
 
-void loadModules(void * payloadStart, void ** moduleTargetAddress);
+void* loadModules(void * payloadStart, void ** moduleTargetAddress);
 
 #endif

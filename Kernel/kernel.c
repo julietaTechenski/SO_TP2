@@ -38,8 +38,10 @@ void * initializeKernelBinary(){
 		sampleDataModuleAddress
 	};
 
-	endOfModules = loadModules(&endOfKernelBinary, moduleAddresses);
-    endOfModules = (endOfModules + 0xFFF) & ~0xFFF;     //alignment
+
+	uintptr_t addr = (uintptr_t)loadModules(&endOfKernelBinary, moduleAddresses);
+    addr = (addr + 0xFFF) & ~0xFFF;     //alignment
+    endOfModules = (uint8_t*) addr;     //alignment
     mm_init();
 
 	clearBSS(&bss, &endOfKernel - &bss);
