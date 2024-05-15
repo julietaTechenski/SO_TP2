@@ -1,6 +1,5 @@
 #include "../include/sysCallDispatcher.h"
 
-#include "sysCallDispatcher.h"
 
 static Color aux;
 
@@ -8,8 +7,9 @@ uint64_t sysCallHandler(Registers registers){
         switch (registers->rax) {
             RegAux  r;
             case 0:
-                return 0;  //necesitamos definir un .c con las funciones que hagan el llamado directo a las funciones en el idt
+                return 0;
             case 1:
+                r.rip = registers->rip;
                 r.rax = registers->rax;
                 r.rsi = registers->rsi;
                 r.rdi= registers->rdi;
@@ -61,7 +61,6 @@ uint64_t sysCallHandler(Registers registers){
                 sleep(registers->rdi);
                 return 0;
             case 11:
-                playSound(registers->rdi, registers->rsi); return 0;
                 playSound(registers->rdi, registers->rsi);
                 return 0;
             case 12:

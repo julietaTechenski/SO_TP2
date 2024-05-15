@@ -1,10 +1,9 @@
 
+GLOBAL _hlt
 GLOBAL _cli
 GLOBAL _sti
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
-GLOBAL haltcpu
-GLOBAL _hlt
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
@@ -15,11 +14,14 @@ GLOBAL _irq05Handler
 
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
+
 GLOBAL _sysCallHandler
+GLOBAL haltcpu
+GLOBAL getKeyPressed
+
 GLOBAL sound
 GLOBAL noSnd
 
-GLOBAL getKeyPressed
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -65,9 +67,16 @@ SECTION .text
 %macro popState 0
 	popStateNoA
 	pop rax
+	mov [reg_rip], rax
+	pop rax ;RIP
+	mov rax, [reg_rip]
 %endmacro
 
 %macro pushState 0
+    mov [reg_rip], rax
+    mov rax, [rsp]
+    push rax    ;RIP
+    mov rax, [reg_rip]
 	push rax
     pushStateNoA
 %endmacro
@@ -283,6 +292,7 @@ noSnd:
 
 section .data
     userland equ 0x400000
+    reg_rip dq 0
 
 SECTION .bss
 	aux resq 1
