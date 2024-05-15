@@ -2,10 +2,10 @@
 // Created by Usuario on 15/5/2024.
 //
 
-#include "memory_manager.h"
+#include "include/memory_manager.h"
 
 void slab_init() {
-    // Inicialización específica del gestor de memoria Slab
+
 }
 
 void* slab_alloc(size_t size) {
