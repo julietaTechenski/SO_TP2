@@ -39,10 +39,10 @@ void * initializeKernelBinary(){
 	};
 
 
-	uintptr_t addr = (uintptr_t)loadModules(&endOfKernelBinary, moduleAddresses);
-    addr = (addr + 0xFFF) & ~0xFFF;     //alignment
-    endOfModules = (uint8_t*) addr;     //alignment
-    mm_init();
+	uintptr_t addr = (uintptr_t) loadModules(&endOfKernelBinary, moduleAddresses);
+    addr = (addr + 0xFFF) & ~0xFFF;
+    endOfModules = (uint8_t*) addr;
+//    mm_init();
 
 	clearBSS(&bss, &endOfKernel - &bss);
 
@@ -50,7 +50,8 @@ void * initializeKernelBinary(){
 }
 
 void mm_init(){
-    memoryManager->nextAddress = endOfModules;
+    memoryManager = (MemoryManagerCDT *)endOfModules;
+    memoryManager->nextAddress = (uint8_t*) (memoryManager+ sizeof(MemoryManagerCDT));
 }
 
 void * mm_malloc(uint64_t size){
@@ -61,6 +62,6 @@ void * mm_malloc(uint64_t size){
 
 int main() {
     load_idt();
-    ((EntryPoint)sampleCodeModuleAddress)();   //call to shell
+    ((EntryPoint)sampleCodeModuleAddress)();   //call to shell -> reemplazar por cargar a la shell como porceso y esperar la int de timeer tick
     return 0;
 }
