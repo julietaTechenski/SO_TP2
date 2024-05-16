@@ -6,6 +6,7 @@
 #define MEMORY_MANAGER_H
 
 #include <stddef.h>
+#include <stdint.h>
 
 void memory_manager_init(uint8_t * ptr);
 void* memory_manager_alloc(size_t size);

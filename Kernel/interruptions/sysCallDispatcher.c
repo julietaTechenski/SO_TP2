@@ -68,7 +68,7 @@ uint64_t sysCallHandler(Registers registers){
             case 13:
                 return (uintptr_t)memory_manager_alloc(registers->rdi);
             case 14:
-                memory_manager_free((void*)registers->rdi)
+                memory_manager_free((void*)registers->rdi);
         }
         return 0;
     }

@@ -10,7 +10,7 @@ typedef struct block {
 }block_t;
 
 static uint8_t * base_ptr;
-static block* free_blocks[MAX_ORDER];
+static block_t* free_blocks[MAX_ORDER];
 
 void buddy_init(uint8_t * ptr) {
     base_ptr = ptr;
@@ -45,7 +45,7 @@ void* buddy_alloc(size_t size) {
         return NULL;
 
     while (current_order > order){
-        block_t aux_block = free_blocks[current_order];
+        block_t * aux_block = free_blocks[current_order];
         free_blocks[current_order] = aux_block->next;  // acutualizo bloques libres
         current_order--;
 
@@ -59,8 +59,8 @@ void* buddy_alloc(size_t size) {
     return (void*)reserved;
 }
 
-void buddy_free(void* ptr) {
-    size_t  offset = (uint8_t*)ptr - base_ptr;
+void buddy_free(void * ptr) {
+    size_t offset = ((uint8_t*)ptr) - base_ptr;
     int order = 0;
 
     while(offset % ((MAX_PAGES / (1 << order)) * PAGE_SIZE) == 0 && order < MAX_ORDER){
@@ -72,7 +72,7 @@ void buddy_free(void* ptr) {
     size_t buddy_offset = offset ^ ((MAX_PAGES / (1 << order)) * PAGE_SIZE);
     block_t * buddy = (block_t*) (base_ptr + buddy_offset);
 
-    block_t** current = &free_lists[order];
+    block_t** current = &free_blocks[order];
     while (*current != NULL) {
         if (*current == buddy) {
             *current = buddy->next;
@@ -83,12 +83,12 @@ void buddy_free(void* ptr) {
             order++;
             buddy_offset = offset ^ ((MAX_PAGES / (1 << order)) * PAGE_SIZE);
             buddy = (block_t*)(base_ptr + buddy_offset);
-            current = &free_lists[order];
+            current = &free_blocks[order];
         } else {
             current = &(*current)->next;
         }
     }
 
-    block->next = free_lists[order];
-    free_lists[order] = block;
+    block->next = free_blocks[order];
+    free_blocks[order] = block;
 }

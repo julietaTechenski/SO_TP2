@@ -6,9 +6,6 @@
 #include "idtLoader.h"
 #include "memory_manager.h"
 
-typedef struct MemoryManagerCDT {
-    uint8_t *nextAddress;
-} MemoryManagerCDT;
 
 void clearBSS(void * bssAddress, uint64_t bssSize);
 void * getStackBase();
