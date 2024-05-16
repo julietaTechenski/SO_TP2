@@ -76,6 +76,8 @@ sys_writeXY:
 system_malloc:
     sysCall 13
 
+system_free:
+    sysCall 14
 
 ;-------------------------------------------------------
 ;   Recibe un  puntero a un struct typedef struct{

@@ -61,14 +61,14 @@ uint64_t sysCallHandler(Registers registers){
                 sleep(registers->rdi);
                 return 0;
             case 11:
-                playSound(registers->rdi, registers->rsi); return 0;
                 playSound(registers->rdi, registers->rsi);
                 return 0;
             case 12:
                 return writeXY(registers->rdi, (char *) registers->rsi, registers->rdx, registers->rcx, registers->r8);
             case 13:
-                return (uintptr_t)mm_malloc(registers->rdi);
-
+                return (uintptr_t)memory_manager_alloc(registers->rdi);
+            case 14:
+                memory_manager_free((void*)registers->rdi)
         }
         return 0;
     }
