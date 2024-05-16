@@ -18,7 +18,7 @@ extern void _sleep(unsigned int seconds);
 extern void _getRegs();
 extern int sys_writeXY(unsigned int fd, char * string, int count, int x, int y);
 extern void * system_malloc(unsigned int size);
-extern void system_free(unsigned int size);
+extern void system_free(void * ptr);
 
 //FUNCTIONS -------------------------------------------------------------------------------
 
@@ -194,5 +194,10 @@ void getRegs();
  */
 void *malloc(unsigned int size);
 
+/**
+ *
+ * @param ptr
+ */
+void free(void * ptr);
 
 #endif //LIBRARY_H

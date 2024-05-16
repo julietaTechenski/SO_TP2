@@ -311,6 +311,6 @@ void *malloc(unsigned int size){
 }
 
 
-void free(unsigned int size){
+void free(void * ptr){
     return system_free(size);
 }
