@@ -1,5 +1,6 @@
 #include "include/kernel.h"
-#define MM_SIZE 1024
+
+#define PAGE_SIZE 4096
 
 extern uint8_t text;
 extern uint8_t rodata;
