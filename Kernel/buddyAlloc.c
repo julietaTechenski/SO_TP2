@@ -1,5 +1,6 @@
 #include "memory_manager.h"
 
+#ifdef BUDDY
 
 #define PAGE_SIZE 4096 // (4KB)
 #define MAX_PAGES 32768
@@ -92,3 +93,5 @@ void buddy_free(void * ptr) {
     block->next = free_blocks[order];
     free_blocks[order] = block;
 }
+
+#endif

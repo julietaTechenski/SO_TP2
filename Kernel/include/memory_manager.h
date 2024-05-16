@@ -8,13 +8,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-void memory_manager_init(void * ptr, size_t max_size);
-void * memory_manager_alloc(size_t size);
-void memory_manager_free(void* ptr);
-
-
-typedef struct MemoryManagerCDT {
-    uint8_t *nextAddress;
-} MemoryManagerCDT;
+void mm_init(void * ptr, size_t max_size);
+void * mm_alloc(size_t size);
+void mm_free(void* ptr);
 
 #endif // MEMORY_MANAGER_H

@@ -1,25 +1,26 @@
-#include "include/memory_manager.h"
-
-//cada zona libre u ocupada tiene un header al pricnipio, que contiene
+#include "./include/memory_manager.h"
+    //cada zona libre u ocupada tiene un header al pricnipio, que contiene
 //un puntero al siguiente bloque, al bloque previo y el tamaño de toda la zona de memoria
 
+#ifdef LIST
+
 typedef struct Node {
-    Node *prev;
+    struct Node * prev;
     unsigned size;
-    Node *next;
+    struct Node *next;
 } Node;
 
 static Node * first = NULL;
 
-void slab_init(void * ptr, size_t max_size) {
+void mm_init(void * ptr, size_t max_size) {
     first = (Node *) ptr;
     first->next = first->prev = NULL;
     first->size = max_size/sizeof(Node); //esto serviria de align dejando N nodes para manejar
 }
 
-void * slab_alloc(size_t n_bytes) {
+void * mm_alloc(size_t n_bytes) {
     Node * ptrNode = first;
-    n_nodes = (n_bytes + sizeof(Node) - 1)/sizeof(Node) + 1
+    int n_nodes = (n_bytes + sizeof(Node) - 1)/sizeof(Node) + 1;
     while (ptrNode != NULL) {
         if (ptrNode->size >= n_nodes) {
             if (ptrNode->size == n_nodes) {
@@ -34,14 +35,14 @@ void * slab_alloc(size_t n_bytes) {
                 ptrNode->size = n_nodes;
                 //reserva lugar desde el final del espacio libre y le agrega el header correspondiente
             }
-            return (void *) (p + 1); //saltea el nodo header
+            return (void *) (ptrNode + 1); //saltea el nodo header
         }
         ptrNode = ptrNode->next;
     }
     return NULL; //No hay memoria que entregar
 }
 
-void slab_free(void* ptr) {
+void mm_free(void* ptr) {
     Node * ptrNode = (Node *)ptr - 1; //accede al header de la zona de memoria. El next y prev de la zona ocupada no tiene informacion valida
 
     if(first==NULL || first >= ptrNode){ //bloque al principio
@@ -77,3 +78,5 @@ void slab_free(void* ptr) {
         p->next = ptrNode;
     }
 }
+
+#endif
