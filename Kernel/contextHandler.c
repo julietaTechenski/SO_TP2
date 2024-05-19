@@ -19,3 +19,14 @@ char createProcess(char isForeground, char *name){
     return (newProcess->pid);
 }
 
+void addProcessToList(PCB *newProcess){
+    if(first == NULL){
+        first = newProcess;
+        current = newProcess;
+        return;
+    } else {
+        newProcess->next = first;
+        first->prev = newProcess;
+        first = newProcess;
+    }
+}
