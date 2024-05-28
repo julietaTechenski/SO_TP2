@@ -1,5 +1,7 @@
 #include "include/kernel.h"
-#define MM_SIZE 1024
+
+#define PAGE_SIZE 4096
+#define MAX_MEM_SIZE 128*1024*1024
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -9,8 +11,6 @@ extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
 
 uint8_t * endOfModules;
-MemoryManagerCDT * memoryManager;
-
 
 static const uint64_t PageSize = 0x1000;
 
@@ -39,26 +39,15 @@ void * initializeKernelBinary(){
 	};
 
 
-	uintptr_t addr = (uintptr_t) loadModules(&endOfKernelBinary, moduleAddresses);
-    addr = (addr + 0xFFF) & ~0xFFF;
-    endOfModules = (uint8_t*) addr;
-//    mm_init();
+	void * addr = loadModules(&endOfKernelBinary, moduleAddresses);
+    addr = (void *)(((uintptr_t)addr + 0xFFF) & ~0xFFF);
+    mm_init(addr, MAX_MEM_SIZE);
 
 	clearBSS(&bss, &endOfKernel - &bss);
 
 	return getStackBase();
 }
 
-void mm_init(){
-    memoryManager = (MemoryManagerCDT *)endOfModules;
-    memoryManager->nextAddress = (uint8_t*) (memoryManager+ sizeof(MemoryManagerCDT));
-}
-
-void * mm_malloc(uint64_t size){
-    uint8_t *answer = memoryManager->nextAddress;   //give requested address
-    memoryManager->nextAddress += size;             //increment current mem address
-    return (void *) answer;
-}
 
 int main() {
     load_idt();

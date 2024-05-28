@@ -9,6 +9,7 @@
 #include "time.h"
 #include "soundDriver.h"
 #include "kernel.h"
+#include "memory_manager.h"
 
 typedef struct{
     uint64_t r15;
