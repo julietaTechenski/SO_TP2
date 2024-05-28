@@ -144,7 +144,7 @@ void intToString(int n, char* s);
 int digits(int n);
 
 /**
- * @def gets from buffer char and prints it
+ * @def reads from fd specified and stores it in the buffer
  * @param fd : file descriptor
  * @param buffer : destination of read characters
  * @param n : amount of characters to read

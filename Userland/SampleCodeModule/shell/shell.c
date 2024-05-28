@@ -17,10 +17,10 @@ static char username[USERNAME_MAX_SIZE];
 
 void test_mm_wrapper(char * args[]) {
     uint64_t i=0;
-    while(args[i]!=NULL){
+    while(args[i]!=0){
         i++;
     }
-    uint64_t arg1 = i+1;
+    uint64_t arg1 = i;
     uint64_t result = test_mm(arg1, args);
 
 }
@@ -79,8 +79,7 @@ void getCommand(char buffer[]) {
     }
     command[i] = '\0';
 
-    if(buffer[i++]==' ') {
-        //turns possible arg to string
+    if(buffer[i++]==' ') {  //builds args
         int j = 0;
         while (buffer[i] != '\0' && buffer[i] != ' ') {
             int k = 0;
