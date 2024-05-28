@@ -13,10 +13,13 @@ char createProcess(char isForeground, char *name){
     newProcess->pid = currentPID++;
     newProcess->priority = 0;
     newProcess->rsp = createStackContext((uint64_t) & rbp[1023]);
+    newProcess->rbp = rbp;
     newProcess->isForeground = isForeground;
     newProcess->state = READY;
     newProcess->prev = 0;
     newProcess->next = NULL;
+
+    addProcessToList(newProcess);
 
     return (newProcess->pid);
 }
@@ -35,4 +38,7 @@ void addProcessToList(PCB *newProcess){
 
 void finishProcess(){
     current->state = EXIT;
+    mm_free(current);
 }
+
+
