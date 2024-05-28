@@ -1,7 +1,5 @@
-#include <stdint.h>
-#include <stdio.h>
-#include "../../../../../../../../Users/julie/Downloads/syscall.h"
-#include "../../../../../../../../Users/julie/Downloads/test_util.h"
+#include "../../include/syscall.h"
+#include "../../include/test_util.h"
 
 #define SEM_ID "sem"
 #define TOTAL_PAIR_PROCESSES 2

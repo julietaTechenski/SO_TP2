@@ -5,13 +5,14 @@ SOURCES=$(wildcard [^_]*.c)
 SOURCES_MODULES=$(wildcard shell/*.c)
 SOURCES_ASM=$(wildcard asm/*.asm)
 SOURCES_COMMANDS=$(wildcard shell/commands/*.c)
+SOURCES_TESTING=$(wildcard shell/testing/*.c)
 
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 
 all: $(MODULE)
 
-$(MODULE): $(SOURCES) $(OBJECTS_ASM) $(SOURCES_MODULES) $(SOURCES_COMMANDS)
-	$(GCC) $(GCCFLAGS) -I./include -I./shell/include  -T sampleCodeModule.ld _loader.c $(SOURCES) $(SOURCES_MODULES) $(OBJECTS_ASM) $(SOURCES_COMMANDS) -o ../$(MODULE) -fno-pic
+$(MODULE): $(SOURCES) $(OBJECTS_ASM) $(SOURCES_MODULES) $(SOURCES_COMMANDS) $(SOURCES_TESTING)
+	$(GCC) $(GCCFLAGS) -I./include -I./shell/include  -T sampleCodeModule.ld _loader.c $(SOURCES) $(SOURCES_MODULES) $(OBJECTS_ASM) $(SOURCES_COMMANDS) $(SOURCES_TESTING) -o ../$(MODULE) -fno-pic
 
 %.o : %.asm
 	$(ASM) $(ASMFLAGS) $< -o $@

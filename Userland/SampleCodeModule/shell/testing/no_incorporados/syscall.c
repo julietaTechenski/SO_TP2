@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include "../../include/syscall.h"
 
 int64_t my_getpid() {
   return 0;
