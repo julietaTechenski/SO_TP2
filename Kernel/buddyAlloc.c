@@ -29,7 +29,7 @@ void mm_init(uint8_t * ptr, size_t max_size) {
 
     free_blocks[MAX_ORDER] = (block_t *)ptr;
     free_blocks[MAX_ORDER]->next = NULL;
-    initial_block->size = BLOCKSIZE(max_block_order);
+    initial_block->size = BLOCKSIZE(MAX_ORDER);
 }
 
 void* mm_alloc(size_t size) {
