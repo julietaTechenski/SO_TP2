@@ -32,3 +32,7 @@ void addProcessToList(PCB *newProcess){
         first = newProcess;
     }
 }
+
+void finishProcess(){
+    current->state = EXIT;
+}

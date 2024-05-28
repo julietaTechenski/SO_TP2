@@ -16,6 +16,7 @@ typedef enum {
 } Priority;
 
 typedef enum {
+    EXIT,
     READY,
     RUNNING,
     BLOCKED
@@ -35,5 +36,6 @@ typedef struct PCB {
 
 char createProcess(char isForeground, char *name);
 void addProcessToList(PCB *newProcess);
+void finishProcess();
 
 #endif
