@@ -6,6 +6,8 @@
 #include "lib.h"
 #include "interrupts.h"
 #include "memory_manager.h"
+#include "videoDriver.h"
+#include "lib.h"
 
 #define MAX_NAME_LENGTH 20
 
@@ -37,5 +39,6 @@ typedef struct PCB {
 char createProcess(char isForeground, char *name);
 void addProcessToList(PCB *newProcess);
 void finishProcess();
-
+void printProcesses();
+uint32_t getPID();
 #endif

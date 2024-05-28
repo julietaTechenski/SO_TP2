@@ -41,4 +41,20 @@ void finishProcess(){
     mm_free(current);
 }
 
+void printProcesses(){
+    writeString(0, "NAME  PID  PRIORITY    RSP    RBP    STATE   COMMAND  ", 38);
+    PCB * iter = first;
+    while(iter != NULL){
+        writeString(0, iter->name, 2);
 
+        char * pidString;
+        uint32_t pidStringLen = intToString(iter->pid, pidString);
+        writeString(0, pidString, pidStringLen);
+        writeString(0, "  ", 2);
+    }
+
+}
+
+uint32_t getPID(){
+    return current->pid;
+}
