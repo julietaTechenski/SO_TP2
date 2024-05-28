@@ -1,4 +1,4 @@
-#include "../include/contextHandler.h"
+#include "../include/process.h"
 
 static PCB * current = NULL;
 static PCB * first = NULL;
@@ -6,11 +6,13 @@ static PCB * halt = NULL;
 static uint32_t currentPID = 0;
 
 char createProcess(char isForeground, char *name){
-    PCB *newProcess = memory_manager_alloc(sizeof(PCB));
+    uint64_t *rbp = mm_alloc(1024 * sizeof(uint64_t));
+    PCB *newProcess = mm_alloc(sizeof(PCB));
 
     my_strcpy(newProcess->name, name);
     newProcess->pid = currentPID++;
     newProcess->priority = 0;
+    newProcess->rsp = createStackContext((uint64_t) & rbp[1023]);
     newProcess->isForeground = isForeground;
     newProcess->state = READY;
     newProcess->prev = 0;
