@@ -22,6 +22,7 @@ GLOBAL getKeyPressed
 GLOBAL sound
 GLOBAL noSnd
 
+GLOBAL createStackContext
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -288,6 +289,26 @@ noSnd:
 
     mov rsp, rbp
     pop rbp
+    ret
+
+createStackContext:
+    push rbp
+    mov rbp, rsp
+    mov rsp, rdi
+
+    push 0x0    ; align
+    push 0x0    ; SS
+    push rdi    ; RSP
+    push 0x202  ; RFLAGS
+    push 0x8    ; CS
+    push rsi    ; RIP
+    mov rdi, rdx; argc
+    mov rsi, rcx; argv
+    pushState   ; general purpose registers
+
+    mov rsp, rbp
+    pop rbp
+
     ret
 
 section .data
