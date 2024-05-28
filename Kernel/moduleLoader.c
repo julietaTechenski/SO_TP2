@@ -3,7 +3,7 @@
 #include "include/moduleLoader.h"
 
 
-static uint32_t loadModule(uint8_t ** module, void * targetModuleAddress);
+static void * loadModule(uint8_t ** module, void * targetModuleAddress);
 static uint32_t readUint32(uint8_t ** address);
 
 void* loadModules(void * payloadStart, void ** targetModuleAddress)
@@ -19,7 +19,7 @@ void* loadModules(void * payloadStart, void ** targetModuleAddress)
     return endOfModules;
 }
 
-static uint32_t loadModule(uint8_t ** module, void * targetModuleAddress)
+static void * loadModule(uint8_t ** module, void * targetModuleAddress)
 {
 	uint32_t moduleSize = readUint32(module);
 
