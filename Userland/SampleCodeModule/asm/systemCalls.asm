@@ -12,6 +12,8 @@ GLOBAL _playSound                 ; system call 11
 GLOBAL sys_writeXY                ; system call 12
 GLOBAL getTimeRTC
 GLOBAL system_malloc              ; system call 13
+GLOBAL system_free              ; system call 14
+
 
 section .text
 

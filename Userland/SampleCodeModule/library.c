@@ -307,10 +307,12 @@ int getSeconds(){
 }
 
 void *malloc(unsigned int size){
-    return system_malloc(size);
+    system_malloc(size);
 }
 
 
 void free(void * ptr){
-    //system_free(ptr);
+    system_free(ptr);
 }
+
+
