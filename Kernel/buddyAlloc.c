@@ -3,95 +3,94 @@
 #ifdef BUDDY
 
 #define PAGE_SIZE 4096 // (4KB)
-#define MAX_PAGES 32768
-#define MAX_ORDER 14 // Niveles: 64, 32, 16, 8 y 4 paginas
+#define MAX_ORDER 5
+#define sizes (MAX_ORDER + 1)
 
 typedef struct block {
     struct block *next;
+    size_t size;
 }block_t;
 
-static uint8_t * base_ptr;
-static block_t* free_blocks[MAX_ORDER];
+static block_t* free_blocks[sizes];
 
-void buddy_init(uint8_t * ptr) {
-    base_ptr = ptr;
+/* blocks in freelists[i] are of size 2**(i + 2) * PAGE_SIZE */
+#define BLOCKSIZE(i) ((size_t)(1 << (i + 2)) * PAGE_SIZE)
 
-    for(int i = 0; i < MAX_ORDER; i++)
+/* the address of the buddy of a block from freelists[i]. */
+#define BUDDYOF(b, i) ((block_t*)((uintptr_t)(b) ^ (BLOCKSIZE(i))))
+
+void error(const char *msg) {
+    printf("Error: %s\n", msg);
+}
+
+void mm_init(uint8_t * ptr, size_t max_size) {
+    for(int i = 0; i < sizes; i++)
         free_blocks[i] = NULL;
 
-    free_blocks[MAX_ORDER-1] = (block_t *)ptr;
-    free_blocks[MAX_ORDER-1]->next = NULL;
+    free_blocks[MAX_ORDER] = (block_t *)ptr;
+    free_blocks[MAX_ORDER]->next = NULL;
+    initial_block->size = BLOCKSIZE(MAX_ORDER);
 }
 
-void* buddy_alloc(size_t size) {
-    int order = 0;   // 0 = 4 paginas
-    size_t block_size = 4*PAGE_SIZE;
+void* mm_alloc(size_t size) {
+    int i = 0;
 
-    // averiguo tamaño de bloque
-    while(block_size < size){
-        block_size = block_size*2;
-        order++;
-
-        if(order > MAX_ORDER){  // si la solicitud es de mas de MAX_PAGES , devuelvo null
-            return NULL;
-        }
+    while(BLOCKSIZE(i) < size){
+        i++;
     }
 
-    int current_order = order;
-    while(current_order < MAX_ORDER && free_blocks[current_order] == NULL){
-        current_order++;
-    }
-
-    if(current_order >= MAX_ORDER)   // no hya bloques disponibles de ningun tamaño, todso los bloques tinene un tamaño mas pequeño o solicitud mayor a MAX_ORDER
+    if (i >= sizes) {
+        error("no space available");
         return NULL;
-
-    while (current_order > order){
-        block_t * aux_block = free_blocks[current_order];
-        free_blocks[current_order] = aux_block->next;  // acutualizo bloques libres
-        current_order--;
-
-        block_t * buddy = (block_t*)((uint8_t *)aux_block + (block_size / (1 << current_order)));   // (1<< current_order) equivalente a elevar 2^(current order)  -  buddy: dirección de bloque resultante de dividir el bloque mas grande a la mitad del tamaño
-        buddy->next = free_blocks[current_order]; // asignacion de bloque disponible
-        free_blocks[current_order] = buddy;
     }
-
-    block_t * reserved = free_blocks[order];
-    free_blocks[order] = reserved->next;
-    return (void*)reserved;
+    else if (free_blocks[i] != NULL) {
+        // se encotro un bloque del tamaño que necesitamos
+        block_t* block = free_blocks[i];
+        free_blocks[i] = free_blocks[i]->next;
+        block->size = BLOCKSIZE(i);
+        return block;
+    }
+    else {
+        block_t* block = allocate(BLOCKSIZE(i + 1));  //llamada recursiva para obtener un bloque mas grande
+        if (block != NULL) {
+            // Dividimos el bloque y ponemos el buddy en la lista de bloques libres
+            block_t* buddy = BUDDYOF(block, i);
+            buddy->size = BLOCKSIZE(i);
+            buddy->next = free_blocks[i];
+            free_blocks[i] = buddy;
+            block->size = BLOCKSIZE(i);
+        }
+        return block;
+    }
 }
 
-void buddy_free(void * ptr) {
-    size_t offset = ((uint8_t*)ptr) - base_ptr;
-    int order = 0;
+void mm_free(void * ptr) {
+    size_t size = (block_t*)block->size;
+    int i = 0;
 
-    while(offset % ((MAX_PAGES / (1 << order)) * PAGE_SIZE) == 0 && order < MAX_ORDER){
-        order++;
+    while(BLOCKSIZE(i) < size){
+        i++;
+    }
+    block_t* buddy = BUDDYOF(block, i);
+    block_t** p = &free_blocks[i];
+
+    //verifico que no se encuetre en la lisat de bloques libres
+    while ((*p != NULL) && (*p != buddy)) {
+        p = &(*p)->next;
     }
 
-    block_t * block = (block_t*)ptr;
+    if(*p != buddy){
+        block->next = free_blocks[i];
+        free_blocks[i] = block;
+    }else {
+        // el buddy se encuntra ocupado, hay q librearlo
+        *p = buddy->next;
 
-    size_t buddy_offset = offset ^ ((MAX_PAGES / (1 << order)) * PAGE_SIZE);
-    block_t * buddy = (block_t*) (base_ptr + buddy_offset);
-
-    block_t** current = &free_blocks[order];
-    while (*current != NULL) {
-        if (*current == buddy) {
-            *current = buddy->next;
-            if (buddy_offset < offset) {
-                block = buddy;
-            }
-            offset = (uint8_t*)block - base_ptr;
-            order++;
-            buddy_offset = offset ^ ((MAX_PAGES / (1 << order)) * PAGE_SIZE);
-            buddy = (block_t*)(base_ptr + buddy_offset);
-            current = &free_blocks[order];
-        } else {
-            current = &(*current)->next;
-        }
+        if(block > buddy)
+            deallocate(buddy, BLOCKSIZE(i+1));
+        else
+            deallocate(block, BLOCKSIZE(i+1));
     }
-
-    block->next = free_blocks[order];
-    free_blocks[order] = block;
 }
 
 #endif

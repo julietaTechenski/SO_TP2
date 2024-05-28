@@ -1,7 +1,3 @@
-//
-// Created by Usuario on 15/5/2024.
-//
-
 #ifndef MEMORY_MANAGER_H
 #define MEMORY_MANAGER_H
 
