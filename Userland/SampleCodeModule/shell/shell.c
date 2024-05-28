@@ -1,16 +1,29 @@
 #include "include/shell.h"
 
+#define NULL ((void*)0)
+
 //============================== Function Declarations ==============================
 
 void getCommand(char buffer[]);
 void playNotes();
 void intro();
+void test_mm_wrapper(char * args[]);;
 
 //================================= Variables  =================================
 
 char buffer[MAX_SIZE];
 
 static char username[USERNAME_MAX_SIZE];
+
+void test_mm_wrapper(char * args[]) {
+    uint64_t i=0;
+    while(args[i]!=NULL){
+        i++;
+    }
+    uint64_t arg1 = i+1;
+    uint64_t result = test_mm(arg1, args);
+
+}
 
 tcommand commands[] = {
         {"size", size},
@@ -21,8 +34,10 @@ tcommand commands[] = {
         {"exit", exitProgram},
         {"zeroexception", zeroexception},
         {"ioexception", ioexception},
-        {"regs", getRegs}
+        {"regs", getRegs},
+        {"test_mm", test_mm_wrapper}
 };
+
 
 
 void shell() {

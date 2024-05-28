@@ -1,6 +1,5 @@
-#include <stdio.h>
-#include "../../../../../../../../Users/julie/Downloads/syscall.h"
-#include "../../../../../../../../Users/julie/Downloads/test_util.h"
+#include "../../include/syscall.h"
+#include "../../include/test_util.h"
 
 enum State { RUNNING,
              BLOCKED,

@@ -10,12 +10,13 @@
 #include "zeroexception.h"
 #include "ioexception.h"
 #include "introSys.h"
+#include "test_mm.h"
 #include <stdint.h>
 #include <stdarg.h>
 
 #define MAX_SIZE 100
 #define USERNAME_MAX_SIZE 20
-#define AMOUNT_COMMANDS 9
+#define AMOUNT_COMMANDS 10
 
 
 typedef struct tcommand{
@@ -25,5 +26,6 @@ typedef struct tcommand{
 
 void shell();
 
+void test_mm_wrapper(char * args[]);
 
 #endif //SHELL_H

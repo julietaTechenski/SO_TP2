@@ -1,8 +1,5 @@
-#include "../../../../../../../../Users/julie/Downloads/syscall.h"
-#include "../../../../../../../../Users/julie/Downloads/test_util.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "../include/test_mm.h"
+
 
 #define MAX_BLOCKS 128
 
