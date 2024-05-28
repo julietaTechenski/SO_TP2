@@ -8,6 +8,7 @@
 #include "keyboardDriver.h"
 #include "time.h"
 #include "soundDriver.h"
+#include "kernel.h"
 
 typedef struct{
     uint64_t r15;
