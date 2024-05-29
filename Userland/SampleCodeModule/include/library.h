@@ -2,6 +2,7 @@
 #define LIBRARY_H
 
 #include <stdarg.h>
+#include <stdint.h>
 
 //EXTERNS ---------------------------------------------------------------------------------
 
@@ -19,6 +20,19 @@ extern void _getRegs();
 extern int sys_writeXY(unsigned int fd, char * string, int count, int x, int y);
 extern void * system_malloc(unsigned int size);
 extern void system_free(void * ptr);
+extern int64_t system_getpid(void);
+extern int64_t system_fork(char *name, uint64_t argc, char *argv[]);
+extern int64_t system_kill(uint64_t pid);  //cambiar pid_t por variable del tipo del id del proceso
+extern int64_t system_block(uint64_t pid);
+extern int64_t system_unblock(uint64_t pid);
+extern int64_t system_wait(char *sem_id);
+extern int64_t system_yield();
+extern int64_t system_nice(uint64_t pid, uint64_t newPrio);
+extern int64_t system_sem_init(char *sem_id, uint64_t initialValue);
+extern int64_t system_sem_wait(char *sem_id);
+extern int64_t system_sem_post(char *sem_id);
+extern int64_t system_sem_close(char *sem_id);
+
 
 //FUNCTIONS -------------------------------------------------------------------------------
 
@@ -200,4 +214,91 @@ void *malloc(unsigned int size);
  */
 void free(void * ptr);
 
+/**
+ *
+ * @return current process id
+ */
+int64_t getpid(void);
+
+/**
+ * @def creates a child process
+ * @return child process pid is returned in the parent and 0 is returned in the child.
+ * On failure, -1 is returned in the parent
+ */
+int64_t fork(char *name, uint64_t argc, char *argv[]);
+
+
+/**
+ * @def terminates de process specified with the pid
+ * @param pid
+ * @return 0 on success, else -1
+ */
+int64_t kill(uint64_t pid);
+
+/**
+ *
+ * @param pid
+ * @return
+ */
+int64_t block(uint64_t pid);
+
+/**
+ *
+ * @param pid
+ * @return
+ */
+int64_t unblock(uint64_t pid);
+
+/**
+ *
+ * @param sem_id
+ * @param initialValue
+ * @return
+ */
+int64_t sem_init(char *sem_id, uint64_t initialValue);
+
+/**
+ *
+ * @param sem_id
+ * @return
+ */
+int64_t sem_wait(char *sem_id);
+
+/**
+ *
+ * @param sem_id
+ * @return
+ */
+int64_t sem_post(char *sem_id);
+
+/**
+ *
+ * @param sem_id
+ * @return
+ */
+int64_t sem_close(char *sem_id);
+
+/**
+ * @def wait for process to change state
+ * @param wstatus
+ * @return
+ */
+int64_t wait(char *sem_id);
+
+/**
+ * @def process voluntarily gives up control of the processor
+ * @return
+ */
+int64_t yield();
+
+/**
+ *@def starts a process with a set priority or changes a process' priority
+ * @param pid
+ * @param newPrio
+ * @return
+ */
+int64_t nice(uint64_t pid, uint64_t newPrio);
+
 #endif //LIBRARY_H
+
+

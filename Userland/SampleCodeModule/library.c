@@ -312,5 +312,53 @@ void *malloc(unsigned int size){
 
 
 void free(void * ptr){
-    //system_free(ptr);
+    system_free(ptr);
+}
+
+int64_t getpid(){
+    return system_getpid();
+}
+
+int64_t fork(char *name, uint64_t argc, char *argv[]){
+    return system_fork(name,argc,argv);
+}
+
+int64_t kill(uint64_t pid){
+    return system_kill(pid);
+}
+
+int64_t block(uint64_t pid){
+    return system_block(pid);
+}
+
+int64_t unblock(uint64_t pid){
+    return system_unblock(pid);
+}
+
+int64_t sem_init(char *sem_id, uint64_t initialValue){
+    return system_sem_init(sem_id,initialValue);
+}
+
+int64_t sem_wait(char *sem_id) {
+    return system_sem_wait(sem_id);
+}
+
+int64_t sem_post(char *sem_id) {
+    return system_sem_post(sem_id);
+}
+
+int64_t sem_close(char *sem_id) {
+    return system_sem_close(sem_id);
+}
+
+int64_t wait(char *sem_id){
+    return system_wait(sem_id);
+}
+
+int64_t yield(){
+    return system_yield();
+}
+
+int64_t nice(uint64_t pid, uint64_t newPrio){
+    return system_nice(pid, newPrio);
 }

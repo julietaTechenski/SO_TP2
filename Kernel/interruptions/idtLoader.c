@@ -27,11 +27,12 @@ void load_idt() {
     setup_IDT_entry(0x21, (uint64_t)&_irq01Handler);  // keyboard interruption
 
     setup_IDT_entry(0x80,(uint64_t)&_sysCallHandler);  // system calls
-
     picMasterMask(0xFC);
     picSlaveMask(0xFF);
 
-	_sti();
+    _sti();
+
+
 }
 
 //Builds every entry used

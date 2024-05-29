@@ -31,6 +31,7 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
       mm_rqs[rq].address = malloc(mm_rqs[rq].size);
 
       if (mm_rqs[rq].address) {
+        printf("Reserve: %d\n", &mm_rqs[rq].address);
         total += mm_rqs[rq].size;
         rq++;
       }
