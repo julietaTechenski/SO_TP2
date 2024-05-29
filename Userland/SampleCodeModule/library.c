@@ -335,18 +335,20 @@ int64_t unblock(uint64_t pid){
     return system_unblock(pid);
 }
 
-int sem_init(/*sem_t*/int *sem, int pshared, unsigned int value){  // original usa sem_t de librería semaphores
-    /*hay que ver como realizar la implementacion, no se si deberíamos realizar
-     * una syscall aca nomas y despues hacer tood el manejo de los semáforos en kernel
-     * (idem con sempost, semwait y semclose (NO HICE MANEJO DE USERLAND DE ESTAS))
-     *
-     * tampoco se si la variable sem_t tendría que ser
-     * un struct predefinido en kernel e importarlo de alguna forma
-     *
-     * por lo que entendí de clase tendríamos que hacer el manejo en kernel pero me genera dudas
-     * hacer una llamada asi nomas aca
-     * */
-    return 0;
+int64_t sem_init(char *sem_id, uint64_t initialValue){
+    return system_sem_init(sem_id,initialValue);
+}
+
+int64_t sem_wait(char *sem_id) {
+    return system_sem_wait(sem_id);
+}
+
+int64_t sem_post(char *sem_id) {
+    return system_sem_post(sem_id);
+}
+
+int64_t sem_close(char *sem_id) {
+    return system_sem_close(sem_id);
 }
 
 int64_t wait(char *sem_id){

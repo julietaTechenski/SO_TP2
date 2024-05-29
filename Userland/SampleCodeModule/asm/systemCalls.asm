@@ -21,6 +21,10 @@ GLOBAL system_unblock            ; system call 19
 GLOBAL system_wait            ; system call 20
 GLOBAL system_yield           ; system call 21
 GLOBAL system_nice           ; system call 22
+GLOBAL system_sem_init           ; system call 23
+GLOBAL system_sem_wait           ; system call 24
+GLOBAL system_sem_post           ; system call 25
+GLOBAL system_sem_close           ; system call 26
 
 
 
@@ -111,9 +115,20 @@ system_wait:
 system_yield:
     sysCall 21
 
-
 system_nice:
     sysCall 22
+
+system_sem_init:
+    sysCall 23
+
+system_sem_wait:
+    sysCall 24
+
+system_sem_post:
+    sysCall 25
+
+system_sem_close:
+    sysCall 26
 
 ;-------------------------------------------------------
 ;   Recibe un  puntero a un struct typedef struct{

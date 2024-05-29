@@ -90,8 +90,20 @@ uint64_t sysCallHandler(Registers registers){
             case 21:
                 //yield
                 return 0;
-            case 21:
+            case 22:
                 //nice
+                return 0;
+            case 23:
+                //sem_init
+                return 0;
+            case 24:
+                //sem_wait
+                return 0;
+            case 25:
+                //sem_post
+                return 0;
+            case 26:
+                //sem_close
                 return 0;
         }
         return 0;

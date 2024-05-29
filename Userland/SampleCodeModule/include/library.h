@@ -28,6 +28,10 @@ extern int64_t system_unblock(uint64_t pid);
 extern int64_t system_wait(char *sem_id);
 extern int64_t system_yield();
 extern int64_t system_nice(uint64_t pid, uint64_t newPrio);
+extern int64_t system_sem_init(char *sem_id, uint64_t initialValue);
+extern int64_t system_sem_wait(char *sem_id);
+extern int64_t system_sem_post(char *sem_id);
+extern int64_t system_sem_close(char *sem_id);
 
 
 //FUNCTIONS -------------------------------------------------------------------------------
@@ -247,12 +251,32 @@ int64_t unblock(uint64_t pid);
 
 /**
  *
- * @param sem
- * @param pshared
- * @param value
+ * @param sem_id
+ * @param initialValue
  * @return
  */
-int sem_init(/*sem_t*/int *sem, int pshared, unsigned int value);
+int64_t sem_init(char *sem_id, uint64_t initialValue);
+
+/**
+ *
+ * @param sem_id
+ * @return
+ */
+int64_t sem_wait(char *sem_id);
+
+/**
+ *
+ * @param sem_id
+ * @return
+ */
+int64_t sem_post(char *sem_id);
+
+/**
+ *
+ * @param sem_id
+ * @return
+ */
+int64_t sem_close(char *sem_id);
 
 /**
  * @def wait for process to change state
