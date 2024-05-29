@@ -307,7 +307,7 @@ int getSeconds(){
 }
 
 void *malloc(unsigned int size){
-    system_malloc(size);
+    return system_malloc(size);
 }
 
 
