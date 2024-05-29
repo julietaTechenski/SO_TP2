@@ -10,6 +10,7 @@
 #include "soundDriver.h"
 #include "kernel.h"
 #include "memory_manager.h"
+#include "process.h"
 
 typedef struct{
     uint64_t r15;

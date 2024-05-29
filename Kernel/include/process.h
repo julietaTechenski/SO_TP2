@@ -8,6 +8,7 @@
 #include "videoDriver.h"
 
 #define MAX_NAME_LENGTH 20
+#define PRIORITY_AMOUNT 3
 
 typedef enum {
     HIGH,   //0
@@ -24,7 +25,7 @@ typedef enum {
 
 typedef struct PCB {
     char name[MAX_NAME_LENGTH];
-    int64_t pid;
+    uint64_t pid;
     Priority priority;
     uint64_t* rsp;   //stack
     uint64_t* rbp;   //base pointer
@@ -34,9 +35,12 @@ typedef struct PCB {
     struct PCB *next;
 } PCB;
 
+PCB * findProcess(int64_t pid);
 int64_t createProcess(char isForeground, char *name);
-void addProcessToList(PCB *newProcess);
+void addProcessToList(PCB *newProcess, int priority);
 void finishProcess();
 int64_t getPID();
 void printProcesses();
+int64_t kill(uint64_t pid);
+void killProcess(PCB *process);
 #endif

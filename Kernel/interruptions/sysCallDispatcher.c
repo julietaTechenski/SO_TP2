@@ -66,7 +66,7 @@ uint64_t sysCallHandler(Registers registers){
             case 12:
                 return writeXY(registers->rdi, (char *) registers->rsi, registers->rdx, registers->rcx, registers->r8);
             case 13:
-                return (uintptr_t)mm_alloc(registers->rdi);
+                return mm_alloc(registers->rdi);
             case 14:
                 mm_free((void*)registers->rdi);
                 break;
@@ -74,11 +74,9 @@ uint64_t sysCallHandler(Registers registers){
                 //fork
                 return 0;
             case 16:
-                //getpid
-                return 0;
+                return getPID();
             case 17:
-                //kill
-                return 0;
+                return kill(registers->rdi);
             case 18:
                 //block
                 return 0;
