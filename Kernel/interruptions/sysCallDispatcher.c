@@ -68,6 +68,31 @@ uint64_t sysCallHandler(Registers registers){
                 return (uintptr_t)mm_alloc(registers->rdi);
             case 14:
                 mm_free((void*)registers->rdi);
+                break;
+            case 15:
+                //fork
+                return 0;
+            case 16:
+                //getpid
+                return 0;
+            case 17:
+                //kill
+                return 0;
+            case 18:
+                //block
+                return 0;
+            case 19:
+                //unblock
+                return 0;
+            case 20:
+                //wait
+                return 0;
+            case 21:
+                //yield
+                return 0;
+            case 21:
+                //nice
+                return 0;
         }
         return 0;
     }

@@ -13,6 +13,15 @@ GLOBAL sys_writeXY                ; system call 12
 GLOBAL getTimeRTC
 GLOBAL system_malloc              ; system call 13
 GLOBAL system_free              ; system call 14
+GLOBAL system_fork             ; system call 15
+GLOBAL system_getpid             ; system call 16
+GLOBAL system_kill             ; system call 17
+GLOBAL system_block            ; system call 18
+GLOBAL system_unblock            ; system call 19
+GLOBAL system_wait            ; system call 20
+GLOBAL system_yield           ; system call 21
+GLOBAL system_nice           ; system call 22
+
 
 
 section .text
@@ -80,6 +89,31 @@ system_malloc:
 
 system_free:
     sysCall 14
+
+system_fork:
+    sysCall 15
+
+system_getpid:
+    sysCall 16
+
+system_kill:
+    sysCall 17
+
+system_block:
+    sysCall 18
+
+system_unblock:
+    sysCall 19
+
+system_wait:
+    sysCall 20
+
+system_yield:
+    sysCall 21
+
+
+system_nice:
+    sysCall 22
 
 ;-------------------------------------------------------
 ;   Recibe un  puntero a un struct typedef struct{

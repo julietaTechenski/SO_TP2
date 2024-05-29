@@ -315,4 +315,48 @@ void free(void * ptr){
     system_free(ptr);
 }
 
+int64_t getpid(){
+    return system_getpid();
+}
 
+int64_t fork(char *name, uint64_t argc, char *argv[]){
+    return system_fork(name,argc,argv);
+}
+
+int64_t kill(uint64_t pid){
+    return system_kill(pid);
+}
+
+int64_t block(uint64_t pid){
+    return system_block(pid);
+}
+
+int64_t unblock(uint64_t pid){
+    return system_unblock(pid);
+}
+
+int sem_init(/*sem_t*/int *sem, int pshared, unsigned int value){  // original usa sem_t de librería semaphores
+    /*hay que ver como realizar la implementacion, no se si deberíamos realizar
+     * una syscall aca nomas y despues hacer tood el manejo de los semáforos en kernel
+     * (idem con sempost, semwait y semclose (NO HICE MANEJO DE USERLAND DE ESTAS))
+     *
+     * tampoco se si la variable sem_t tendría que ser
+     * un struct predefinido en kernel e importarlo de alguna forma
+     *
+     * por lo que entendí de clase tendríamos que hacer el manejo en kernel pero me genera dudas
+     * hacer una llamada asi nomas aca
+     * */
+    return 0;
+}
+
+int64_t wait(char *sem_id){
+    return system_wait(sem_id);
+}
+
+int64_t yield(){
+    return system_yield();
+}
+
+int64_t nice(uint64_t pid, uint64_t newPrio){
+    return system_nice(pid, newPrio);
+}
