@@ -18,7 +18,7 @@
 
 #define MAX_SIZE 100
 #define USERNAME_MAX_SIZE 20
-#define AMOUNT_COMMANDS 12
+#define AMOUNT_COMMANDS 13
 
 
 typedef struct tcommand{
@@ -27,9 +27,6 @@ typedef struct tcommand{
 }tcommand;
 
 void shell();
-
-void test_mm_wrapper(char * args[]);
-void test_processes_wrapper(char * args[]);;
 
 
 #endif //SHELL_H
