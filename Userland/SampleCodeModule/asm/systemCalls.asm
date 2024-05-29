@@ -13,7 +13,7 @@ GLOBAL sys_writeXY                ; system call 12
 GLOBAL getTimeRTC
 GLOBAL system_malloc              ; system call 13
 GLOBAL system_free              ; system call 14
-GLOBAL system_fork             ; system call 15
+GLOBAL system_create_process             ; system call 15
 GLOBAL system_getpid             ; system call 16
 GLOBAL system_kill             ; system call 17
 GLOBAL system_block            ; system call 18
@@ -94,7 +94,7 @@ system_malloc:
 system_free:
     sysCall 14
 
-system_fork:
+system_create_process:
     sysCall 15
 
 system_getpid:
