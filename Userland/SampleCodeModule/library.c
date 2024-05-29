@@ -319,8 +319,8 @@ int64_t getpid(){
     return system_getpid();
 }
 
-int64_t fork(char *name, uint64_t argc, char *argv[]){
-    return system_fork(name,argc,argv);
+int64_t createProcess(char *name, uint64_t argc, char *argv[]){
+    return system_create_process(name,argc,argv);
 }
 
 int64_t kill(uint64_t pid){
