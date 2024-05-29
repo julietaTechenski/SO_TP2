@@ -7,7 +7,6 @@
 void getCommand(char buffer[]);
 void playNotes();
 void intro();
-void test_processes_wrapper(char * args[]);;
 
 //================================= Variables  =================================
 
@@ -45,7 +44,8 @@ tcommand commands[] = {
         {"ioexception", ioexception},
         {"regs", getRegs},
         {"test_mm", test_mm_wrapper},
-        {"test_processes", test_processes_wrapper}
+        {"test_processes", test_processes_wrapper},
+        {"test_prio", test_prio}
 };
 
 
