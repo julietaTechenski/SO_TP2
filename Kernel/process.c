@@ -8,7 +8,7 @@ static uint32_t currentPID = 0;
 //stateArray = ["Finished", "Ready", "Running", "Blocked"]     //meaning
 char * stateArray[] = {"F", "r", "R", "B"};
 
-char createProcess(char isForeground, char *name){
+int64_t createProcess(char isForeground, char *name){
     uint64_t *rbp = mm_alloc(1024 * sizeof(uint64_t));
     PCB *newProcess = mm_alloc(sizeof(PCB));
 
@@ -42,6 +42,10 @@ void addProcessToList(PCB *newProcess){
 void finishProcess(){
     current->state = EXIT;
     mm_free(current);
+}
+
+int64_t getPID(){
+    return current->pid;
 }
 
 void printProcesses(){
@@ -87,8 +91,4 @@ void printProcesses(){
         writeString(0, "\n", 1);
         iter = iter->next;
     }
-}
-
-uint32_t getPID(){
-    return current->pid;
 }

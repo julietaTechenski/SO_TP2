@@ -24,7 +24,7 @@ typedef enum {
 
 typedef struct PCB {
     char name[MAX_NAME_LENGTH];
-    uint32_t pid;
+    int64_t pid;
     Priority priority;
     uint64_t* rsp;   //stack
     uint64_t* rbp;   //base pointer
@@ -34,9 +34,9 @@ typedef struct PCB {
     struct PCB *next;
 } PCB;
 
-char createProcess(char isForeground, char *name);
+int64_t createProcess(char isForeground, char *name);
 void addProcessToList(PCB *newProcess);
 void finishProcess();
+int64_t getPID();
 void printProcesses();
-uint32_t getPID();
 #endif
