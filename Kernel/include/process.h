@@ -2,12 +2,10 @@
 #define _PROCESSADT_H
 
 #include <stdint.h>
-#include <argp.h>
 #include "lib.h"
 #include "interrupts.h"
 #include "memory_manager.h"
 #include "videoDriver.h"
-#include "lib.h"
 
 #define MAX_NAME_LENGTH 20
 
