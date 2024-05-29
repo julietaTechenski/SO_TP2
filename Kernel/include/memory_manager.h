@@ -2,7 +2,7 @@
 #define MEMORY_MANAGER_H
 
 #include <stdint.h>
-#define NULL -1
+#define NULL ((void *)0)
 typedef uintptr_t size_t;
 
 void mm_init(void * ptr, size_t max_size);
