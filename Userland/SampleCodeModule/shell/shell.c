@@ -7,7 +7,7 @@
 void getCommand(char buffer[]);
 void playNotes();
 void intro();
-void test_mm_wrapper(char * args[]);;
+void test_processes_wrapper(char * args[]);;
 
 //================================= Variables  =================================
 
@@ -25,6 +25,15 @@ void test_mm_wrapper(char * args[]) {
 
 }
 
+void test_processes_wrapper(char * args[]) {
+    uint64_t i=0;
+    while(args[i]!=0){
+        i++;
+    }
+    uint64_t arg1 = i;
+    uint64_t result = test_processes(arg1, args);
+}
+
 tcommand commands[] = {
         {"size", size},
         {"help", help},
@@ -35,7 +44,8 @@ tcommand commands[] = {
         {"zeroexception", zeroexception},
         {"ioexception", ioexception},
         {"regs", getRegs},
-        {"test_mm", test_mm_wrapper}
+        {"test_mm", test_mm_wrapper},
+        {"test_processes", test_processes_wrapper}
 };
 
 
