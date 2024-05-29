@@ -21,7 +21,7 @@ extern int sys_writeXY(unsigned int fd, char * string, int count, int x, int y);
 extern void * system_malloc(unsigned int size);
 extern void system_free(void * ptr);
 extern int64_t system_getpid(void);
-extern int64_t system_createProcess(char *name, uint64_t argc, char *argv[]);
+extern int64_t system_create_process(char *name, uint64_t argc, char *argv[]);
 extern int64_t system_kill(uint64_t pid);  //cambiar pid_t por variable del tipo del id del proceso
 extern int64_t system_block(uint64_t pid);
 extern int64_t system_unblock(uint64_t pid);
