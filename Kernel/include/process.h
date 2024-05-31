@@ -23,6 +23,11 @@ typedef enum {
     BLOCKED
 } State;
 
+typedef enum {
+    TRUE,
+    FALSE
+} IsForeground;
+
 typedef struct PCB {
     char name[MAX_NAME_LENGTH];
     uint64_t pid;
@@ -35,12 +40,14 @@ typedef struct PCB {
     struct PCB *next;
 } PCB;
 
-PCB * findProcess(int64_t pid);
-int64_t createProcess(char isForeground, char *name);
+PCB * findProcess(int64_t pid, int * priority);
+int64_t createProcess(char *name, uint64_t argc, char *argv[]);
 void addProcessToList(PCB *newProcess, int priority);
+void removeProcessToList(PCB *process, int priority);
 void finishProcess();
 int64_t getPID();
 void printProcesses();
 int64_t kill(uint64_t pid);
-void killProcess(PCB *process);
+void killProcess(PCB *process, int priority);
+int64_t changePriority(uint64_t pid, uint64_t newPrio);
 #endif

@@ -9,7 +9,7 @@ static uint32_t currentPID = 0;
 //stateArray = ["Finished", "Ready", "Running", "Blocked"]     //meaning
 char * stateArray[] = {"F", "r", "R", "B"};
 
-PCB * findProcess(int64_t pid){
+PCB * findProcess(int64_t pid, int * priority){
     if(current->pid == pid){
         return current;
     }
@@ -18,6 +18,7 @@ PCB * findProcess(int64_t pid){
         iter = priorityArray[i];
         while(iter != NULL){
             if(iter->pid == pid){
+                *priority = i;
                 return iter;
             }
             iter = iter->next;
@@ -26,15 +27,15 @@ PCB * findProcess(int64_t pid){
     return NULL;
 }
 
-int64_t createProcess(char isForeground, char *name){
+int64_t createProcess(char *name, uint64_t argc, char *argv[]){
     uint64_t *rbp = mm_alloc(1024 * sizeof(uint64_t));
     PCB *newProcess = mm_alloc(sizeof(PCB));
 
     my_strcpy(newProcess->name, name);
     newProcess->pid = currentPID++;
-    newProcess->rsp = createStackContext((uint64_t) & rbp[1023]);
+    newProcess->rsp = createStackContext((uint64_t) & rbp[1023], argc, argv);
     newProcess->rbp = rbp;
-    newProcess->isForeground = isForeground;
+    newProcess->isForeground = TRUE;
     newProcess->state = READY;
     newProcess->prev = 0;
     newProcess->next = NULL;
@@ -53,6 +54,18 @@ void addProcessToList(PCB *newProcess, int priority){
         newProcess->next = first;
         first->prev = newProcess;
         first = newProcess;
+    }
+}
+
+void removeProcessToList(PCB *process, int priority){
+    if(process->prev != NULL){  //arrange prev process
+        process->prev->next = process->next;
+    } else {    //first process
+        priorityArray[priority] = process->next;
+    }
+
+    if(process->next != NULL){  //arrange next process
+        process->next->prev = process->prev;
     }
 }
 
@@ -115,25 +128,36 @@ void printProcesses() {
 }
 
 int64_t kill(uint64_t pid) {
-    PCB * process = findProcess(pid);
+    int priority;
+    PCB * process = findProcess(pid, &priority);
     if(process == NULL){
         return -1;
     }
-    killProcess(process);
+    killProcess(process, priority);
     return 0;
 }
 
-void killProcess(PCB *process){
-    if(process->prev != NULL){  //arrange prev process
-        process->prev->next = process->next;
-    } else {    //first process
-        first = process->next;
-    }
-
-    if(process->next != NULL){  //arrange next process
-        process->next->prev = process->prev;
-    }
+void killProcess(PCB *process, int priority){
+    removeProcessToList(process, priority);
 
     mm_free(process->rbp);
     mm_free(process);
+}
+
+int64_t changePriority(uint64_t pid, uint64_t newPrio) {
+    if(newPrio > PRIORITY_AMOUNT){
+        return -1;
+    }
+
+    int oldPrio;
+    PCB * process = findProcess(pid, &oldPrio);
+    if(process == NULL){
+        return -1;
+    }
+    if(newPrio == oldPrio){
+        return newPrio;
+    }
+    removeProcessToList(process, oldPrio);
+    addProcessToList(process, newPrio);
+    return newPrio;
 }
