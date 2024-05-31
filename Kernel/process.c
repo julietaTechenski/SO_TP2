@@ -182,6 +182,7 @@ int64_t changeStatePID(uint64_t pid, State newState){
     // in RUNNING, can go to READY and BLOCKED
     if(process->state == RUNNING){
         process->state = newState;
+        return 0;
     }
     return -1;  //made an invalid change of state
 }
