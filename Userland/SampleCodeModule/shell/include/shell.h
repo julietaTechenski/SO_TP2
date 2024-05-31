@@ -13,6 +13,7 @@
 #include "test_mm.h"
 #include "test_processes.h"
 #include "test_prio.h"
+#include "test_sync.h"
 #include <stdint.h>
 #include <stdarg.h>
 
