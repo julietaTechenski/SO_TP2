@@ -189,9 +189,16 @@ int64_t changeStatePID(uint64_t pid, State newState){
 
 
 int64_t block(uint64_t pid){
-    return changeStatePID(pid, BLOCKED);
+    int ans = changeStatePID(pid, BLOCKED);
+    int20();
+    return ans;
 }
 
 int64_t unblock(uint64_t pid){
     return changeStatePID(pid, READY);
+}
+
+int64_t yield(){
+    int20();
+
 }
