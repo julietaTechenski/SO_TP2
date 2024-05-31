@@ -23,6 +23,7 @@ GLOBAL sound
 GLOBAL noSnd
 
 GLOBAL createStackContext
+GLOBAL int20
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -309,6 +310,10 @@ createStackContext:
     mov rsp, rbp
     pop rbp
 
+    ret
+
+int20:
+    int 20h
     ret
 
 section .data

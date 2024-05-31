@@ -37,6 +37,9 @@ void picSlaveMask(uint8_t mask);
 void haltcpu(void);
 
 char getKeyPressed();
+
 uint64_t *createStackContext();
+
+void int20();
 
 #endif /* INTERRUPS_H_ */
