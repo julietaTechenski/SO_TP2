@@ -161,3 +161,17 @@ int64_t changePriority(uint64_t pid, uint64_t newPrio) {
     addProcessToList(process, newPrio);
     return newPrio;
 }
+
+int64_t block(uint64_t pid){
+    PCB * process = NULL;
+    int i = 0;
+    while(i < PRIORITY_AMOUNT && process == NULL){
+        process = findProcess(pid, i);
+        i++;
+    }
+    if(i == PRIORITY_AMOUNT && process == NULL){
+        return -1;
+    }
+    process->state = BLOCKED;
+    return 0;
+}
