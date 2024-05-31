@@ -164,16 +164,26 @@ int64_t changePriority(uint64_t pid, uint64_t newPrio) {
 
 int64_t changeStatePID(uint64_t pid, State newState){
     PCB * process = NULL;
-    int i = 0;
-    while(i < PRIORITY_AMOUNT && process == NULL){
-        process = findProcess(pid, i);
-        i++;
-    }
-    if(i == PRIORITY_AMOUNT && process == NULL){
+    int priority;
+    process = findProcess(pid, &priority);
+    if(process == NULL){
         return -1;
     }
-    process->state = newState;
-    return 0;
+    // in READY
+    if(process->state == READY && newState == RUNNING){
+        process->state = newState;
+        return 0;
+    }
+    //in BLOCKED
+    if(process->state == BLOCKED && newState == READY){
+        process->state = newState;
+        return 0;
+    }
+    // in RUNNING, can go to READY and BLOCKED
+    if(process->state == RUNNING){
+        process->state = newState;
+    }
+    return -1;  //made an invalid change of state
 }
 
 
