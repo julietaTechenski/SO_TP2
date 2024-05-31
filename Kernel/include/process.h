@@ -50,5 +50,7 @@ void printProcesses();
 int64_t kill(uint64_t pid);
 void killProcess(PCB *process, int priority);
 int64_t changePriority(uint64_t pid, uint64_t newPrio);
+int64_t changeStatePID(uint64_t pid, State newState);
 int64_t block(uint64_t pid);
+int64_t unblock(uint64_t pid);
 #endif

@@ -162,7 +162,7 @@ int64_t changePriority(uint64_t pid, uint64_t newPrio) {
     return newPrio;
 }
 
-int64_t block(uint64_t pid){
+int64_t changeStatePID(uint64_t pid, State newState){
     PCB * process = NULL;
     int i = 0;
     while(i < PRIORITY_AMOUNT && process == NULL){
@@ -172,6 +172,15 @@ int64_t block(uint64_t pid){
     if(i == PRIORITY_AMOUNT && process == NULL){
         return -1;
     }
-    process->state = BLOCKED;
+    process->state = newState;
     return 0;
+}
+
+
+int64_t block(uint64_t pid){
+    return changeStatePID(pid, BLOCKED);
+}
+
+int64_t unblock(uint64_t pid){
+    return changeStatePID(pid, READY);
 }
