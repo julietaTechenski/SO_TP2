@@ -291,10 +291,11 @@ int64_t wait(char *sem_id);
 int64_t yield();
 
 /**
- *@def starts a process with a set priority or changes a process' priority
+ * @def changes a process' priority
  * @param pid
  * @param newPrio
- * @return
+ * @return on success, the new priority value is returned.
+ *         on error, -1 is returned.
  */
 int64_t nice(uint64_t pid, uint64_t newPrio);
 
