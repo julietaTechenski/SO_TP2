@@ -59,7 +59,7 @@ void mm_init(void * ptr, size_t max_size) {
 void* mm_alloc(size_t size) {
     int i = 0;
 
-    while(BLOCKSIZE(i) < size && i <= max_order){
+    while(BLOCKSIZE(i) < size + sizeof(block_t) && i <= max_order){
         i++;
     }
 
@@ -70,9 +70,9 @@ void* mm_alloc(size_t size) {
         block_t* block = free_blocks[i];
         free_blocks[i] = free_blocks[i]->next;
         block->size = BLOCKSIZE(i);
-        return block;
+        return (void*)(block+1);
     } else {
-        block_t* block = mm_alloc(BLOCKSIZE(i + 1));  //llamada recursiva para obtener un bloque mas grande
+        block_t* block = mm_alloc(BLOCKSIZE(i + 1) - sizeof(block_t));  //llamada recursiva para obtener un bloque mas grande
         if (block != NULL) {
             // Dividimos el bloque y ponemos el buddy en la lista de bloques libres
             block_t* buddy = BUDDYOF(block, i);
@@ -81,8 +81,9 @@ void* mm_alloc(size_t size) {
 
             free_blocks[i] = buddy;
             block->size = BLOCKSIZE(i);
+            return (void*)(block + 1);
         }
-        return block;
+        return NULL;
     }
 }
 
