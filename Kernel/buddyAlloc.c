@@ -43,6 +43,10 @@ void mm_init(void * ptr, size_t max_size) {
     free_blocks = (block_t**)base_memory;
     base_memory += free_blocks_size;
 
+    uintptr_t addr = (uintptr_t)base_memory;
+    addr = ((addr + (PAGE_SIZE - 1)) / PAGE_SIZE) * PAGE_SIZE;
+    base_memory = (uint8_t *)addr;
+
     for(int i= 0; i <= max_order; i++){
         free_blocks[i] = NULL;
     }
@@ -66,22 +70,25 @@ void* mm_alloc(size_t size) {
     if(i > max_order){
         return NULL;
     } else if (free_blocks[i] != NULL) {
-        // se encotro un bloque del tamaño que necesitamos
         block_t* block = free_blocks[i];
         free_blocks[i] = free_blocks[i]->next;
         block->size = BLOCKSIZE(i);
-        return (void*)(block+1);
+        return (void*)(block);
     } else {
-        block_t* block = mm_alloc(BLOCKSIZE(i + 1) - sizeof(block_t));  //llamada recursiva para obtener un bloque mas grande
+        block_t* block = (block_t*)mm_alloc(BLOCKSIZE(i + 1) - sizeof(block_t));
         if (block != NULL) {
-            // Dividimos el bloque y ponemos el buddy en la lista de bloques libres
+            block = (block_t*)((uintptr_t)block - (uintptr_t)base_memory); // reative position
+
             block_t* buddy = BUDDYOF(block, i);
+            buddy = (block_t*)((uintptr_t)buddy + (uintptr_t)base_memory); // reverse to absolute after getting the buddy
+
             buddy->size = BLOCKSIZE(i);
             buddy->next = free_blocks[i];
 
             free_blocks[i] = buddy;
+            block = (block_t*)((uintptr_t)block + (uintptr_t)base_memory);  // reverse to absolute after getting the buddy
             block->size = BLOCKSIZE(i);
-            return (void*)(block + 1);
+            return (void*)(block);
         }
         return NULL;
     }
@@ -97,8 +104,10 @@ void mm_free(void * ptr) {
     if(i > max_order){
         return;
     }
-
+    block = (block_t*)((uintptr_t)block - (uintptr_t)base_memory);
     block_t* buddy = BUDDYOF(block, i);
+    block = (block_t*)((uintptr_t)block + (uintptr_t)base_memory);
+    buddy = (block_t*)((uintptr_t)buddy + (uintptr_t)base_memory);
     block_t** p = &free_blocks[i];
 
     //verifico que no se encuetre en la lisat de bloques libres
