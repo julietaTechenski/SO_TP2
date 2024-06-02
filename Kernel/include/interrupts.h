@@ -42,4 +42,6 @@ uint64_t *createStackContext();
 
 void int20();
 
+void contextSwitch();
+
 #endif /* INTERRUPS_H_ */

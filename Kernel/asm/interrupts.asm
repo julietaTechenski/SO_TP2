@@ -24,11 +24,13 @@ GLOBAL noSnd
 
 GLOBAL createStackContext
 GLOBAL int20
+GLOBAL contextSwitch
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN sysCallHandler
 EXTERN getStackBase
+EXTERN getCurrentRSP
 
 SECTION .text
 
@@ -314,6 +316,12 @@ createStackContext:
 
 int20:
     int 20h
+    ret
+
+contextSwitch:
+    call getCurrentRSP  ; new RSP
+    mov rsp, rax
+    popState            ; clean previous process stack
     ret
 
 section .data
