@@ -1,7 +1,5 @@
-#include "./include/memory_manager.h"
-
 #ifdef BUDDY
-
+#include "./include/memory_manager.h"
 #define PAGE_SIZE 4096 // (4KB)
 #define MAX_ORDER 5
 #define sizes (MAX_ORDER + 1)
