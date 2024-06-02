@@ -6,8 +6,12 @@ static PCB * first = NULL;
 static PCB * halt = NULL;
 static uint32_t currentPID = 0;
 
-//stateArray = ["Finished", "Ready", "Running", "Blocked"]     //meaning
-char * stateArray[] = {"F", "r", "R", "B"};
+//stateArray = ["Ready", "Running", "Blocked"]     //meaning
+char * stateArray[] = {"r", "R", "B"};
+
+uint64_t* getCurrentRSP(){
+    return current->rsp;
+}
 
 PCB * findProcess(int64_t pid, int * priority){
     if(current->pid == pid){
@@ -37,10 +41,11 @@ int64_t createProcess(char *name, uint64_t argc, char *argv[]){
     newProcess->rbp = rbp;
     newProcess->isForeground = TRUE;
     newProcess->state = READY;
+    newProcess->timesRunning = 0;
     newProcess->prev = 0;
     newProcess->next = NULL;
 
-    addProcessToList(newProcess, HIGH);
+    addProcessToList(newProcess, PRIORITY_AMOUNT);
 
     return (newProcess->pid);
 }
@@ -57,7 +62,7 @@ void addProcessToList(PCB *newProcess, int priority){
     }
 }
 
-void removeProcessToList(PCB *process, int priority){
+void removeProcessFromList(PCB *process, int priority){
     if(process->prev != NULL){  //arrange prev process
         process->prev->next = process->next;
     } else {    //first process
@@ -70,9 +75,19 @@ void removeProcessToList(PCB *process, int priority){
 }
 
 void finishProcess(){
-    current->state = EXIT;
-    mm_free(current->rbp);
-    mm_free(current);
+    removeProcessFromList(current, current->priority);
+    if(current->next != NULL){
+        PCB * aux = current->next;
+        mm_free(current->rbp);
+        mm_free(current);
+        current = aux;  //update current
+    } else {    //last process
+        int64_t priority = current->priority;
+        mm_free(current->rbp);
+        mm_free(current);
+        current = priorityArray[priority];    //start from the beginning in the same priority
+    }
+    contextSwitch();
 }
 
 int64_t getPID(){
@@ -105,17 +120,14 @@ void printProcesses() {
             writeString(0, "  ", 2);
 
             switch (current->state) {
-                case EXIT:
+                case READY:
                     writeString(0, stateArray[0], 1);
                     break;
-                case READY:
+                case RUNNING:
                     writeString(0, stateArray[1], 1);
                     break;
-                case RUNNING:
-                    writeString(0, stateArray[2], 1);
-                    break;
                 case BLOCKED:
-                    writeString(0, stateArray[3], 1);
+                    writeString(0, stateArray[2], 1);
                     break;
             }
             if (current->isForeground) {
@@ -138,7 +150,7 @@ int64_t kill(uint64_t pid) {
 }
 
 void killProcess(PCB *process, int priority){
-    removeProcessToList(process, priority);
+    removeProcessFromList(process, priority);
 
     mm_free(process->rbp);
     mm_free(process);
@@ -157,7 +169,7 @@ int64_t changePriority(uint64_t pid, uint64_t newPrio) {
     if(newPrio == oldPrio){
         return newPrio;
     }
-    removeProcessToList(process, oldPrio);
+    removeProcessFromList(process, oldPrio);
     addProcessToList(process, newPrio);
     return newPrio;
 }
@@ -200,5 +212,43 @@ int64_t unblock(uint64_t pid){
 
 int64_t yield(){
     int20();
+    return current->pid;
+}
 
+int64_t findNextProcess(uint64_t currentPID){
+    int64_t flag = 0;   //flag to check if found
+    PCB * ans;
+    for(int i = 0 ; i < PRIORITY_AMOUNT && !flag; i++){
+        ans = priorityArray[i];
+        while(ans != NULL){
+            if (ans->state == READY && ans->pid != currentPID) {
+                current = ans;
+                flag = 1;
+                return flag;
+            }
+            ans = ans->next;
+        }
+
+    }
+    return flag;
+}
+
+void scheduler(){
+    timer_handler();
+    if(current != halt){
+        uint64_t currentPID = current->pid;
+        if(current->timesRunning == (PRIORITY_AMOUNT - current->priority) || current->state == BLOCKED){
+
+            current->timesRunning = 0;  //resets timer
+            if(current->priority > 0){  //changes priority
+                changePriority(current->pid, current->priority++);
+            }
+
+            if(!findNextProcess(currentPID)){
+                current = halt;
+            }
+        } else {
+            current->timesRunning++;
+        }
+    }
 }
