@@ -25,6 +25,7 @@ GLOBAL noSnd
 GLOBAL createStackContext
 GLOBAL int20
 GLOBAL contextSwitch
+GLOBAL my_halt
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -322,6 +323,10 @@ contextSwitch:
     call getCurrentRSP  ; new RSP
     mov rsp, rax
     popState            ; clean previous process stack
+    ret
+
+my_halt:
+    jmp my_halt
     ret
 
 section .data

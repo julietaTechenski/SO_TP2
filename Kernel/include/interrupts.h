@@ -44,4 +44,6 @@ void int20();
 
 void contextSwitch();
 
+void my_halt();
+
 #endif /* INTERRUPS_H_ */
