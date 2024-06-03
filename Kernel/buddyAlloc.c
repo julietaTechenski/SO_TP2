@@ -44,7 +44,7 @@ void mm_init(void * ptr, size_t max_size) {
     base_memory += free_blocks_size;
 
     uintptr_t addr = (uintptr_t)base_memory;
-    addr = ((addr + (PAGE_SIZE - 1)) / PAGE_SIZE) * PAGE_SIZE;
+    addr = (addr + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1);
     base_memory = (uint8_t *)addr;
 
     for(int i= 0; i <= max_order; i++){
@@ -94,7 +94,7 @@ void* mm_alloc(size_t size) {
     }
 }
 
-void mm_free(void * ptr) {
+void mm_free_rec(void * ptr) {
     block_t *block = (block_t *)ptr;
     int i = 0;
     while(BLOCKSIZE(i) < block->size && i <= max_order){
@@ -123,11 +123,21 @@ void mm_free(void * ptr) {
         *p = buddy->next;
 
         if(block > buddy){
-            mm_free(buddy);
+            mm_free_rec(buddy);
         }else{
-            mm_free(block);
+            mm_free_rec(block);
         }
     }
 }
+
+void mm_free(void * ptr) {
+    mm_free_rec(ptr - sizeof(block_t));
+}
+
+
+
+
+
+
 
 #endif
