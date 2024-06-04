@@ -37,6 +37,7 @@ typedef struct PCB {
 
 //INTERNAL FUNCTIONS -------------------------------------------------------------------------------
 
+void setFirstProcess(uint64_t firstProcess);
 uint64_t* getCurrentRSP();
 PCB * findProcess(int64_t pid, int * priority);
 void addProcessToList(PCB *newProcess, int priority);
@@ -48,7 +49,7 @@ void scheduler();
 
 //USERLAND COMMAND FUNCTIONS --------------------------------------------------------------------------
 
-int64_t createProcess(char *name, uint64_t argc, char *argv[]);
+int64_t createProcess(uint64_t process, char *name, uint64_t argc, char *argv[]);
 void finishProcess();
 int64_t getPID();
 void printProcesses();

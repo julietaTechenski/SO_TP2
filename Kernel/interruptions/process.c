@@ -9,6 +9,30 @@ static uint32_t currentPID = 0;
 //stateArray = ["Ready", "Running", "Blocked"]     //meaning
 char * stateArray[] = {"r", "R", "B"};
 
+void setFirstProcess(uint64_t firstProcess){
+    uint64_t *rbp = mm_alloc(1024 * sizeof(uint64_t));
+    PCB *first = mm_alloc(sizeof(PCB));
+    first->rbp = rbp;
+    first->pid = currentPID++;
+    first->rsp = createStackContext((uint64_t) & rbp[1023], firstProcess, 0, NULL);   //aca debería estar el first process que es mi shell
+
+    first->priority = PRIORITY_AMOUNT;
+    first->next = NULL;
+    first->prev = NULL;
+    my_strcpy(first->name, "shell");
+
+    uint64_t *rbpHalt = mm_alloc(1024 * sizeof(uint64_t));
+    halt = mm_alloc(sizeof(PCB));
+    halt->rbp = rbp;
+    halt->rsp = createStackContext((uint64_t) & rbpHalt[1023], _hlt, 0, NULL);
+    halt->priority = 0;
+    halt->next = NULL;
+    halt->prev = NULL;
+    my_strcpy(first->name, "halt");
+
+    addProcessToList(first, PRIORITY_AMOUNT - first->priority);
+}
+
 uint64_t* getCurrentRSP(){
     return current->rsp;
 }
@@ -31,13 +55,13 @@ PCB * findProcess(int64_t pid, int * priority){
     return NULL;
 }
 
-int64_t createProcess(char *name, uint64_t argc, char *argv[]){
+int64_t createProcess(uint64_t process, char *name, uint64_t argc, char *argv[]){
     uint64_t *rbp = mm_alloc(1024 * sizeof(uint64_t));
     PCB *newProcess = mm_alloc(sizeof(PCB));
 
     my_strcpy(newProcess->name, name);
     newProcess->pid = currentPID++;
-    newProcess->rsp = createStackContext((uint64_t) & rbp[1023], argc, argv);
+    newProcess->rsp = createStackContext((uint64_t) & rbp[1023], process, argc, argv);
     newProcess->rbp = rbp;
     newProcess->isForeground = TRUE;
     newProcess->state = READY;
