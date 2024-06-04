@@ -1,4 +1,4 @@
-#include "time.h"
+#include "process.h"
 #include "keyboardDriver.h"
 
 static void int_20();
@@ -17,7 +17,7 @@ void irqDispatcher(uint64_t irq, uint64_t infoRegs) {
 }
 
 void int_20() {
-	timer_handler();
+    scheduler();
 }
 
 void int_21(uint64_t infoRegs){
