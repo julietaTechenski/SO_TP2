@@ -24,7 +24,8 @@ GLOBAL system_nice           ; system call 22
 GLOBAL system_sem_init           ; system call 23
 GLOBAL system_sem_wait           ; system call 24
 GLOBAL system_sem_post           ; system call 25
-GLOBAL system_sem_close           ; system call 26
+GLOBAL system_pipe           ; system call 27
+GLOBAL system_dup           ; system call 28
 
 
 
@@ -129,6 +130,12 @@ system_sem_post:
 
 system_sem_close:
     sysCall 26
+
+system_pipe:
+    sysCall 27
+
+system_dup:
+    sysCall 28
 
 ;-------------------------------------------------------
 ;   Recibe un  puntero a un struct typedef struct{

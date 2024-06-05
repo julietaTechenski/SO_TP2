@@ -105,6 +105,12 @@ uint64_t sysCallHandler(Registers registers){
             case 26:
                 //sem_close
                 return 0;
+            case 27:
+                //sem_pipe
+                return 0;
+            case 28:
+                //sem_dup
+                return 0;
         }
         return 0;
     }
