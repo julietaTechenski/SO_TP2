@@ -306,6 +306,14 @@ int64_t nice(uint64_t pid, uint64_t newPrio);
  */
 int pipe(void * pipefd[2]);
 
+
+/**
+ *
+ * @param p
+ * @param oldfd
+ * @param newfd
+ * @return -1 if error
+ */
 int dup(void * p, int oldfd, void * newfd){
     return system_dup(p, fd, pipe);
 }
