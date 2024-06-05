@@ -108,7 +108,7 @@ uint64_t sysCallHandler(Registers registers){
             case 27:
                 return pipe((void**)registers->rdi);
             case 28:
-                return dup((void*)registers->rdi, registers->rsi, registers->rdx);
+                return dup((void *)registers->rdi, registers->rsi, (void*)registers->rdx);
         }
         return 0;
     }

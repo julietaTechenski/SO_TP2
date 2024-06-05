@@ -367,6 +367,6 @@ int pipe(void * pipefd[2]){
     return system_pipe(pipefd);
 }
 
-int dup(void * p, int oldfd, void * newfd){
-    return system_dup(p, fd, pipe);
+int dup(void * p, int oldfd, void * pipedir){
+    return system_dup(p, fd, pipedir);
 }

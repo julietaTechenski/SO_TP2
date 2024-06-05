@@ -33,7 +33,7 @@ extern int64_t system_sem_wait(char *sem_id);
 extern int64_t system_sem_post(char *sem_id);
 extern int64_t system_sem_close(char *sem_id);
 extern int system_pipe(void * pipefd[2]);
-extern int system_dup(void * p, int oldfd, void *newfd);
+extern int system_dup(void * p, int oldfd, void *pipedir);
 
 
 //FUNCTIONS -------------------------------------------------------------------------------
@@ -311,10 +311,10 @@ int pipe(void * pipefd[2]);
  *
  * @param p
  * @param oldfd
- * @param newfd
+ * @param pipedir
  * @return -1 if error
  */
-int dup(void * p, int oldfd, void * newfd);
+int dup(void * p, int oldfd, void * pipedir);
 #endif //LIBRARY_H
 
 
