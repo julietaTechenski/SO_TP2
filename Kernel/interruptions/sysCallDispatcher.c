@@ -106,11 +106,9 @@ uint64_t sysCallHandler(Registers registers){
                 //sem_close
                 return 0;
             case 27:
-                //sem_pipe
-                return 0;
+                return pipe((void**)registers->rdi);
             case 28:
-                //sem_dup
-                return 0;
+                return dup((void*)registers->rdi, registers->rsi, registers->rdx);
         }
         return 0;
     }
