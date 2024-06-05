@@ -314,10 +314,7 @@ int pipe(void * pipefd[2]);
  * @param newfd
  * @return -1 if error
  */
-int dup(void * p, int oldfd, void * newfd){
-    return system_dup(p, fd, pipe);
-}
-
+int dup(void * p, int oldfd, void * newfd);
 #endif //LIBRARY_H
 
 
