@@ -172,5 +172,6 @@ int64_t my_sem_post(char *sem_id){
 
 int64_t my_sem_close(char * sem_id){
     deleteSem(&semaphoresHead, sem_id);
+    return 0;
 }
 
