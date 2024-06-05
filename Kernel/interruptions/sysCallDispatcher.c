@@ -71,27 +71,24 @@ uint64_t sysCallHandler(Registers registers){
                 mm_free((void*)registers->rdi);
                 break;
             case 15:
-                //fork
-                return 0;
+                return createProcess(registers->rdi, registers->rsi, registers->rdx, registers->rcx);
             case 16:
                 return getPID();
             case 17:
                 return kill(registers->rdi);
             case 18:
-                //block
-                return 0;
+                return block(registers->rdi);
             case 19:
-                //unblock
-                return 0;
+                return unblock(registers->rdi);
             case 20:
                 //wait
                 return 0;
             case 21:
-                //yield
+                yield();
                 return 0;
             case 22:
                 //nice
-                return 0;
+                return changePriority(registers->rdi, registers->rsi);
             case 23:
                 //sem_init
                 return 0;

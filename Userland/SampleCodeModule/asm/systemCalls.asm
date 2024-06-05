@@ -12,18 +12,18 @@ GLOBAL _playSound                 ; system call 11
 GLOBAL sys_writeXY                ; system call 12
 GLOBAL getTimeRTC
 GLOBAL system_malloc              ; system call 13
-GLOBAL system_free              ; system call 14
-GLOBAL system_create_process             ; system call 15
-GLOBAL system_getpid             ; system call 16
-GLOBAL system_kill             ; system call 17
-GLOBAL system_block            ; system call 18
-GLOBAL system_unblock            ; system call 19
-GLOBAL system_wait            ; system call 20
-GLOBAL system_yield           ; system call 21
-GLOBAL system_nice           ; system call 22
-GLOBAL system_sem_init           ; system call 23
-GLOBAL system_sem_wait           ; system call 24
-GLOBAL system_sem_post           ; system call 25
+GLOBAL system_free                ; system call 14
+GLOBAL system_create_process      ; system call 15
+GLOBAL system_getpid              ; system call 16
+GLOBAL system_kill                ; system call 17
+GLOBAL system_block               ; system call 18
+GLOBAL system_unblock             ; system call 19
+GLOBAL system_wait                ; system call 20
+GLOBAL system_yield               ; system call 21
+GLOBAL system_nice                ; system call 22
+GLOBAL system_sem_init            ; system call 23
+GLOBAL system_sem_wait            ; system call 24
+GLOBAL system_sem_post            ; system call 25
 GLOBAL system_sem_close           ; system call 26
 
 

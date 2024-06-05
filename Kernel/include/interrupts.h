@@ -38,12 +38,10 @@ void haltcpu(void);
 
 char getKeyPressed();
 
-uint64_t *createStackContext(uint64_t rbp, uint64_t process, uint64_t argc, char *argv[]);
+uint64_t *createStackContext(uint64_t rbp, void * process, uint64_t argc, char *argv[]);
 
 void int20();
 
 void contextSwitch();
-
-void my_halt();
 
 #endif /* INTERRUPS_H_ */

@@ -325,10 +325,6 @@ contextSwitch:
     popState            ; clean previous process stack
     ret
 
-my_halt:
-    jmp my_halt
-    ret
-
 section .data
     userland equ 0x400000
     reg_rip dq 0
