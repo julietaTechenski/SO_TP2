@@ -56,7 +56,8 @@ tcommand commands[] = {
         {"test_mm", test_mm_wrapper},
         {"test_processes", test_processes_wrapper},
         {"test_prio", test_prio},
-        {"test_sync", test_sync_wrapper}
+        {"test_sync", test_sync_wrapper},
+        {"|", pipe_command}
 };
 
 
@@ -129,7 +130,9 @@ void getCommand(char buffer[]) {
             commands[n].fn(args);
         }
     }
-    //If not found, prints error message
+    // if not found, if it's a process check that args[0] == '|' and that args[1] is also a process
+
+    // if not a valid entry
     if(!cfound){
         setColor(255, 51, 51);
         printf("%s: command not found\n", command);

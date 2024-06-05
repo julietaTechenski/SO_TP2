@@ -362,3 +362,7 @@ int64_t yield(){
 int64_t nice(uint64_t pid, uint64_t newPrio){
     return system_nice(pid, newPrio);
 }
+
+int pipe(void * pipefd[2]){
+    return system_pipe(pipefd);
+}
