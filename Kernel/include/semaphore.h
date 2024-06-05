@@ -1,6 +1,10 @@
 #ifndef SO1_SEMAPHORE_H
 #define SO1_SEMAPHORE_H
 
+#include <stdint.h>
+#include <string.h>
+#include "memory_manager.h"
+
 #define MAX_LENGTH_NAME 255
 
 extern void releaseLock(uint32_t* lock);

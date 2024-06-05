@@ -1,7 +1,4 @@
 #include "include/semaphore.h"
-#include <string.h>
-#include "include/memory_manager.h"
-#include <stdint.h>
 
 //-----------------------Queu for sem-----------------------------------
 
@@ -23,8 +20,8 @@ Queue* initQueue() {
 }
 
 void enqueue(Queue *queue, int pid) {
-    QueueNode *newNode = (QueueNode *)mm_alloc(sizeof(QueueNode));
-    newNode->data = pid;
+    QueueNode * newNode = (QueueNode *) mm_alloc(sizeof(QueueNode));
+    newNode->pid = pid;
     newNode->next = NULL;
 
     if (queue->rear == NULL)
@@ -71,7 +68,7 @@ typedef struct ListNode {
 
 void insertSem(ListNode **head, char * name, int initialValue) {
     ListNode * newNode = (ListNode *) mm_alloc(sizeof(ListNode));
-    strcpy_s(newNode->name,MAX_LENGTH_NAME, name)
+    strcpy(newNode->name, name);
     newNode->count=initialValue;
     newNode->mutex = 1;
     newNode->processWaitingQueue = initQueue();
@@ -113,7 +110,6 @@ void deleteSem(ListNode **head, char * name){
     mm_free(temp);
 }
 
-}
 
 //------------------------------------------------------------------
 //---------------------------Semaphore------------------------------
@@ -134,10 +130,8 @@ ListNode* find_sem(char * sem_id){
 //Retorna 0 si no se pudo crear con exito
 //TODO ANALIZAR QUE PASA SI UN PROCESO HACE OPEN DE UN SEMAFORO CREADO (TIRA ERROR O NO)
 int64_t my_sem_open(char *sem_id, uint64_t initialValue){
-    if(find_sem(sem_id) != NULL)
-        return 0;
-
-    insertSem(&semaphoresHead, sem_id, initialValue)
+    if(find_sem(sem_id) == NULL)
+        insertSem(&semaphoresHead, sem_id, initialValue);
     return 1;
 }
 
@@ -146,14 +140,16 @@ int64_t my_sem_wait(char *sem_id){
     if((node = find_sem(sem_id)) == NULL)
         return 1;
 
-    acquireLock(&(node->mutex))
+    acquireLock(&(node->mutex));
     if(node->count == 0) {
+        releaseLock(&(node->mutex));
         int pid = getpid(); //TODO REMPLAZAR GETPID
         enqueue(node->processWaitingQueue, pid);
         blockProcces(); //TODO BLOQUEAR PROCESO
-    } else
+    } else {
         node->count--;
-    releaseLock(&(node->mutex))
+        releaseLock(&(node->mutex));
+    }
 
     return 0;
 }
@@ -163,14 +159,14 @@ int64_t my_sem_post(char *sem_id){
     if((node = find_sem(sem_id)) == NULL)
         return 1;
 
-    acquireLock(&(node->mutex))
+    acquireLock(&(node->mutex));
     if(isEmpty(node->processWaitingQueue))
         node->count++;
-    else{
+    else {
         int pid = dequeue(node->processWaitingQueue);
-        unblock(pid) //TODO CAMBIAR POR DESBLOQUEAR PROCESO
+        unblock(pid); //TODO CAMBIAR POR DESBLOQUEAR PROCESO
     }
-    releaseLock(&(node->mutex))
+    releaseLock(&(node->mutex));
     return 0;
 }
 
