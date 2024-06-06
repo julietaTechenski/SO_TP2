@@ -101,6 +101,12 @@ uint64_t sysCallHandler(Registers registers){
             case 26:
                 //sem_close
                 return 0;
+            case 27:
+                return 0/*pipe((void**)registers->rdi)*/;
+            case 28:
+                return 0/*dup((void *)registers->rdi, registers->rsi, (void*)registers->rdx)*/;
+            case 29:
+                return changePriority(registers->rdi, registers->rsi);
         }
         return 0;
     }

@@ -32,6 +32,9 @@ extern int64_t system_sem_init(char *sem_id, uint64_t initialValue);
 extern int64_t system_sem_wait(char *sem_id);
 extern int64_t system_sem_post(char *sem_id);
 extern int64_t system_sem_close(char *sem_id);
+extern int system_pipe(void * pipefd[2]);
+extern int system_dup(void * p, int oldfd, void *pipedir);
+extern int64_t system_change_process_state(uint64_t pid, int state);
 
 
 //FUNCTIONS -------------------------------------------------------------------------------
@@ -299,6 +302,30 @@ int64_t yield();
  */
 int64_t nice(uint64_t pid, uint64_t newPrio);
 
+/**
+ *
+ * @param pid
+ * @param state
+ * @return -1 if error 0 if not
+ */
+int64_t change_process_state(uint64_t pid, int state);
+
+
+/**
+ * @def creates a pipe
+ * @param pipefd array read fd (0) and write fd(1)
+ */
+int pipe(void * pipefd[2]);
+
+
+/**
+ *
+ * @param p
+ * @param oldfd
+ * @param pipedir
+ * @return -1 if error
+ */
+int dup(void * p, int oldfd, void * pipedir);
 #endif //LIBRARY_H
 
 
