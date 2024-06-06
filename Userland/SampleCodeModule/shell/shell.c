@@ -51,6 +51,7 @@ tcommand commands[] = {
         {"clear", clear_screen},
         {"mem", mem_state},
         {"exit", exitProgram},
+        {"cat", cat},
         {"zeroexception", zeroexception},
         {"ioexception", ioexception},
         {"regs", getRegs},

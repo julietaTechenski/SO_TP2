@@ -305,6 +305,8 @@ int64_t yield();
  */
 int64_t nice(uint64_t pid, uint64_t newPrio);
 
+void cat();
+
 #endif //LIBRARY_H
 
 

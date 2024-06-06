@@ -154,6 +154,16 @@ void mem_state(){
     sys_mem_state();
 }
 
+void cat(){
+    char buffer[126];
+    int aux;
+    while((aux = read(0,buffer, 126)) != 0) {
+        system_write(1, buffer, aux);
+        printf("\n");
+    }
+    return;
+}
+
 //================================= similar to <stdlib.h> ==================================
 
 int charToInt(char c) {
@@ -292,14 +302,16 @@ void decSize() {
     dec_size();
 }
 
-void clearScreen() {
-    clear_screen();
-}
+
 
 //================================ System Call Functions =================================
 
 void sleep(unsigned int ms){
     _sleep(ms);
+}
+
+void clearScreen() {
+    clear_screen();
 }
 
 void getRegs(){

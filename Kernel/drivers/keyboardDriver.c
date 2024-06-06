@@ -54,11 +54,13 @@ void keyboard_handler(uint64_t infoRegs){
 
     //Differentiate between letters and special characters when pressing shift and capital letters
     char key = keyboardTable[keyCode][0];
-    if(key=='c' && ctrlFlag)
+    if(key=='c' && ctrlFlag) {
         //kill Process;
-    else if(key=='d' && ctrlFlag)
+        return;
+    }else if(key=='d' && ctrlFlag) {
         //end of file;
-    else if(key >= 'a' && key <= 'z')
+        return;
+    }else if(key >= 'a' && key <= 'z')
         key = keyboardTable[keyCode][bloqMayus^shiftFlag];
     else
         key = keyboardTable[keyCode][shiftFlag];
