@@ -1,5 +1,5 @@
+#include "include/memory_manager.h"
 #ifdef LIST
-#include "./include/memory_manager.h"
 
 typedef struct Node {
     struct Node * prev;
@@ -8,9 +8,12 @@ typedef struct Node {
 } Node;
 
 static Node * first = NULL;
+static int freeMem;
+static int total;
 
 void mm_init(void * ptr, size_t max_size) {
     first = (Node *) ptr;
+    total = freeMem = max_size;
     first->next = first->prev = NULL;
     first->size = max_size/sizeof(Node); //esto serviria de align dejando N nodes para manejar
 }
@@ -32,6 +35,7 @@ void * mm_alloc(size_t n_bytes) {
                 ptrNode->size = n_nodes;
                 //reserva lugar desde el final del espacio libre y le agrega el header correspondiente
             }
+            freeMem -= n_bytes;
             return (void *) (ptrNode + 1); //saltea el nodo header
         }
         ptrNode = ptrNode->next;
@@ -41,6 +45,8 @@ void * mm_alloc(size_t n_bytes) {
 
 void mm_free(void* ptr) {
     Node * ptrNode = (Node *)ptr - 1; //accede al header de la zona de memoria. El next y prev de la zona ocupada no tiene informacion valida
+
+    freeMem += ptrNode->size;
 
     if(first==NULL || first >= ptrNode){ //bloque al principio
         ptrNode->next = first;
@@ -74,6 +80,28 @@ void mm_free(void* ptr) {
     }else{
         p->next = ptrNode;
     }
+}
+
+void mm_state(){
+    char s[20];
+    int longitud;
+
+    longitud = intToString(total, s);
+    writeString(1, "Memoria total: ", 15);
+    writeString(1, s, longitud);
+    writeString(1, "\n", 1);
+
+
+    longitud = intToString(freeMem, s);
+    writeString(1, "Memoria libre: ", 15);
+    writeString(1, s, longitud);
+    writeString(1, "\n", 1);
+
+    longitud = intToString(total - freeMem, s);
+    writeString(1, "Memoria ocupada: ", 17);
+    writeString(1, s, longitud);
+    writeString(1, "\n", 1);
+
 }
 
 #endif

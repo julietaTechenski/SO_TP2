@@ -1,5 +1,4 @@
 #include "include/semaphore.h"
-
 //-----------------------Queu for sem-----------------------------------
 
 typedef struct QueueNode {
@@ -68,7 +67,7 @@ typedef struct ListNode {
 
 void insertSem(ListNode **head, char * name, int initialValue) {
     ListNode * newNode = (ListNode *) mm_alloc(sizeof(ListNode));
-    strcpy(newNode->name, name);
+    my_strcpy(newNode->name, name);
     newNode->count=initialValue;
     newNode->mutex = 1;
     newNode->processWaitingQueue = initQueue();
@@ -88,14 +87,14 @@ void deleteSem(ListNode **head, char * name){
     ListNode *temp = *head;
     ListNode *prev = NULL;
 
-    if (strcmp(temp->name, name) == 0) {
+    if (my_strcmp(temp->name, name) == 0) {
         *head = temp->next;
         freeQueue(temp->processWaitingQueue);
         mm_free(temp);
         return;
     }
 
-    while (temp != NULL && strcmp(temp->name, name) != 0) {
+    while (temp != NULL && my_strcmp(temp->name, name) != 0) {
         prev = temp;
         temp = temp->next;
     }
@@ -120,7 +119,7 @@ static ListNode* semaphoresHead = NULL;
 ListNode* find_sem(char * sem_id){
     ListNode * aux = semaphoresHead;
     while(aux != NULL){
-        if(strcmp(aux->name, sem_id) == 0)
+        if(my_strcmp(aux->name, sem_id) == 0)
             return aux;
         aux = aux->next;
     }
@@ -143,9 +142,9 @@ int64_t my_sem_wait(char *sem_id){
     acquireLock(&(node->mutex));
     if(node->count == 0) {
         releaseLock(&(node->mutex));
-        int pid = getpid(); //TODO REMPLAZAR GETPID
-        enqueue(node->processWaitingQueue, pid);
-        blockProcces(); //TODO BLOQUEAR PROCESO
+        //int pid = getpid(); //TODO REMPLAZAR GETPID
+        //enqueue(node->processWaitingQueue, pid);
+        //blockProcces(); //TODO BLOQUEAR PROCESO
     } else {
         node->count--;
         releaseLock(&(node->mutex));
@@ -164,7 +163,7 @@ int64_t my_sem_post(char *sem_id){
         node->count++;
     else {
         int pid = dequeue(node->processWaitingQueue);
-        unblock(pid); //TODO CAMBIAR POR DESBLOQUEAR PROCESO
+        //unblock(pid); //TODO CAMBIAR POR DESBLOQUEAR PROCESO
     }
     releaseLock(&(node->mutex));
     return 0;

@@ -25,7 +25,7 @@ GLOBAL system_sem_init           ; system call 23
 GLOBAL system_sem_wait           ; system call 24
 GLOBAL system_sem_post           ; system call 25
 GLOBAL system_sem_close           ; system call 26
-
+GLOBAL sys_mem_state
 
 
 section .text
@@ -129,6 +129,9 @@ system_sem_post:
 
 system_sem_close:
     sysCall 26
+
+sys_mem_state:
+    sysCall 27
 
 ;-------------------------------------------------------
 ;   Recibe un  puntero a un struct typedef struct{

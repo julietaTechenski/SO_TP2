@@ -32,7 +32,7 @@ extern int64_t system_sem_init(char *sem_id, uint64_t initialValue);
 extern int64_t system_sem_wait(char *sem_id);
 extern int64_t system_sem_post(char *sem_id);
 extern int64_t system_sem_close(char *sem_id);
-
+extern void sys_mem_state();
 
 //FUNCTIONS -------------------------------------------------------------------------------
 
@@ -247,6 +247,13 @@ int64_t block(uint64_t pid);
  * @return
  */
 int64_t unblock(uint64_t pid);
+
+/**
+ *
+ * @param
+ * @return
+ */
+void mem_state();
 
 /**
  *

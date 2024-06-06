@@ -105,6 +105,9 @@ uint64_t sysCallHandler(Registers registers){
             case 26:
                 //sem_close
                 return 0;
+            case 27:
+                mm_state();
+                return 0;
         }
         return 0;
     }

@@ -1,5 +1,32 @@
 #include "include/lib.h"
 
+int my_strcmp(char* s1, char *s2) {
+    int i = 0;
+    while(s1[i] != '\0' && s2[i] != '\0'){
+        if(s1[i] != s2[i])
+            return 0;
+        i++;
+    }
+    if(s1[i] == '\0' && s2[i] == '\0'){
+        return 1;
+    }
+    return 0;
+}
+
+char* my_strcpy(char* destination, const char* source) {
+    char* ptr = destination;
+
+    while (*source != '\0') {
+        *destination = *source;
+        destination++;
+        source++;
+    }
+
+    *destination = '\0';
+
+    return ptr;
+}
+
 
 int intToString(uint64_t n, char* s){
     int i  = 0;

@@ -150,6 +150,10 @@ int strlen(char * s) {
     return i-1;
 }
 
+void mem_state(){
+    sys_mem_state();
+}
+
 //================================= similar to <stdlib.h> ==================================
 
 int charToInt(char c) {
