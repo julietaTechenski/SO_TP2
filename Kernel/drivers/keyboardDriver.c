@@ -12,7 +12,7 @@ static int last = 0;
 
 static int shiftFlag = 0;
 static int bloqMayus = 0;
-
+static int ctrlFlag = 0;
 
 //Keyboard IRQ
 void keyboard_handler(uint64_t infoRegs){
@@ -21,6 +21,10 @@ void keyboard_handler(uint64_t infoRegs){
     RegAux * aux = (RegAux *) infoRegs;
 
     switch (keyCode) {
+        case CTRL:
+            ctrlFlag=1; return;
+        case CTRL_RELEASE:
+            ctrlFlag=0; return;
         case LSHIFT:
             shiftFlag=1; return;
         case LSHIFT_RELEASE:
@@ -50,7 +54,11 @@ void keyboard_handler(uint64_t infoRegs){
 
     //Differentiate between letters and special characters when pressing shift and capital letters
     char key = keyboardTable[keyCode][0];
-    if(key >= 'a' && key <= 'z')
+    if(key=='c' && ctrlFlag)
+        //kill Process;
+    else if(key=='d' && ctrlFlag)
+        //end of file;
+    else if(key >= 'a' && key <= 'z')
         key = keyboardTable[keyCode][bloqMayus^shiftFlag];
     else
         key = keyboardTable[keyCode][shiftFlag];

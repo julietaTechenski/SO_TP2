@@ -12,9 +12,10 @@
 #define RSHIFT 0x36
 #define RSHIFT_RELEASE (RSHIFT+0x80)
 #define BLOQ_MAYUS 0x3A
+#define CTRL 0x1D
+#define CTRL_RELEASE (CTRL + 0x80)
 #define F2 60
 #define F3 61
-
 
 //Scancode Set 2 (key=scancode - value=ascii)
 const static char keyboardTable[][2] = {
