@@ -164,6 +164,23 @@ void putPixel(Color hexColor, uint64_t x, uint64_t y) {
 }
 
 //system call 4
+int write(unsigned int fd, char * string, int count){
+    uint64_t ppid = getpid();
+    PCB *p = getProcess(ppid);
+    if(p->fds[fd] != NULL){
+        for(int i= 0; i < count && *string != '\0'; i++){
+            *p->fds[fd] = *string;
+            string++;
+            p->fds[fd] += sizeof(char);
+        }
+    }
+    //write to STDOUT
+    writeString(fd, string, count);
+}
+
+
+
+
 int writeString(unsigned int fd, char * string, int count) {
     Color aux = defForeGround;
     if (fd == 2){

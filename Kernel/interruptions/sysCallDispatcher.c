@@ -38,7 +38,7 @@ uint64_t sysCallHandler(Registers registers){
             case 3:
                 return read(registers->rdi,(char *)registers->rsi,registers->rdx);
             case 4:
-                return writeString(registers->rdi,(char *) registers->rsi,registers->rdx);
+                return write(registers->rdi,(char *) registers->rsi,registers->rdx);
             case 5:
                 clearScreen();
                 return 0;

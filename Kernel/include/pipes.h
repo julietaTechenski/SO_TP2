@@ -2,6 +2,12 @@
 #define SO_TP2_PIPES_H
 
 #include "memory_manager.h"
+#include "semaphore.h"
+
+typedef struct fd {
+    int fd;
+    void * dir;
+} fd;
 
 typedef struct PCB {
     char name[MAX_NAME_LENGTH];
@@ -14,7 +20,7 @@ typedef struct PCB {
     int64_t timesRunning;
     struct PCB *prev;
     struct PCB *next;
-
+    void * fds[2];
 } PCB;
 
 int pipe(void * pipesfd[2]);

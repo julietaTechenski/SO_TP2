@@ -96,5 +96,15 @@ void backUp();
  */
 void refresh();
 
+/**
+ * syscall write
+ * @param fd
+ * @param string
+ * @param count
+ * @return
+ */
+int write(unsigned int fd, char * string, int count);
+
+
 
 #endif //VIDEODRIVER_H
