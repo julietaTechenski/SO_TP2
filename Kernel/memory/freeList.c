@@ -1,4 +1,4 @@
-#include "./include/memory_manager.h"
+#include "../include/memory_manager.h"
     //cada zona libre u ocupada tiene un header al pricnipio, que contiene
 //un puntero al siguiente bloque, al bloque previo y el tamaño de toda la zona de memoria
 

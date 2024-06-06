@@ -1,4 +1,4 @@
-#include "./include/memory_manager.h"
+#include "../include/memory_manager.h"
 
 #ifdef BUDDY
 
@@ -94,8 +94,8 @@ void* mm_alloc(size_t size) {
     }
 }
 
-void mm_free_rec(void * ptr) {
-    block_t *block = (block_t *)ptr;
+void mm_free(void * ptr) {
+    block_t *block = (block_t *)ptr - sizeof(block_t) ;
     int i = 0;
     while(BLOCKSIZE(i) < block->size && i <= max_order){
         i++;
@@ -123,17 +123,17 @@ void mm_free_rec(void * ptr) {
         *p = buddy->next;
 
         if(block > buddy){
-            mm_free_rec(buddy);
+            mm_free(buddy + sizeof(block_t));
         }else{
-            mm_free_rec(block);
+            mm_free(block + sizeof(block_t));
         }
     }
 }
-
-void mm_free(void * ptr) {
-    mm_free_rec(ptr - sizeof(block_t));
-}
-
+//
+//void mm_free(void * ptr) {
+//    mm_free_rec(ptr - sizeof(block_t));
+//}
+//
 
 
 
