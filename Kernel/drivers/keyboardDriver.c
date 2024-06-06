@@ -85,11 +85,11 @@ int read(unsigned int fd, char * buffer, int count){
     int i = 0;
     uint64_t ppid = getpid();
     PCB *p = getProcess(ppid);
-    if(p->fds[fd] != NULL){
-        char *sem_pipe = "sem_pipe";
-        sem_init("sem_pipe", 1);
-        //reads from pipe
-        if(p != NULL){
+    if( p != NULL){
+        if(p->fds[fd] != NULL){
+            char *sem_pipe = "sem_pipe";
+            sem_init("sem_pipe", 1);
+            //reads from pipe
             sem_wait(sem_pipe);
             while(i < count){
                 buffer[i] = *p->fds[0];
@@ -97,16 +97,16 @@ int read(unsigned int fd, char * buffer, int count){
                 i++;
             }
             sem_post(sem_pipe);
+            return 0;
         }
-        return 0;
+        //reads from keyboard interrupts
+        char c;
+        while(i < count && (c = getEntry()) != 0){
+            buffer[i++] = c;
+        }
+        return i;
     }
-
-    //reads from keyboard interrupts
-    char c;
-    while(i < count && (c = getEntry()) != 0){
-        buffer[i++] = c;
-    }
-    return i;
+    return 0; //error
 }
 
 

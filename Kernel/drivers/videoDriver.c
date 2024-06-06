@@ -168,11 +168,15 @@ int write(unsigned int fd, char * string, int count){
     uint64_t ppid = getpid();
     PCB *p = getProcess(ppid);
     if(p->fds[fd] != NULL){
+        char *sem_pipe = "sem_pipe";
+        sem_init("sem_pipe", 1);
+        sem_wait(sem_pipe);
         for(int i= 0; i < count && *string != '\0'; i++){
             *p->fds[fd] = *string;
             string++;
             p->fds[fd] += sizeof(char);
         }
+        sem_post(sem_pipe);
     }
     //write to STDOUT
     writeString(fd, string, count);
