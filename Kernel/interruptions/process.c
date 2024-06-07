@@ -25,7 +25,7 @@ PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[]){
     result->pid = currentPID++;
     result->rsp = createStackContext( &rbp[MAX_STACK-1], &schedulingWrapper, process, argc, argv);
     result->rsb = rbp;
-    result->priority = PRIORITY_AMOUNT;
+    result->priority = 0;
     result->isForeground = TRUE;
     result->state = READY;
     result->timesRunning = 0;
@@ -36,8 +36,8 @@ PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[]){
 }
 
 int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]){
-    PCB * newProcess = newPcbProcess(process, name, argc, argv);
-    addProcessToList(newProcess, GET_PRIORITY_VALUE(newProcess->priority));
+    PCB *newProcess = newPcbProcess(process, name, argc, argv);
+    addProcessToList(newProcess, newProcess->priority);
     amountProcessesReady++;
     return (newProcess->pid);
 }
@@ -111,8 +111,7 @@ int64_t getPID(){
 
 void printProcesses() {
     char buffer[MAX_NAME_LENGTH];
-    writeString(1, "NAME  PID  PRIORITY    RSP    RBP    STATE", 42);
-    writeString(1, "\n", 1);
+    writeString(1, "NAME  PID  PRIORITY    RSP    RBP    STATE\n", 43);
     PCB *iter;
     for(int i = 0 ; i < PRIORITY_AMOUNT ; i++){
         iter = priorityArray[i];
