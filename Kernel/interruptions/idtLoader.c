@@ -30,9 +30,6 @@ void load_idt() {
     picMasterMask(0xFC);
     picSlaveMask(0xFF);
 
-    _sti();
-
-
 }
 
 //Builds every entry used
