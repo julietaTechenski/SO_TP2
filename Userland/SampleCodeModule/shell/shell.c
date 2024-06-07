@@ -56,7 +56,8 @@ tcommand commands[] = {
         {"test_mm", test_mm_wrapper},
         {"test_processes", test_processes_wrapper},
         {"test_prio", test_prio},
-        {"test_sync", test_sync_wrapper}
+        {"test_sync", test_sync_wrapper},
+        {"ps", print_processes}
 };
 
 
@@ -93,14 +94,21 @@ void getCommand(char buffer[]) {
     //turns possible command to string
     char command[20];
     char * args[5] = {0};
-    int i;
-    for(i=0; buffer[i] != ' ' && buffer[i] != '\0'; i++){
+    //int isForeground = 0;
+    int i = 0;
+
+    /*if(buffer[i] == '&'){
+        isForeground = 1;
+        i++;
+    }*/
+
+    for( ; buffer[i] != ' ' && buffer[i] != '\0'; i++){
         command[i] = buffer[i];
     }
     command[i] = '\0';
 
+    int j = 0;
     if(buffer[i++]==' ') {  //builds args
-        int j = 0;
         while (buffer[i] != '\0' && buffer[i] != ' ') {
             int k = 0;
             char aux[20] = {0};
@@ -126,6 +134,7 @@ void getCommand(char buffer[]) {
         if (strcmp(commands[n].name, command)) {
             cfound = 1;
             commands[n].fn(args);
+            //my_createProcess(&commands[n].fn, command[n].name, j, args, isForeground);
         }
     }
     //If not found, prints error message
