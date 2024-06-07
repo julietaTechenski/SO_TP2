@@ -10,18 +10,12 @@
 
 /*
  * Priority Guide:
- * There are 10 priorities in this project. 10 being the highest and 0 the lowest.
- * There is a priority array, the highest priority processes are in priorityArray[0] hence the GET_PRIORITY_VALUE(i).
- * When a process ran 'priority' times, the priority lowers and it moves to  priorityArray[1].
- * A bit confusing, sorry.
- * In the PCB struc we save the array value
+ * There are 10 priorities in this project. 0 being the highest and 10 the lowest.
  */
 
 #define MAX_NAME_LENGTH 20
 #define PRIORITY_AMOUNT 10
 #define MAX_STACK 1024
-
-#define GET_PRIORITY_VALUE(i) (PRIORITY_AMOUNT - i)
 
 typedef enum {
     READY,

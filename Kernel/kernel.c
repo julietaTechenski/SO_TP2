@@ -56,7 +56,9 @@ int main() {
     initHaltProcess();
     char *argvAux[] = {0};
     createProcess((EntryPoint)sampleCodeModuleAddress, "init", 0, argvAux);
+    printProcesses();
     _sti();
     int20();
+    printProcesses();
     return 0;
 }
