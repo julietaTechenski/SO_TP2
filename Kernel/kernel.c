@@ -54,7 +54,7 @@ int main() {
     _cli();
     load_idt();
     initHaltProcess();
-    createProcess((EntryPoint)sampleCodeModuleAddress, "init", 0, 0);
+    createProcess((EntryPoint)sampleCodeModuleAddress, "init", 0, 0, 1);
     haltWrapper();
     return 0;
 }
