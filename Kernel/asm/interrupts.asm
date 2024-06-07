@@ -24,14 +24,11 @@ GLOBAL noSnd
 
 GLOBAL createStackContext
 GLOBAL int20
-GLOBAL contextSwitch
-GLOBAL my_halt
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN sysCallHandler
 EXTERN getStackBase
-EXTERN getCurrentRSP
 EXTERN scheduler
 
 SECTION .text
