@@ -1,6 +1,7 @@
 #include "sampleCodeModule.h"
 
 int main() {
-	shell();
+    char *argvAux[] = {0};
+    createProcess(&shell, "shell", 0, argvAux);
 	return 0;
 }
