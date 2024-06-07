@@ -10,14 +10,21 @@ static int32_t amountProcessesReady = 0;
 //stateArray = ["Ready", "Running", "Blocked"]     //meaning
 char * stateArray[] = {"r", "R", "B"};
 
+typedef void (*FunctionType)(uint64_t, char *[]);
+
+void schedulingWrapper(FunctionType function, uint64_t argc, char *argv[]){
+    function(argc, argv);
+    finishProcess();
+}
+
 PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[]){
     PCB * result = (PCB *) mm_alloc(sizeof(PCB));
     uint64_t * rbp = (uint64_t *) mm_alloc(MAX_STACK * sizeof(uint64_t));
 
     my_strcpy(result->name, name);
     result->pid = currentPID++;
-    result->rsp = createStackContext( &rbp[MAX_STACK-1], process, argc, argv);
-    result->rbp = &rbp[MAX_STACK-1];
+    result->rsp = createStackContext( &rbp[MAX_STACK-1], &schedulingWrapper, process, argc, argv);
+    result->rsb = rbp;
     result->priority = PRIORITY_AMOUNT;
     result->isForeground = TRUE;
     result->state = READY;
@@ -37,6 +44,7 @@ int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]){
 
 void initHaltProcess(){
     halt = newPcbProcess(&_hlt, "halt", 0, NULL);
+    current = halt;
 }
 
 uint64_t* getCurrentRSP(){
@@ -87,11 +95,15 @@ void removeProcessFromList(PCB *process, int priority){
     }
 }
 
+void killProcess(PCB *process){
+    removeProcessFromList(process, process->priority);
+    mm_free(process->rsb);
+    mm_free(process);
+}
+
 void finishProcess(){
-    removeProcessFromList(current, current->priority);
-    mm_free(current->rbp);
-    mm_free(current);
-    scheduler();
+    killProcess(current);
+    int20();
 }
 
 int64_t getPID(){
@@ -117,10 +129,6 @@ void printProcesses() {
 
             uint32_t rspStringLen = intToString(*iter->rsp, buffer);
             writeString(0, buffer, rspStringLen);
-            writeString(0, "  ", 2);
-
-            uint32_t rbpStringLen = intToString(*iter->rbp, buffer);
-            writeString(0, buffer, rbpStringLen);
             writeString(0, "  ", 2);
 
             switch (current->state) {
@@ -149,39 +157,25 @@ int64_t kill(uint64_t pid) {
     if(process == NULL){
         return -1;
     }
-    killProcess(process, priority);
+    killProcess(process);
     return 0;
 }
 
-void killProcess(PCB *process, int priority){
-    removeProcessFromList(process, priority);
 
-    mm_free(process->rbp);
-    mm_free(process);
-}
-
-int64_t changePriority(uint64_t pid, uint64_t newPrio) {
-    if(newPrio > PRIORITY_AMOUNT){
+int64_t changePriority(PCB * process, uint64_t newPrio) {
+    if(process == NULL)
         return -1;
-    }
 
-    int oldPrio;
-    PCB * process = findProcess(pid, &oldPrio);
-    if(process == NULL){
-        return -1;
-    }
-    if(newPrio == oldPrio){
+    if(newPrio == process->priority)
         return newPrio;
-    }
-    removeProcessFromList(process, oldPrio);
+
+    removeProcessFromList(process, process->priority);
+    process->priority = newPrio;
     addProcessToList(process, newPrio);
     return newPrio;
 }
 
-int64_t changeStatePID(uint64_t pid, State newState){
-    PCB * process = NULL;
-    int priority;
-    process = findProcess(pid, &priority);
+int64_t changeStatePID(PCB * process, State newState){
     if(process == NULL){
         return -1;
     }
@@ -214,13 +208,15 @@ int64_t changeStatePID(uint64_t pid, State newState){
 
 
 int64_t block(uint64_t pid){
-    int ans = changeStatePID(pid, BLOCKED);
+    int priority;
+    int ans = changeStatePID(findProcess(pid, &priority), BLOCKED);
     int20();
     return ans;
 }
 
 int64_t unblock(uint64_t pid){
-    int ans = changeStatePID(pid, READY);
+    int priority;
+    int ans = changeStatePID(findProcess(pid, &priority), READY);
     int20();
     return ans;
 }
@@ -230,51 +226,44 @@ int64_t yield(){
     return current->pid;
 }
 
-int64_t findNextProcess(uint64_t currentPID){
-    int64_t flag = 0;   //flag to check if found
+PCB * findNextProcess(uint64_t currentPID){
     PCB * ans;
-    if(amountProcessesReady == 0){
-        return flag;
-    }
     for(int i = 0 ; i < PRIORITY_AMOUNT ; i++){
         ans = priorityArray[i];
         while(ans != NULL){
-            if (ans->state == READY && ans->pid != currentPID) {
-                current = ans;
-                flag = 1;
-                return flag;
-            }
+            if (ans->state == READY && ans->pid != currentPID)
+                return ans;
             ans = ans->next;
         }
-
     }
-    return flag;
+    return NULL;
 }
 
-void scheduler(){
-    timer_handler();
-    if(current != halt) {
-        uint64_t currentPID = current->pid;
-        if (current->timesRunning == GET_PRIORITY_VALUE(current->priority) || current->state == BLOCKED) {
 
-            current->timesRunning = 0;  //resets timer
-            if (current->priority < PRIORITY_AMOUNT) {  //changes priority
-                changePriority(current->pid, current->priority++);  //less priority
-            }
-            changeStatePID(current->pid, READY);
-            if (!findNextProcess(currentPID)) {
-                current = halt;
-            }
-        } else {
-            current->timesRunning++;
+
+void * scheduler(void * prevRsp){
+    timer_handler();
+
+    if(current != halt) {
+        current->rsp = prevRsp; // update rsp from previous process
+
+        if (current->state == BLOCKED) { //didn't use all quantum
+            if (current->priority > 0)
+                changePriority(current, current->priority - 1);
+        } else { //used all quantum
+            if (current->priority < PRIORITY_AMOUNT)
+                changePriority(current, current->priority + 1);
         }
-        changeStatePID(current->pid, RUNNING);
-        contextSwitch();
-    } else {
-        if (!findNextProcess(currentPID)) {
-            current = halt;
-        }
+
+        if (current->state == RUNNING)
+            current->state = READY;
     }
 
+    PCB * next = findNextProcess(current->pid);
+    if(next != NULL)
+        current = next;
+    else
+        current = halt;
 
+    return current->rsp;
 }

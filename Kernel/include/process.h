@@ -38,7 +38,7 @@ typedef struct PCB {
     char name[MAX_NAME_LENGTH];
     uint64_t pid;
     uint64_t* rsp;   //stack
-    uint64_t* rbp;   //base pointer
+    uint64_t* rsb;   //base pointer
     int priority;
     char isForeground;
     State state;
@@ -54,10 +54,10 @@ uint64_t* getCurrentRSP();
 PCB * findProcess(int64_t pid, int * priority);
 void addProcessToList(PCB *newProcess, int priority);
 void removeProcessFromList(PCB *process, int priority);
-void killProcess(PCB *process, int priority);
-int64_t changeStatePID(uint64_t pid, State newState);
-int64_t findNextProcess(uint64_t currentPID);
-void scheduler();
+void killProcess(PCB *process);
+int64_t changeStatePID(PCB * process, State newState);
+PCB * findNextProcess(uint64_t currentPID);
+void * scheduler(void * prevRsp);
 
 //USERLAND COMMAND FUNCTIONS --------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ void finishProcess();
 int64_t getPID();
 void printProcesses();
 int64_t kill(uint64_t pid);
-int64_t changePriority(uint64_t pid, uint64_t newPrio);
+int64_t changePriority(PCB * process, uint64_t newPrio);
 int64_t block(uint64_t pid);
 int64_t unblock(uint64_t pid);
 int64_t yield();

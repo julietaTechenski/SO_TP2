@@ -32,6 +32,7 @@ EXTERN exceptionDispatcher
 EXTERN sysCallHandler
 EXTERN getStackBase
 EXTERN getCurrentRSP
+EXTERN scheduler
 
 SECTION .text
 
@@ -151,9 +152,18 @@ picSlaveMask:
     retn
 
 
-;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+	pushState
+
+	mov rdi, rsp
+	call scheduler
+	mov rsp, rax
+
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 ;Keyboard
 _irq01Handler:
@@ -306,10 +316,14 @@ createStackContext:
     push 0x202  ; RFLAGS
     push 0x8    ; CS
     push rsi    ; RIP
-    mov rdi, rdx; argc
-    mov rsi, rcx; argv
+
+    mov rdi, rdx; process
+    mov rsi, rcx; argc
+    mov rdx, r8 ; argv
     pushState   ; general purpose registers
+
     mov rax, rsp
+
     mov rsp, rbp
     pop rbp
 
@@ -317,12 +331,6 @@ createStackContext:
 
 int20:
     int 20h
-    ret
-
-contextSwitch:
-    call getCurrentRSP  ; new RSP
-    mov rsp, rax
-    popState            ; clean previous process stack
     ret
 
 section .data
