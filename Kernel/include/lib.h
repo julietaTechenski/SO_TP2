@@ -10,5 +10,6 @@ char *cpuVendor(char *result);
 int intToString(uint64_t n, char* s);
 void my_strcpy(char *dest, const char *src);
 int my_strlen(char * s);
+int my_strcmp(char* s1, char *s2);
 
 #endif
