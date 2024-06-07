@@ -11,12 +11,12 @@ static int32_t amountProcessesReady = 0;
 char * stateArray[] = {"r", "R", "B"};
 
 PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[]){
-    void * rbp = mm_alloc(1024 * sizeof(uint64_t));
     PCB * result = (PCB *) mm_alloc(sizeof(PCB));
+    uint64_t * rbp = (uint64_t *) mm_alloc(MAX_STACK * sizeof(uint64_t));
 
     my_strcpy(result->name, name);
     result->pid = currentPID++;
-    result->rsp = createStackContext((uint64_t) & rbp[1023], process, argc, argv);
+    result->rsp = createStackContext((uint64_t) & rbp[MAX_STACK-1], process, argc, argv);
     result->rbp = rbp;
     result->priority = PRIORITY_AMOUNT;
     result->isForeground = TRUE;
