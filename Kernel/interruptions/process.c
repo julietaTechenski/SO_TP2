@@ -1,6 +1,7 @@
 #include "../include/process.h"
 
 static PCB * current = NULL;
+static PCB * foreground = NULL;
 static PCB * priorityArray[PRIORITY_AMOUNT] = {NULL};
 static PCB * first = NULL;
 static PCB * halt = NULL;
@@ -12,52 +13,61 @@ char * stateArray[] = {"r", "R", "B"};
 typedef void (*FunctionType)(uint64_t, char *[]);
 char buffer[20];
 
-void exit(){
-    current->state = EXITED;
-    int20();
-}
+//============================================= FUNCTIONS ==============================================================
 
 void schedulingWrapper(FunctionType function, uint64_t argc, char *argv[]){
     (*function)(argc, argv);
     exit();
 }
 
-PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[]){
-    PCB * result = (PCB *) mm_alloc(sizeof(PCB));
-
-    my_strcpy(result->name, name);
-    result->pid = currentPID++;
-    result->rsb = mm_alloc(MAX_STACK);
-    result->rsp = createStackContext(result->rsb + MAX_STACK, &schedulingWrapper, process, argc, argv);
-    result->priority = 0;
-    result->isForeground = TRUE;
-    result->state = READY;
-    result->timesRunning = 0;
-    result->prev = NULL;
-    result->next = NULL;
-
-    return result;
-}
-
-int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]){
-    PCB *newProcess = newPcbProcess(process, name, argc, argv);
-    addProcessToList(newProcess, newProcess->priority);
-    return (newProcess->pid);
-}
-
-void haltWrapper(){
-    while(1) {
-        _hlt();
+void addProcessToList(PCB *newProcess, int priority){
+    newProcess->next = newProcess->prev = NULL;
+    first = priorityArray[priority];
+    if(first != NULL){
+        newProcess->next = first;
+        first->prev = newProcess;
     }
+    priorityArray[priority] = newProcess;
+
 }
 
-void initHaltProcess(){
-    halt = newPcbProcess(&haltWrapper, "halt", 0, NULL);
-    current = halt;
+int64_t changeStatePID(PCB * process, State newState){
+    if(process == NULL){
+        return -1;
+    }
+    if(process->state == newState){
+        return 0;
+    }
+    // in READY
+    if(process->state == READY && newState == RUNNING){
+        process->state = newState;
+        return 0;
+    }
+    //in BLOCKED
+    if(process->state == BLOCKED && newState == READY){
+        process->state = newState;
+        return 0;
+    }
+    // in RUNNING, can go to READY and BLOCKED
+    if(process->state == RUNNING){
+        process->state = newState;
+        return 0;
+    }
+    return -1;  //made an invalid change of state
 }
 
-uint64_t* getCurrentRSP(){
-    return current->rsp;
+PCB * findNextProcess(){
+    PCB * ans;
+    for(int i = 0 ; i < PRIORITY_AMOUNT ; i++){
+        ans = priorityArray[i];
+        while(ans != NULL){
+            if (ans->state != BLOCKED) {
+                return ans;
+            }
+            ans = ans->next;
+        }
+    }
+    return NULL;
 }
 
 PCB * findProcess(int64_t pid, int * priority){
@@ -78,17 +88,44 @@ PCB * findProcess(int64_t pid, int * priority){
     return NULL;
 }
 
-
-
-void addProcessToList(PCB *newProcess, int priority){
-    newProcess->next = newProcess->prev = NULL;
-    first = priorityArray[priority];
-    if(first != NULL){
-        newProcess->next = first;
-        first->prev = newProcess;
+void haltWrapper(){
+    while(1) {
+        _hlt();
     }
-    priorityArray[priority] = newProcess;
+}
 
+void initHaltProcess(){
+    halt = newPcbProcess(&haltWrapper, "halt", 0, NULL, 0);
+    current = halt;
+}
+
+void killForeground(){
+    if(my_strcmp(foreground->name, "shell") != 0){
+        kill(foreground->pid);
+    }
+}
+
+void killProcess(PCB *process){
+    removeProcessFromList(process, process->priority);
+    mm_free((void*) process->rsb);
+    mm_free((void*) process);
+}
+
+PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground){
+    PCB * result = (PCB *) mm_alloc(sizeof(PCB));
+
+    my_strcpy(result->name, name);
+    result->pid = currentPID++;
+    result->rsb = mm_alloc(MAX_STACK);
+    result->rsp = createStackContext(result->rsb + MAX_STACK, &schedulingWrapper, process, argc, argv);
+    result->priority = 0;
+    result->isForeground = isForeground;
+    result->state = READY;
+    result->timesRunning = 0;
+    result->prev = NULL;
+    result->next = NULL;
+
+    return result;
 }
 
 void removeProcessFromList(PCB *process, int priority){
@@ -103,10 +140,50 @@ void removeProcessFromList(PCB *process, int priority){
     }
 }
 
-void killProcess(PCB *process){
-    removeProcessFromList(process, process->priority);
-    mm_free((void*) process->rsb);
-    mm_free((void*) process);
+void * scheduler(void * prevRsp){
+    timer_handler();
+
+    current->rsp = prevRsp; // update rsp from previous process
+
+    if(current!=halt) {
+        if (current->state == EXITED) {
+            killProcess(current);
+        } else if (current->state == RUNNING) {
+            if (current->priority < PRIORITY_AMOUNT)
+                changePriority(current, current->priority + 1);
+            changeStatePID(current, READY);
+        } else if (current->state == BLOCKED) {
+            if (current->priority > 0)
+                changePriority(current, current->priority - 1);
+        }
+    }
+
+    PCB * next = findNextProcess();
+    if(next != NULL) {
+        current = next;
+        if(current->isForeground){
+            foreground = current;
+        }
+        printProcesses();
+    }
+    else
+        current = halt;
+
+    current->state = RUNNING;
+    return current->rsp;
+}
+
+//======================================================================================================================
+
+int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground){
+    PCB *newProcess = newPcbProcess(process, name, argc, argv, isForeground);
+    addProcessToList(newProcess, newProcess->priority);
+    return (newProcess->pid);
+}
+
+void exit(){
+    current->state = EXITED;
+    int20();
 }
 
 int64_t getPID(){
@@ -184,35 +261,6 @@ int64_t changePriority(PCB * process, uint64_t newPrio) {
     return newPrio;
 }
 
-int64_t changeStatePID(PCB * process, State newState){
-    if(process == NULL){
-        return -1;
-    }
-    if(process->state == newState){
-        return 0;
-    }
-    if(newState == READY){
-    }
-    if(newState == RUNNING || newState == BLOCKED){
-    }
-    // in READY
-    if(process->state == READY){
-        process->state = newState;
-        return 0;
-    }
-    //in BLOCKED
-    if(process->state == BLOCKED && newState == READY){
-        process->state = newState;
-        return 0;
-    }
-    // in RUNNING, can go to READY and BLOCKED
-    if(process->state == RUNNING){
-        process->state = newState;
-        return 0;
-    }
-    return -1;  //made an invalid change of state
-}
-
 
 int64_t block(uint64_t pid){
     int priority;
@@ -231,53 +279,5 @@ int64_t unblock(uint64_t pid){
 int64_t yield(){
     int20();
     return current->pid;
-}
-
-PCB * findNextProcess(){
-    PCB * ans;
-    for(int i = 0 ; i < PRIORITY_AMOUNT ; i++){
-        ans = priorityArray[i];
-        while(ans != NULL){
-            if (ans->state != BLOCKED) {
-                return ans;
-            }
-            ans = ans->next;
-        }
-    }
-    return NULL;
-}
-
-
-
-void * scheduler(void * prevRsp){
-    timer_handler();
-
-    current->rsp = prevRsp; // update rsp from previous process
-
-    if(current!=halt) {
-        if (current->state == EXITED) {
-            killProcess(current);
-        } else if (current->state == RUNNING) {
-            if (current->priority < PRIORITY_AMOUNT)
-                changePriority(current, current->priority + 1);
-            changeStatePID(current, READY);
-        } else if (current->state == BLOCKED) {
-            if (current->priority > 0)
-                changePriority(current, current->priority - 1);
-        }
-    }
-
-    PCB * next = findNextProcess();
-    if(next != NULL) {
-        current = next;
-        printProcesses();
-    }
-    else
-        current = halt;
-
-
-
-    current->state = RUNNING;
-    return current->rsp;
 }
 
