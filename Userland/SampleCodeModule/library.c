@@ -319,7 +319,7 @@ int64_t getpid(){
     return system_getpid();
 }
 
-int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]){
+int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[]){
     return system_create_process(process, name,argc,argv);
 }
 

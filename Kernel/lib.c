@@ -80,8 +80,8 @@ void my_strcpy(char *dest, const char *src) {
 
 int my_strlen(char * s) {
     int i = 0;
-    while(s[i] != '\0'){
+    while(s[i] != 0){
         i++;
     }
-    return i-1;
+    return i;
 }

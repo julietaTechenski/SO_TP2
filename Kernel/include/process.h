@@ -15,12 +15,13 @@
 
 #define MAX_NAME_LENGTH 20
 #define PRIORITY_AMOUNT 10
-#define MAX_STACK 1024
+#define MAX_STACK 1024*8
 
-typedef enum {
+typedef enum State{
     READY,
     RUNNING,
-    BLOCKED
+    BLOCKED,
+    EXITED
 } State;
 
 typedef enum {
@@ -33,6 +34,7 @@ typedef struct PCB {
     uint64_t pid;
     uint64_t* rsp;   //stack
     uint64_t* rsb;   //base pointer
+    char ** argv;
     int priority;
     char isForeground;
     State state;
@@ -50,11 +52,11 @@ void addProcessToList(PCB *newProcess, int priority);
 void removeProcessFromList(PCB *process, int priority);
 void killProcess(PCB *process);
 int64_t changeStatePID(PCB * process, State newState);
-PCB * findNextProcess(uint64_t currentPID);
+PCB * findNextProcess();
 void * scheduler(void * prevRsp);
-
+void exit();
 //USERLAND COMMAND FUNCTIONS --------------------------------------------------------------------------
-
+void haltWrapper();
 int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]);
 void finishProcess();
 int64_t getPID();

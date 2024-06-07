@@ -153,7 +153,7 @@ picSlaveMask:
 
 
 _irq00Handler:
-	pushState
+ 	pushState
 
 	mov rdi, rsp
 	call scheduler
@@ -306,11 +306,13 @@ noSnd:
     ret
 
 createStackContext:
-    push rbp
-    mov rbp, rsp
+    mov r11, rsp
+    mov r9, rbp
 
     mov rsp, rdi
+    mov rsp, rdi
 
+    push 0x0
     push 0x0    ; SS
     push rdi    ; RSP
     push 0x202  ; RFLAGS
@@ -324,8 +326,8 @@ createStackContext:
 
     mov rax, rsp
 
-    mov rsp, rbp
-    pop rbp
+    mov rsp, r11
+    mov rbp, r9
 
     ret
 

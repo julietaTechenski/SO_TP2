@@ -227,7 +227,7 @@ int64_t getpid(void);
  * @def creates a process
  * @return
  */
-int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]);
+int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[]);
 
 
 /**
