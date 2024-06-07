@@ -36,24 +36,17 @@ PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[]){
     result->prev = NULL;
     result->next = NULL;
 
-    writeString(1,name, my_strlen(name));
-    uint32_t priorityStringLen = intToString(process, buffer);
-    writeString(1, buffer, priorityStringLen);
-    writeString(1, "  ", 2);
-
     return result;
 }
 
 int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]){
     PCB *newProcess = newPcbProcess(process, name, argc, argv);
     addProcessToList(newProcess, newProcess->priority);
-    writeString(1,"create",6);
     return (newProcess->pid);
 }
 
 void haltWrapper(){
     while(1) {
-        writeString(1,"hlt",4);
         _hlt();
     }
 }
@@ -122,14 +115,8 @@ int64_t getPID(){
 
 void printProcesses() {
     char buffer[MAX_NAME_LENGTH];
-    writeString(1, "NAME  PID  PRIORITY    RSP    RBP    STATE\n", 43);
+    writeString(1, "NAME  PID  PRIORITY    RSP        RBP    STATE\n", 47);
     PCB *iter;
-
-    writeString(1, "Current: ", 9);
-    writeString(1, "  ", 2);
-    writeString(1, current->name, my_strlen(current->name));
-    writeString(1, "  ", 2);
-    writeString(1, "\n", 1);
 
     for(int i = 0 ; i < PRIORITY_AMOUNT ; i++){
         iter = priorityArray[i];
@@ -137,21 +124,21 @@ void printProcesses() {
             writeString(1, iter->name, my_strlen(iter->name));
             writeString(1, "  ", 2);
 
-            uint32_t s = intToString(iter, buffer);
-            writeString(1, buffer, s);
-            writeString(1, "  ", 2);
-
             uint32_t pidStringLen = intToString(iter->pid, buffer);
             writeString(1, buffer, pidStringLen);
-            writeString(1, "  ", 2);
+            writeString(1, "       ", 7);
 
             uint32_t priorityStringLen = intToString(i, buffer);
             writeString(1, buffer, priorityStringLen);
-            writeString(1, "  ", 2);
+            writeString(1, "       ", 7);
 
             uint32_t rspStringLen = intToString(iter->rsp, buffer);
             writeString(1, buffer, rspStringLen);
             writeString(1, "  ", 2);
+
+            uint32_t s = intToString(iter, buffer);
+            writeString(1, buffer, s);
+            writeString(1, "     ", 5);
 
             switch (iter->state) {
                 case READY:
@@ -170,6 +157,7 @@ void printProcesses() {
             if (current->isForeground) {
                 writeString(1, "+", 1);
             }
+
             writeString(1, "\n", 1);
             iter = iter->next;
         }
