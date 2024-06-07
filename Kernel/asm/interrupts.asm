@@ -298,9 +298,9 @@ noSnd:
 createStackContext:
     push rbp
     mov rbp, rsp
+
     mov rsp, rdi
 
-    push 0x0    ; align
     push 0x0    ; SS
     push rdi    ; RSP
     push 0x202  ; RFLAGS

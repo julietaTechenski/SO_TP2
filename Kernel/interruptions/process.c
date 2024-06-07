@@ -16,8 +16,8 @@ PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[]){
 
     my_strcpy(result->name, name);
     result->pid = currentPID++;
-    result->rsp = createStackContext((uint64_t) & rbp[MAX_STACK-1], process, argc, argv);
-    result->rbp = rbp;
+    result->rsp = createStackContext( &rbp[MAX_STACK-1], process, argc, argv);
+    result->rbp = &rbp[MAX_STACK-1];
     result->priority = PRIORITY_AMOUNT;
     result->isForeground = TRUE;
     result->state = READY;

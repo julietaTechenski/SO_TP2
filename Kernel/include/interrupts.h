@@ -38,7 +38,7 @@ void haltcpu(void);
 
 char getKeyPressed();
 
-uint64_t *createStackContext(uint64_t rbp, void * process, uint64_t argc, char *argv[]);
+uint64_t * createStackContext(uint64_t * rbp, void * process, uint64_t argc, char *argv[]);
 
 void int20();
 
