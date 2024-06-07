@@ -309,7 +309,7 @@ createStackContext:
     mov rdi, rdx; argc
     mov rsi, rcx; argv
     pushState   ; general purpose registers
-
+    mov rax, rsp
     mov rsp, rbp
     pop rbp
 
