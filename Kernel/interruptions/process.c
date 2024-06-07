@@ -36,7 +36,7 @@ PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[]){
 }
 
 int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]){
-    PCB *newProcess = newPcbProcess(process,name, argc, argv);
+    PCB *newProcess = newPcbProcess(process, name, argc, argv);
     addProcessToList(newProcess, GET_PRIORITY_VALUE(newProcess->priority));
     amountProcessesReady++;
     return (newProcess->pid);
@@ -253,10 +253,9 @@ void * scheduler(void * prevRsp){
         } else { //used all quantum
             if (current->priority < PRIORITY_AMOUNT)
                 changePriority(current, current->priority + 1);
+            changeStatePID(current, READY);
         }
 
-        if (current->state == RUNNING)
-            current->state = READY;
     }
 
     PCB * next = findNextProcess(current->pid);
