@@ -78,19 +78,19 @@ void addProcessToList(PCB *newProcess, int priority){
     } else {
         newProcess->next = first;
         first->prev = newProcess;
-        first = newProcess;
+        priorityArray[priority] = newProcess;
     }
 }
 
 void removeProcessFromList(PCB *process, int priority){
     if(process->prev != NULL){  //arrange prev process
-        process->prev->next = process->next;
+        (process->prev)->next = process->next;
     } else {    //first process
         priorityArray[priority] = process->next;
     }
 
     if(process->next != NULL){  //arrange next process
-        process->next->prev = process->prev;
+        (process->next)->prev = process->prev;
     }
 }
 
@@ -242,10 +242,8 @@ PCB * findNextProcess(uint64_t currentPID){
 
 void * scheduler(void * prevRsp){
     timer_handler();
-
+    current->rsp = prevRsp; // update rsp from previous process
     if(current != halt) {
-        current->rsp = prevRsp; // update rsp from previous process
-
         if (current->state == BLOCKED) { //didn't use all quantum
             if (current->priority > 0)
                 changePriority(current, current->priority - 1);
@@ -263,5 +261,6 @@ void * scheduler(void * prevRsp){
     else
         current = halt;
 
+    changeStatePID(current, RUNNING);
     return current->rsp;
 }
