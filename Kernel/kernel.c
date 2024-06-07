@@ -54,8 +54,7 @@ int main() {
     _cli();
     load_idt();
     initHaltProcess();
-    char *argvAux[] = {0};
-    createProcess((EntryPoint)sampleCodeModuleAddress, "init", 0, argvAux);
+    createProcess((EntryPoint)sampleCodeModuleAddress, "init", 0, 0);
     _sti();
     int20();
     return 0;

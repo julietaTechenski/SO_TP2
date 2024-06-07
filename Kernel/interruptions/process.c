@@ -36,7 +36,7 @@ PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[]){
 }
 
 int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]){
-    PCB *newProcess = newPcbProcess(process, name, argc, argv);
+    PCB * newProcess = newPcbProcess(process, name, argc, argv);
     addProcessToList(newProcess, GET_PRIORITY_VALUE(newProcess->priority));
     amountProcessesReady++;
     return (newProcess->pid);
@@ -74,24 +74,23 @@ PCB * findProcess(int64_t pid, int * priority){
 void addProcessToList(PCB *newProcess, int priority){
     first = priorityArray[priority];
     if(first == NULL){
-        current = newProcess;
         priorityArray[priority] = newProcess;
     } else {
         newProcess->next = first;
         first->prev = newProcess;
-        first = newProcess;
+        priorityArray[priority] = newProcess;
     }
 }
 
 void removeProcessFromList(PCB *process, int priority){
     if(process->prev != NULL){  //arrange prev process
-        process->prev->next = process->next;
+        (process->prev)->next = process->next;
     } else {    //first process
         priorityArray[priority] = process->next;
     }
 
     if(process->next != NULL){  //arrange next process
-        process->next->prev = process->prev;
+        (process->next)->prev = process->prev;
     }
 }
 
@@ -112,40 +111,41 @@ int64_t getPID(){
 
 void printProcesses() {
     char buffer[MAX_NAME_LENGTH];
-    writeString(0, "NAME  PID  PRIORITY    RSP    RBP    STATE", 42);
+    writeString(1, "NAME  PID  PRIORITY    RSP    RBP    STATE", 42);
+    writeString(1, "\n", 1);
     PCB *iter;
     for(int i = 0 ; i < PRIORITY_AMOUNT ; i++){
         iter = priorityArray[i];
         while (iter != NULL) {
-            writeString(0, iter->name, my_strlen(iter->name));
+            writeString(1, iter->name, my_strlen(iter->name));
 
             uint32_t pidStringLen = intToString(iter->pid, buffer);
-            writeString(0, buffer, pidStringLen);
-            writeString(0, "  ", 2);
+            writeString(1, buffer, pidStringLen);
+            writeString(1, "  ", 2);
 
             uint32_t priorityStringLen = intToString(iter->priority, buffer);
-            writeString(0, buffer, priorityStringLen);
-            writeString(0, "  ", 2);
+            writeString(1, buffer, priorityStringLen);
+            writeString(1, "  ", 2);
 
             uint32_t rspStringLen = intToString(*iter->rsp, buffer);
-            writeString(0, buffer, rspStringLen);
-            writeString(0, "  ", 2);
+            writeString(1, buffer, rspStringLen);
+            writeString(1, "  ", 2);
 
             switch (current->state) {
                 case READY:
-                    writeString(0, stateArray[0], 1);
+                    writeString(1, stateArray[0], 1);
                     break;
                 case RUNNING:
-                    writeString(0, stateArray[1], 1);
+                    writeString(1, stateArray[1], 1);
                     break;
                 case BLOCKED:
-                    writeString(0, stateArray[2], 1);
+                    writeString(1, stateArray[2], 1);
                     break;
             }
             if (current->isForeground) {
-                writeString(0, "+", 1);
+                writeString(1, "+", 1);
             }
-            writeString(0, "\n", 1);
+            writeString(1, "\n", 1);
             iter = iter->next;
         }
     }
@@ -231,7 +231,7 @@ PCB * findNextProcess(uint64_t currentPID){
     for(int i = 0 ; i < PRIORITY_AMOUNT ; i++){
         ans = priorityArray[i];
         while(ans != NULL){
-            if (ans->state == READY && ans->pid != currentPID)
+            if (ans->state == READY)
                 return ans;
             ans = ans->next;
         }
@@ -243,10 +243,8 @@ PCB * findNextProcess(uint64_t currentPID){
 
 void * scheduler(void * prevRsp){
     timer_handler();
-
+    current->rsp = prevRsp; // update rsp from previous process
     if(current != halt) {
-        current->rsp = prevRsp; // update rsp from previous process
-
         if (current->state == BLOCKED) { //didn't use all quantum
             if (current->priority > 0)
                 changePriority(current, current->priority - 1);
@@ -264,5 +262,6 @@ void * scheduler(void * prevRsp){
     else
         current = halt;
 
+    changeStatePID(current, RUNNING);
     return current->rsp;
 }
