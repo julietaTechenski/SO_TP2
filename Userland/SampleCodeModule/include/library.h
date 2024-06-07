@@ -35,6 +35,7 @@ extern int64_t system_sem_close(char *sem_id);
 extern int system_pipe(void * pipefd[2]);
 extern int system_dup(void * p, int oldfd, void *pipedir);
 extern int64_t system_change_process_state(uint64_t pid, int state);
+extern void system_print_processes();
 
 
 //FUNCTIONS -------------------------------------------------------------------------------
