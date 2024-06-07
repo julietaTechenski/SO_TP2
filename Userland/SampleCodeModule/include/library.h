@@ -218,16 +218,16 @@ void *malloc(unsigned int size);
 void free(void * ptr);
 
 /**
- *
- * @return current process id
- */
-int64_t getpid(void);
-
-/**
  * @def creates a process
  * @return
  */
 int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground);
+
+/**
+ *
+ * @return current process id
+ */
+int64_t getpid(void);
 
 
 /**
@@ -250,6 +250,28 @@ int64_t block(uint64_t pid);
  * @return
  */
 int64_t unblock(uint64_t pid);
+
+/**
+ * @def wait for process to change state
+ * @param wstatus
+ * @return
+ */
+int64_t wait(char *sem_id);
+
+/**
+ * @def process voluntarily gives up control of the processor
+ * @return
+ */
+int64_t yield();
+
+/**
+ * @def changes a process' priority
+ * @param pid
+ * @param newPrio
+ * @return on success, the new priority value is returned.
+ *         on error, -1 is returned.
+ */
+int64_t nice(uint64_t pid, uint64_t newPrio);
 
 /**
  *
@@ -281,28 +303,6 @@ int64_t sem_post(char *sem_id);
 int64_t sem_close(char *sem_id);
 
 /**
- * @def wait for process to change state
- * @param wstatus
- * @return
- */
-int64_t wait(char *sem_id);
-
-/**
- * @def process voluntarily gives up control of the processor
- * @return
- */
-int64_t yield();
-
-/**
- * @def changes a process' priority
- * @param pid
- * @param newPrio
- * @return on success, the new priority value is returned.
- *         on error, -1 is returned.
- */
-int64_t nice(uint64_t pid, uint64_t newPrio);
-
-/**
  *
  * @param pid
  * @param state
@@ -326,6 +326,11 @@ int pipe(void * pipefd[2]);
  * @return -1 if error
  */
 int dup(void * p, int oldfd, void * pipedir);
+
+/**
+ * @def prints processes information
+ */
+void print_processes();
 #endif //LIBRARY_H
 
 
