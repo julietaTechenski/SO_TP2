@@ -306,10 +306,9 @@ noSnd:
     ret
 
 createStackContext:
-    mov r11, rsp
-    mov r9, rbp
+    push rbp
+    mov rbp, rsp
 
-    mov rsp, rdi
     mov rsp, rdi
 
     push 0x0
@@ -326,8 +325,8 @@ createStackContext:
 
     mov rax, rsp
 
-    mov rsp, r11
-    mov rbp, r9
+    mov rsp, rbp
+    pop rbp
 
     ret
 
