@@ -51,8 +51,11 @@ void * initializeKernelBinary(){
 
 
 int main() {
+    _cli();
     load_idt();
+    initHaltProcess();
     ((EntryPoint)sampleCodeModuleAddress)();
-    setFirstProcess();
+    _sti();
+    int20();
     return 0;
 }

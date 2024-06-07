@@ -5,23 +5,38 @@ static PCB * priorityArray[PRIORITY_AMOUNT] = {NULL};
 static PCB * first = NULL;
 static PCB * halt = NULL;
 static uint32_t currentPID = 0;
-static int32_t isFirstProcessSet = 0;
 static int32_t amountProcessesReady = 0;
 
 //stateArray = ["Ready", "Running", "Blocked"]     //meaning
 char * stateArray[] = {"r", "R", "B"};
 
-void setFirstProcess(){
-    uint64_t *rbpHalt = mm_alloc(1024 * sizeof(uint64_t));
-    halt = mm_alloc(sizeof(PCB));
-    halt->rbp = rbpHalt;
-    halt->rsp = createStackContext((uint64_t) & rbpHalt[1023], &_hlt, 0, NULL);
-    halt->priority = 0;
-    halt->next = NULL;
-    halt->prev = NULL;
-    my_strcpy(halt->name, "halt");
+PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[]){
+    void * rbp = mm_alloc(1024 * sizeof(uint64_t));
+    PCB * result = (PCB *) mm_alloc(sizeof(PCB));
 
-    isFirstProcessSet = 1;
+    my_strcpy(result->name, name);
+    result->pid = currentPID++;
+    result->rsp = createStackContext((uint64_t) & rbp[1023], process, argc, argv);
+    result->rbp = rbp;
+    result->priority = PRIORITY_AMOUNT;
+    result->isForeground = TRUE;
+    result->state = READY;
+    result->timesRunning = 0;
+    result->prev = NULL;
+    result->next = NULL;
+
+    return result;
+}
+
+int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]){
+    PCB *newProcess = newPcbProcess(process,name, argc, argv);
+    addProcessToList(newProcess, GET_PRIORITY_VALUE(newProcess->priority));
+    amountProcessesReady++;
+    return (newProcess->pid);
+}
+
+void initHaltProcess(){
+    halt = newPcbProcess(&_hlt, "halt", 0, NULL);
 }
 
 uint64_t* getCurrentRSP(){
@@ -46,25 +61,7 @@ PCB * findProcess(int64_t pid, int * priority){
     return NULL;
 }
 
-int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[]){
-    uint64_t *rbp = mm_alloc(1024 * sizeof(uint64_t));
-    PCB *newProcess = mm_alloc(sizeof(PCB));
 
-    my_strcpy(newProcess->name, name);
-    newProcess->pid = currentPID++;
-    newProcess->priority = PRIORITY_AMOUNT;
-    newProcess->rsp = createStackContext((uint64_t) & rbp[1023], process, argc, argv);
-    newProcess->rbp = rbp;
-    newProcess->isForeground = TRUE;
-    newProcess->state = READY;
-    newProcess->timesRunning = 0;
-    newProcess->prev = 0;
-    newProcess->next = NULL;
-
-    addProcessToList(newProcess, GET_PRIORITY_VALUE(newProcess->priority));
-    amountProcessesReady++;
-    return (newProcess->pid);
-}
 
 void addProcessToList(PCB *newProcess, int priority){
     first = priorityArray[priority];
@@ -256,31 +253,28 @@ int64_t findNextProcess(uint64_t currentPID){
 
 void scheduler(){
     timer_handler();
-    if(isFirstProcessSet){
-        if(current != halt){
-            uint64_t currentPID = current->pid;
-            if(current->timesRunning == GET_PRIORITY_VALUE(current->priority) || current->state == BLOCKED){
+    if(current != halt) {
+        uint64_t currentPID = current->pid;
+        if (current->timesRunning == GET_PRIORITY_VALUE(current->priority) || current->state == BLOCKED) {
 
-                current->timesRunning = 0;  //resets timer
-                if(current->priority < PRIORITY_AMOUNT){  //changes priority
-                    changePriority(current->pid, current->priority++);  //less priority
-                }
-                changeStatePID(current->pid, READY);
-                if(!findNextProcess(currentPID)){
-                    current = halt;
-                }
-            } else {
-                current->timesRunning++;
+            current->timesRunning = 0;  //resets timer
+            if (current->priority < PRIORITY_AMOUNT) {  //changes priority
+                changePriority(current->pid, current->priority++);  //less priority
             }
-            changeStatePID(current->pid, RUNNING);
-            contextSwitch();
-        } else {
-            if(!findNextProcess(currentPID)){
+            changeStatePID(current->pid, READY);
+            if (!findNextProcess(currentPID)) {
                 current = halt;
             }
+        } else {
+            current->timesRunning++;
         }
+        changeStatePID(current->pid, RUNNING);
+        contextSwitch();
     } else {
-        return;
+        if (!findNextProcess(currentPID)) {
+            current = halt;
+        }
     }
+
 
 }

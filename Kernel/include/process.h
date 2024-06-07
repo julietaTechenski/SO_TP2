@@ -36,9 +36,9 @@ typedef enum {
 typedef struct PCB {
     char name[MAX_NAME_LENGTH];
     uint64_t pid;
-    int64_t priority;
     uint64_t* rsp;   //stack
     uint64_t* rbp;   //base pointer
+    int priority;
     char isForeground;
     State state;
     int64_t timesRunning;
@@ -48,7 +48,7 @@ typedef struct PCB {
 
 //INTERNAL FUNCTIONS -------------------------------------------------------------------------------
 
-void setFirstProcess();
+void initHaltProcess();
 uint64_t* getCurrentRSP();
 PCB * findProcess(int64_t pid, int * priority);
 void addProcessToList(PCB *newProcess, int priority);
