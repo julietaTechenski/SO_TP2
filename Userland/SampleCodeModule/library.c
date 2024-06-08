@@ -324,7 +324,11 @@ int64_t getpid(){
 }
 
 int64_t kill(uint64_t pid){
-    return system_kill(pid);
+    if(pid > 0){
+        return system_kill(pid);
+    }
+    printf("Invalid arguments\nTry 'help kill' for more information\n");
+    return -1;
 }
 
 int64_t block(uint64_t pid){
@@ -344,7 +348,11 @@ int64_t yield(){
 }
 
 int64_t nice(uint64_t pid, uint64_t newPrio){
-    return system_nice(pid, newPrio);
+    if(pid > 0 && 0 < newPrio && newPrio < 10){
+        return system_nice(pid, newPrio);
+    }
+    printf("Invalid arguments\nnice: usage: nice <PID> <newPriority>\nTry 'help nice' for more information\n");
+    return -1;
 }
 
 int64_t sem_init(char *sem_id, uint64_t initialValue){

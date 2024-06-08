@@ -59,6 +59,7 @@ tcommand commands[] = {
         {"test_sync", test_sync_wrapper},
         {"ps", print_processes},
         {"nice", nice},
+        {"kill", kill}
 };
 
 
