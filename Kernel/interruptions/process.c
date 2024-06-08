@@ -39,7 +39,7 @@ int64_t changeStatePID(PCB * process, State newState){
         return 0;
     }
     // in READY
-    if(process->state == READY && newState == RUNNING){
+    if(process->state == READY){
         process->state = newState;
         return 0;
     }
@@ -251,7 +251,6 @@ int64_t kill(uint64_t pid) {
     return 0;
 }
 
-
 int64_t changePriority(PCB * process, uint64_t newPrio) {
     _cli();
     removeProcessFromList(process, process->priority);
@@ -260,7 +259,6 @@ int64_t changePriority(PCB * process, uint64_t newPrio) {
     _sti();
     return newPrio;
 }
-
 
 int64_t block(uint64_t pid){
     int priority;
