@@ -332,7 +332,17 @@ int64_t kill(uint64_t pid){
 }
 
 int64_t block(uint64_t pid){
-    return system_block(pid);
+    if(pid > 0){
+        int64_t ans = system_block(pid);
+        if(ans == 0){
+            printf("Process %d state modified\n", pid);
+        } else {
+            printf("Process %d is already blocked\n", pid);
+        }
+        return ans;
+    }
+    printf("Invalid arguments\nTry 'help block' for more information\n");
+    return -1;
 }
 
 int64_t unblock(uint64_t pid){
