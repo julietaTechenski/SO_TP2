@@ -10,6 +10,7 @@
 #include "soundDriver.h"
 #include "kernel.h"
 #include "memory_manager.h"
+#include "process.h"
 
 typedef struct{
     uint64_t r15;
@@ -27,6 +28,7 @@ typedef struct{
     uint64_t rcx;
     uint64_t rbx;
     uint64_t rax;
+    uint64_t rip;
 }* Registers;
 
 uint64_t sysCallHandler(Registers registers);

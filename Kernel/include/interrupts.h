@@ -18,8 +18,8 @@ void _irq03Handler(void);
 void _irq04Handler(void);
 void _irq05Handler(void);
 
- void _exception0Handler(void);
- void _exception6Handler(void);
+void _exception0Handler(void);
+void _exception6Handler(void);
 
 void _sysCallHandler(void);
 
@@ -37,5 +37,11 @@ void picSlaveMask(uint8_t mask);
 void haltcpu(void);
 
 char getKeyPressed();
+
+uint64_t * createStackContext(uint64_t * rbp, void * wrapper, void * process, uint64_t argc, char *argv[]);
+
+void int20();
+
+void contextSwitch();
 
 #endif /* INTERRUPS_H_ */

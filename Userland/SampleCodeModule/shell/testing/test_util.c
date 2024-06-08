@@ -59,8 +59,9 @@ void bussy_wait(uint64_t n) {
 }
 
 void endless_loop() {
-  while (1)
-    ;
+  while (1){
+      printf("hello\n");
+  }
 }
 //
 //void endless_loop_print(uint64_t wait) {

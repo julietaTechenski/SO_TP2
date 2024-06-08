@@ -1,30 +1,46 @@
-GLOBAL _getRegs                   ; system call 1
-GLOBAL put_pixel                  ; system call 2
-GLOBAL system_read                ; system call 3
-GLOBAL system_write               ; system call 4
-GLOBAL clear_screen               ; system call 5
-GLOBAL change_color               ; system call 6
-GLOBAL inc_size                   ; system call 7
-GLOBAL dec_size                   ; system call 8
-GLOBAL get_seconds_elapsed        ; system call 9
-GLOBAL _sleep                     ; system call 10
-GLOBAL _playSound                 ; system call 11
-GLOBAL sys_writeXY                ; system call 12
+GLOBAL _getRegs                         ; system call 1
+GLOBAL put_pixel                        ; system call 2
+GLOBAL system_read                      ; system call 3
+GLOBAL system_write                     ; system call 4
+GLOBAL clear_screen                     ; system call 5
+GLOBAL change_color                     ; system call 6
+GLOBAL inc_size                         ; system call 7
+GLOBAL dec_size                         ; system call 8
+GLOBAL get_seconds_elapsed              ; system call 9
+GLOBAL _sleep                           ; system call 10
+GLOBAL _playSound                       ; system call 11
+GLOBAL sys_writeXY                      ; system call 12
 GLOBAL getTimeRTC
-GLOBAL system_malloc              ; system call 13
-GLOBAL system_free              ; system call 14
-GLOBAL system_create_process             ; system call 15
-GLOBAL system_getpid             ; system call 16
-GLOBAL system_kill             ; system call 17
-GLOBAL system_block            ; system call 18
-GLOBAL system_unblock            ; system call 19
-GLOBAL system_wait            ; system call 20
-GLOBAL system_yield           ; system call 21
-GLOBAL system_nice           ; system call 22
-GLOBAL system_sem_init           ; system call 23
-GLOBAL system_sem_wait           ; system call 24
-GLOBAL system_sem_post           ; system call 25
-GLOBAL system_sem_close           ; system call 26
+GLOBAL system_malloc                    ; system call 13
+GLOBAL system_free                      ; system call 14
+GLOBAL system_create_process            ; system call 15
+GLOBAL system_getpid                    ; system call 16
+GLOBAL system_kill                      ; system call 17
+GLOBAL system_block                     ; system call 18
+GLOBAL system_unblock                   ; system call 19
+GLOBAL system_wait                      ; system call 20
+GLOBAL system_yield                     ; system call 21
+GLOBAL system_nice                      ; system call 22
+GLOBAL system_sem_init                  ; system call 23
+GLOBAL system_sem_wait                  ; system call 24
+GLOBAL system_sem_post                  ; system call 25
+GLOBAL system_free                      ; system call 14
+GLOBAL system_create_process            ; system call 15
+GLOBAL system_getpid                    ; system call 16
+GLOBAL system_kill                      ; system call 17
+GLOBAL system_block                     ; system call 18
+GLOBAL system_unblock                   ; system call 19
+GLOBAL system_wait                      ; system call 20
+GLOBAL system_yield                     ; system call 21
+GLOBAL system_nice                      ; system call 22
+GLOBAL system_sem_init                  ; system call 23
+GLOBAL system_sem_wait                  ; system call 24
+GLOBAL system_sem_post                  ; system call 25
+GLOBAL system_sem_close                 ; system call 26
+GLOBAL system_pipe                      ; system call 27
+GLOBAL system_dup                       ; system call 28
+GLOBAL system_change_process_state      ; system call 29
+GLOBAL system_print_processes           ; system call 30
 
 
 
@@ -130,6 +146,17 @@ system_sem_post:
 system_sem_close:
     sysCall 26
 
+system_pipe:
+    sysCall 27
+
+system_dup:
+    sysCall 28
+
+system_change_process_state:
+    sysCall 29
+
+system_print_processes:
+    sysCall 30
 ;-------------------------------------------------------
 ;   Recibe un  puntero a un struct typedef struct{
      ;                                  unsigned int segs;

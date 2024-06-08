@@ -5,6 +5,7 @@
 #include "videoDriver.h"
 #include "idtLoader.h"
 #include "memory_manager.h"
+#include "process.h"
 
 
 void clearBSS(void * bssAddress, uint64_t bssSize);
