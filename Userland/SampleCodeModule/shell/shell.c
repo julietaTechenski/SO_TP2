@@ -20,7 +20,7 @@ void test_mm_wrapper(char * args[]) {
         i++;
     }
     uint64_t arg1 = i;
-    uint64_t result = test_mm(arg1, args);
+    test_mm(arg1, args);
 
 }
 
@@ -30,7 +30,7 @@ void test_processes_wrapper(char * args[]) {
         i++;
     }
     uint64_t arg1 = i;
-    uint64_t result = test_processes(arg1, args);
+    test_processes(arg1, args);
 }
 
 
@@ -40,7 +40,7 @@ void test_sync_wrapper(char * args[]) {
         i++;
     }
     uint64_t arg1 = i;
-    uint64_t result = test_sync(arg1, args);
+    test_sync(arg1, args);
 }
 
 tcommand commands[] = {
@@ -58,9 +58,9 @@ tcommand commands[] = {
         {"test_prio", test_prio},
         {"test_sync", test_sync_wrapper},
         {"ps", print_processes},
-        {"nice", nice},
-        {"kill", kill},
-        {"block", block}
+        {"nice", (void *)nice},
+        {"kill", (void *)kill},
+        {"block", (void *)block}
 
 };
 
