@@ -14,6 +14,14 @@ static uint8_t *base_memory;
 static size_t max_memory_size;
 static int max_order;
 
+int freeMem;
+int total;
+
+int firstAllocRun = 1;
+int firstFreeRun = 1;
+
+
+
 /* blocks in freelists[i] are of size 2**(i + 2) * PAGE_SIZE */
 #define BLOCKSIZE(i) ((size_t)(1 << (i + 2)) * PAGE_SIZE)
 
@@ -35,7 +43,7 @@ size_t pow2(int n) {
 
 void mm_init(void * ptr, size_t max_size) {
     base_memory = (uint8_t*) ptr;
-    max_memory_size = max_size;
+    freeMem = total = max_memory_size = max_size;
 
     max_order = log2(max_size/PAGE_SIZE) - 2;
 
@@ -61,6 +69,10 @@ void mm_init(void * ptr, size_t max_size) {
 }
 
 void* mm_alloc(size_t size) {
+    if(firstAllocRun){
+        freeMem -= sizeof(block_t) + size;
+        firstAllocRun = !firstAllocRun;
+    }
     int i = 0;
 
     while(BLOCKSIZE(i) < size + sizeof(block_t) && i <= max_order){
@@ -95,6 +107,10 @@ void* mm_alloc(size_t size) {
 }
 
 void mm_free(void * ptr) {
+     if(firstFreeRun){
+        freeMem += sizeof(block_t) + ((block_t*)(ptr-sizeof(block_t)))->size;
+        firstAllocRun = !firstAllocRun;
+    }
     block_t *block = (block_t *)ptr - sizeof(block_t) ;
     int i = 0;
     while(BLOCKSIZE(i) < block->size && i <= max_order){
@@ -129,15 +145,28 @@ void mm_free(void * ptr) {
         }
     }
 }
-//
-//void mm_free(void * ptr) {
-//    mm_free_rec(ptr - sizeof(block_t));
-//}
-//
 
 
+void mm_state(){
+    char s[20];
+    int longitud;
+
+    longitud = intToString(total, s);
+    writeString(1, "Memoria total: ", 15);
+    writeString(1, s, longitud);
+    writeString(1, "\n", 1);
 
 
+    longitud = intToString(freeMem, s);
+    writeString(1, "Memoria libre: ", 15);
+    writeString(1, s, longitud);
+    writeString(1, "\n", 1);
 
+    longitud = intToString(total - freeMem, s);
+    writeString(1, "Memoria ocupada: ", 17);
+    writeString(1, s, longitud);
+    writeString(1, "\n", 1);
+
+}
 
 #endif

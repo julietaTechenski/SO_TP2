@@ -63,7 +63,7 @@ void keyboard_handler(uint64_t infoRegs){
     //Differentiate between letters and special characters when pressing shift and capital letters
     char key = keyboardTable[keyCode][0];
     if(key=='c' && ctrlFlag) {
-        //kill Process;
+        killForeground();
         return;
     }else if(key=='d' && ctrlFlag) {
         //end of file;

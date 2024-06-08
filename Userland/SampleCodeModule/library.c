@@ -365,8 +365,8 @@ int64_t unblock(uint64_t pid){
     return system_unblock(pid);
 }
 
-int64_t wait(char *sem_id){
-    return system_wait(sem_id);
+int64_t wait(uint64_t pid){
+    return system_wait(pid);
 }
 
 int64_t yield(){

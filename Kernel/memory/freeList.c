@@ -1,4 +1,4 @@
-#include "include/memory_manager.h"
+#include "../include/memory_manager.h"
 #ifdef LIST
 
 typedef struct Node {
