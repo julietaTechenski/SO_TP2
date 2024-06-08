@@ -101,13 +101,13 @@ void getCommand(char buffer[]) {
     //turns possible command to string
     char command[20];
     char * args[5] = {0};
-    //int isForeground = 0;
+    int isForeground = 1;
     int i = 0;
 
-    /*if(buffer[i] == '&'){
-        isForeground = 1;
+    if(buffer[i] == '&'){
+        isForeground = 0;
         i++;
-    }*/
+    }
 
     for( ; buffer[i] != ' ' && buffer[i] != '\0'; i++){
         command[i] = buffer[i];
@@ -140,8 +140,8 @@ void getCommand(char buffer[]) {
     for (int n = 0; n < AMOUNT_COMMANDS && !cfound; n++) {
         if (strcmp(commands[n].name, command)) {
             cfound = 1;
-            commands[n].fn(args);
-            //my_createProcess(&commands[n].fn, command[n].name, j, args, isForeground);
+            //commands[n].fn(args);
+            my_createProcess(&commands[n].fn, commands[n].name, j, args, isForeground);
         }
     }
     //If not found, prints error message
