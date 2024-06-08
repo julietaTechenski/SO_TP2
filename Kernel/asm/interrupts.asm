@@ -30,6 +30,8 @@ EXTERN exceptionDispatcher
 EXTERN sysCallHandler
 EXTERN getStackBase
 EXTERN scheduler
+EXTERN printsth
+EXTERN keyboard_handler
 
 SECTION .text
 
@@ -164,7 +166,17 @@ _irq00Handler:
 
 ;Keyboard
 _irq01Handler:
-	irqHandlerMaster 1
+	pushState
+
+    mov rdi, rsp    ; pointer to direction in stack where registers can be found
+    call keyboard_handler
+
+    ; signal pic EOI (End of Interrupt)
+    mov al, 20h
+    out 20h, al
+
+    popState
+    iretq
 
 ;Cascade pic never called
 _irq02Handler:

@@ -68,7 +68,7 @@ tcommand commands[] = {
 
 void shell() {
     //Into
-    intro();
+//    intro();
     //Username
     int c;
     setColor(141, 132, 255);
@@ -89,6 +89,7 @@ void shell() {
         buffer[c] = 0;
         getCommand(buffer);
     }
+
 }
 
 //====================================== Functions ======================================

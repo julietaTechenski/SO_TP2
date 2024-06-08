@@ -1,5 +1,8 @@
 #include "include/lib.h"
 
+void printsth(){
+    writeString(1, "halt\t", 5);
+}
 
 int intToString(uint64_t n, char* s){
     int i  = 0;

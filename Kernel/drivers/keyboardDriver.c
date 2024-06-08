@@ -13,6 +13,13 @@ static int last = 0;
 static int shiftFlag = 0;
 static int bloqMayus = 0;
 
+typedef struct bproc {
+    uint64_t pid;
+    int count;
+}bproc;
+
+
+static bproc * blocked;
 
 //Keyboard IRQ
 void keyboard_handler(uint64_t infoRegs){
@@ -57,6 +64,7 @@ void keyboard_handler(uint64_t infoRegs){
 
     //Only adds it if it has an ASCII representation
     if(key != 0){
+        blocked->count--;
         addEntry(key);
     }
 }
@@ -67,6 +75,9 @@ void addEntry(char c){
         return;
     myBuffer[last] = c;
     last = (last + 1) % INITIAL_SIZE;
+    if(blocked->count==0){
+        unblock(blocked->pid);
+    }
 }
 
 //Gets first entry from the buffer
@@ -74,7 +85,6 @@ char getEntry(){
     if(first == last){
         return 0;
     }
-
     char ret = myBuffer[first];
     first = (first + 1) % INITIAL_SIZE;
     return ret;
@@ -85,9 +95,12 @@ int read(unsigned int fd, char * buffer, int count){
     if(fd != 0){
         return 0;
     }
-
     int i = 0;
     char c;
+    uint64_t pid = getPID();
+    blocked->pid = pid;
+    blocked->count = count;
+    block(pid);
     while(i < count && (c = getEntry()) != 0){
         buffer[i++] = c;
     }
