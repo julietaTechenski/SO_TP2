@@ -164,7 +164,6 @@ void * scheduler(void * prevRsp){
         if(current->isForeground){
             foreground = current;
         }
-        printProcesses();
     }
     else
         current = halt;
