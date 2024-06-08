@@ -7,8 +7,9 @@ uint64_t sysCallHandler(Registers registers){
         switch (registers->rax) {
             RegAux  r;
             case 0:
-                return 0;  //necesitamos definir un .c con las funciones que hagan el llamado directo a las funciones en el idt
+                return 0;
             case 1:
+                r.rip = registers->rip;
                 r.rax = registers->rax;
                 r.rsi = registers->rsi;
                 r.rdi= registers->rdi;
@@ -65,34 +66,29 @@ uint64_t sysCallHandler(Registers registers){
             case 12:
                 return writeXY(registers->rdi, (char *) registers->rsi, registers->rdx, registers->rcx, registers->r8);
             case 13:
-                return (uintptr_t)mm_alloc(registers->rdi);
+                return mm_alloc(registers->rdi);
             case 14:
                 mm_free((void*)registers->rdi);
                 break;
             case 15:
-                //fork
-                return 0;
+                return createProcess((void*)registers->rdi, (char *)registers->rsi, registers->rdx, (char **)registers->rcx, registers->r8);
             case 16:
-                //getpid
-                return 0;
+                return getPID();
             case 17:
-                //kill
-                return 0;
+                return kill(registers->rdi);
             case 18:
-                //block
-                return 0;
+                return block(registers->rdi);
             case 19:
-                //unblock
-                return 0;
+                return unblock(registers->rdi);
             case 20:
                 //wait
                 return 0;
             case 21:
-                //yield
+                yield();
                 return 0;
             case 22:
                 //nice
-                return 0;
+                return changePriority(registers->rdi, registers->rsi);
             case 23:
                 //sem_init
                 return 0;
@@ -107,6 +103,15 @@ uint64_t sysCallHandler(Registers registers){
                 return 0;
             case 27:
                 mm_state();
+                return 0;
+            //case 27: CAMBIAR NUMERO
+            //    return 0/*pipe((void**)registers->rdi)*/;
+            case 28:
+                return 0/*dup((void *)registers->rdi, registers->rsi, (void*)registers->rdx)*/;
+            case 29:
+                return changeStatePID(registers->rdi, registers->rsi);
+            case 30:
+                printProcesses();
                 return 0;
         }
         return 0;

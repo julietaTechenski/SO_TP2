@@ -21,8 +21,8 @@ extern int sys_writeXY(unsigned int fd, char * string, int count, int x, int y);
 extern void * system_malloc(unsigned int size);
 extern void system_free(void * ptr);
 extern int64_t system_getpid(void);
-extern int64_t system_create_process(char *name, uint64_t argc, char *argv[]);
-extern int64_t system_kill(uint64_t pid);  //cambiar pid_t por variable del tipo del id del proceso
+extern int64_t system_create_process(void * process, char * name, uint64_t argc, char *argv[], uint64_t isForeground);
+extern int64_t system_kill(uint64_t pid);
 extern int64_t system_block(uint64_t pid);
 extern int64_t system_unblock(uint64_t pid);
 extern int64_t system_wait(char *sem_id);
@@ -33,6 +33,11 @@ extern int64_t system_sem_wait(char *sem_id);
 extern int64_t system_sem_post(char *sem_id);
 extern int64_t system_sem_close(char *sem_id);
 extern void sys_mem_state();
+extern int system_pipe(void * pipefd[2]);
+extern int system_dup(void * p, int oldfd, void *pipedir);
+extern int64_t system_change_process_state(uint64_t pid, int state);
+extern void system_print_processes();
+
 
 //FUNCTIONS -------------------------------------------------------------------------------
 
@@ -215,16 +220,16 @@ void *malloc(unsigned int size);
 void free(void * ptr);
 
 /**
+ * @def creates a process
+ * @return
+ */
+int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground);
+
+/**
  *
  * @return current process id
  */
 int64_t getpid(void);
-
-/**
- * @def creates a process
- * @return
- */
-int64_t createProcess(char *name, uint64_t argc, char *argv[]);
 
 
 /**
@@ -247,6 +252,28 @@ int64_t block(uint64_t pid);
  * @return
  */
 int64_t unblock(uint64_t pid);
+
+/**
+ * @def wait for children to finish
+ * @param pid
+ * @return
+ */
+int64_t wait(uint64_t pid);
+
+/**
+ * @def process voluntarily gives up control of the processor
+ * @return
+ */
+int64_t yield();
+
+/**
+ * @def changes a process' priority
+ * @param pid
+ * @param newPrio
+ * @return on success, the new priority value is returned.
+ *         on error, -1 is returned.
+ */
+int64_t nice(uint64_t pid, uint64_t newPrio);
 
 /**
  *
@@ -285,26 +312,38 @@ int64_t sem_post(char *sem_id);
 int64_t sem_close(char *sem_id);
 
 /**
- * @def wait for process to change state
- * @param wstatus
- * @return
- */
-int64_t wait(char *sem_id);
-
-/**
- * @def process voluntarily gives up control of the processor
- * @return
- */
-int64_t yield();
-
-/**
- *@def starts a process with a set priority or changes a process' priority
+ *
  * @param pid
- * @param newPrio
- * @return
+ * @param state
+ * @return -1 if error 0 if not
  */
-int64_t nice(uint64_t pid, uint64_t newPrio);
+int64_t change_process_state(uint64_t pid, int state);
 
+
+/**
+ * @def creates a pipe
+ * @param pipefd array read fd (0) and write fd(1)
+ */
+int pipe(void * pipefd[2]);
+
+
+/**
+ *
+ * @param p
+ * @param oldfd
+ * @param pipedir
+ * @return -1 if error
+ */
+int dup(void * p, int oldfd, void * pipedir);
+
+/**
+ * @def prints processes information
+ */
+void print_processes();
+
+/**
+ * @def prints standard input
+ */
 void cat();
 
 #endif //LIBRARY_H

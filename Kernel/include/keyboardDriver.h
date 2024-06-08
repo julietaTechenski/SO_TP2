@@ -4,6 +4,7 @@
 #include "time.h"
 #include "videoDriver.h"
 #include "interrupts.h"
+#include "process.h"
 
 #define INITIAL_SIZE 10
 

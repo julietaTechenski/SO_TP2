@@ -20,7 +20,7 @@ void test_mm_wrapper(char * args[]) {
         i++;
     }
     uint64_t arg1 = i;
-    uint64_t result = test_mm(arg1, args);
+    test_mm(arg1, args);
 
 }
 
@@ -30,7 +30,7 @@ void test_processes_wrapper(char * args[]) {
         i++;
     }
     uint64_t arg1 = i;
-    uint64_t result = test_processes(arg1, args);
+    test_processes(arg1, args);
 }
 
 
@@ -40,7 +40,7 @@ void test_sync_wrapper(char * args[]) {
         i++;
     }
     uint64_t arg1 = i;
-    uint64_t result = test_sync(arg1, args);
+    test_sync(arg1, args);
 }
 
 tcommand commands[] = {
@@ -58,7 +58,12 @@ tcommand commands[] = {
         {"test_mm", test_mm_wrapper},
         {"test_processes", test_processes_wrapper},
         {"test_prio", test_prio},
-        {"test_sync", test_sync_wrapper}
+        {"test_sync", test_sync_wrapper},
+        {"ps", print_processes},
+        {"nice", (void *)nice},
+        {"kill", (void *)kill},
+        {"block", (void *)block}
+
 };
 
 
@@ -66,7 +71,6 @@ tcommand commands[] = {
 void shell() {
     //Into
     intro();
-
     //Username
     int c;
     setColor(141, 132, 255);
@@ -87,6 +91,7 @@ void shell() {
         buffer[c] = 0;
         getCommand(buffer);
     }
+
 }
 
 //====================================== Functions ======================================
@@ -96,14 +101,21 @@ void getCommand(char buffer[]) {
     //turns possible command to string
     char command[20];
     char * args[5] = {0};
-    int i;
-    for(i=0; buffer[i] != ' ' && buffer[i] != '\0'; i++){
+    //int isForeground = 0;
+    int i = 0;
+
+    /*if(buffer[i] == '&'){
+        isForeground = 1;
+        i++;
+    }*/
+
+    for( ; buffer[i] != ' ' && buffer[i] != '\0'; i++){
         command[i] = buffer[i];
     }
     command[i] = '\0';
 
+    int j = 0;
     if(buffer[i++]==' ') {  //builds args
-        int j = 0;
         while (buffer[i] != '\0' && buffer[i] != ' ') {
             int k = 0;
             char aux[20] = {0};
@@ -129,6 +141,7 @@ void getCommand(char buffer[]) {
         if (strcmp(commands[n].name, command)) {
             cfound = 1;
             commands[n].fn(args);
+            //my_createProcess(&commands[n].fn, command[n].name, j, args, isForeground);
         }
     }
     //If not found, prints error message

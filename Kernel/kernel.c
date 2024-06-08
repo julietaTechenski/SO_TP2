@@ -52,6 +52,7 @@ void * initializeKernelBinary(){
 
 int main() {
     load_idt();
-    ((EntryPoint)sampleCodeModuleAddress)();   //call to shell -> reemplazar por cargar a la shell como porceso y esperar la int de timeer tick
+    createProcess((EntryPoint)sampleCodeModuleAddress, "init", 0, 0, 1);
+    initScheduler();
     return 0;
 }
