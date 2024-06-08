@@ -13,6 +13,8 @@
  * There are 10 priorities in this project. 0 being the highest and 10 the lowest.
  */
 
+extern void initHalt(void * rspHalt);
+
 #define MAX_NAME_LENGTH 20
 #define PRIORITY_AMOUNT 10
 #define MAX_STACK 1024/8
@@ -27,8 +29,8 @@ typedef enum State{
 typedef struct PCB {
     char name[MAX_NAME_LENGTH];
     uint64_t pid;
-    uint64_t* rsp;   //stack
-    uint64_t* rsb;   //base pointer
+    void * rsp;   //stack
+    void * rsb;   //base pointer
     char ** argv;
     int priority;
     char isForeground;  //0 no, 1 yes
@@ -78,7 +80,7 @@ void haltWrapper();
 /**
  * @def creates halt process and makes preparations for running
  */
-void initHaltProcess();
+void initScheduler();
 
 /**
  * @def kills foreground process if not shell

@@ -94,9 +94,10 @@ void haltWrapper(){
     }
 }
 
-void initHaltProcess(){
+void initScheduler(){
     halt = newPcbProcess(&haltWrapper, "halt", 0, NULL, 0);
     current = halt;
+    initHalt(halt->rsp);
 }
 
 void killForeground(){
@@ -145,11 +146,11 @@ void * scheduler(void * prevRsp){
 
     current->rsp = prevRsp; // update rsp from previous process
 
-    if(current!=halt) {
+    if(current != halt) {
         if (current->state == EXITED) {
             killProcess(current);
         } else if (current->state == RUNNING) {
-            if (current->priority < PRIORITY_AMOUNT)
+            if (current->priority < PRIORITY_AMOUNT-1)
                 changePriority(current, current->priority + 1);
             changeStatePID(current, READY);
         } else if (current->state == BLOCKED) {
@@ -251,11 +252,9 @@ int64_t kill(uint64_t pid) {
 }
 
 int64_t changePriority(PCB * process, uint64_t newPrio) {
-    _cli();
     removeProcessFromList(process, process->priority);
     process->priority = newPrio;
     addProcessToList(process, newPrio);
-    _sti();
     return newPrio;
 }
 

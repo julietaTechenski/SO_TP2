@@ -51,10 +51,8 @@ void * initializeKernelBinary(){
 
 
 int main() {
-    _cli();
     load_idt();
-    initHaltProcess();
     createProcess((EntryPoint)sampleCodeModuleAddress, "init", 0, 0, 1);
-    haltWrapper();
+    initScheduler();
     return 0;
 }

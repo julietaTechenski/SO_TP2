@@ -12,6 +12,8 @@ GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 
+GLOBAL initHalt
+
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
 
@@ -116,7 +118,11 @@ SECTION .text
 	iretq
 %endmacro
 
+initHalt:
+    mov rsp, rdi
 
+    popState
+    iretq
 
 _hlt:
 	sti
