@@ -64,9 +64,9 @@ tcommand commands[] = {
         {"nice", (void *)nice},
         {"kill", (void *)kill},
         {"block", (void *)block},
-        {"cat", cat},
-        {"wc", wc},
-        {"filter", filter}
+        {"cat", cat}, //wrapper?
+        {"wc", wc},  //wrapper?
+        {"filter", filter} //wrapper?
 
 };
 

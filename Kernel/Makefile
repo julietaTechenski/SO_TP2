@@ -20,7 +20,7 @@ LOADERSRC=loader.asm
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
-MEMORY_MANAGER ?= BUDDY
+MEMORY_MANAGER ?= LIST
 GCCFLAGS += -D$(MEMORY_MANAGER)
 
 all: $(KERNEL)
@@ -39,6 +39,6 @@ $(LOADEROBJECT):
 	$(ASM) $(ASMFLAGS) $(LOADERSRC) -o $(LOADEROBJECT)
 
 clean:
-	rm -rf asm/*.o *.o *.bin drivers/*.o interruptions/*.o */*.elf memory/*.o
+	rm -rf asm/*.o *.o *.bin drivers/*.o interruptions/*.o */*.elf memory/*.o processes/*.o
 
 .PHONY: all clean
