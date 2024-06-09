@@ -25,7 +25,7 @@ extern int64_t system_create_process(void * process, char * name, uint64_t argc,
 extern int64_t system_kill(uint64_t pid);
 extern int64_t system_block(uint64_t pid);
 extern int64_t system_unblock(uint64_t pid);
-extern int64_t system_wait(char *sem_id);
+extern int64_t system_wait(uint64_t pid);
 extern int64_t system_yield();
 extern int64_t system_nice(uint64_t pid, uint64_t newPrio);
 extern int64_t system_sem_init(char *sem_id, uint64_t initialValue);
@@ -256,9 +256,8 @@ int64_t unblock(uint64_t pid);
 /**
  * @def wait for children to finish
  * @param pid
- * @return
  */
-int64_t wait(uint64_t pid);
+void wait(uint64_t pid);
 
 /**
  * @def process voluntarily gives up control of the processor

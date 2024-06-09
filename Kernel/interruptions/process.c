@@ -122,7 +122,7 @@ PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[], uin
     result->priority = 0;
     result->isForeground = isForeground;
     result->state = READY;
-    result->timesRunning = 0;
+    result->waitingAmount = 0;
     result->prev = NULL;
     result->next = NULL;
 
@@ -183,6 +183,9 @@ int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], u
 
 void exit(){
     current->state = EXITED;
+    for(int i = 0 ; i < current->waitingAmount ; i++){
+        unblock(current->waitingPID[i]);
+    }
     int20();
 }
 
@@ -277,3 +280,10 @@ int64_t yield(){
     return current->pid;
 }
 
+void waitPID(uint64_t pid){
+    int priority;
+    PCB * aux = findProcess(pid, &priority);
+    uint64_t myPID = getPID();
+    aux->waitingPID[aux->waitingAmount++] = myPID;
+    block(myPID);
+}

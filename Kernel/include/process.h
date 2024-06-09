@@ -18,6 +18,7 @@ extern void initHalt(void * rspHalt);
 #define MAX_NAME_LENGTH 20
 #define PRIORITY_AMOUNT 10
 #define MAX_STACK 1024/8
+#define MAX_PARENT_AMOUNT 5
 
 typedef enum State{
     READY,
@@ -35,7 +36,8 @@ typedef struct PCB {
     int priority;
     char isForeground;  //0 no, 1 yes
     State state;
-    int64_t timesRunning;
+    uint64_t waitingPID[MAX_PARENT_AMOUNT];
+    uint64_t waitingAmount;
     struct PCB *prev;
     struct PCB *next;
 } PCB;
@@ -180,5 +182,11 @@ int64_t unblock(uint64_t pid);
  * @return current process pid
  */
 int64_t yield();
+
+/**
+ * @def wait for process with pid to finish
+ * @param pid child process
+ */
+void waitPID(uint64_t pid);
 
 #endif

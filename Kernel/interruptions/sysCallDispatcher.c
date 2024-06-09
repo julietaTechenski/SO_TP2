@@ -81,7 +81,7 @@ uint64_t sysCallHandler(Registers registers){
             case 19:
                 return unblock(registers->rdi);
             case 20:
-                //wait
+                waitPID(registers->rdi);
                 return 0;
             case 21:
                 yield();
