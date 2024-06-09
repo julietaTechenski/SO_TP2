@@ -134,20 +134,36 @@ void getCommand(char buffer[]) {
         return;
 
     int cfound = 0;
-
     //Finds command
-    for (int n = 0; n < AMOUNT_COMMANDS && !cfound; n++) {
+    int n = 0;
+    for (; n < AMOUNT_COMMANDS && !cfound; n++) {
         if (strcmp(commands[n].name, command)) {
             cfound = 1;
-            //commands[n].fn(args);
-            int64_t pid = my_createProcess(commands[n].fn, commands[n].name, j, args, isForeground);
-            if(isForeground){
-                wait(pid);
+            if(!strcmp(args[0],"|")){
+                int64_t pid = my_createProcess(commands[n].fn, commands[n].name, j, args, isForeground);
+                if(isForeground)
+                    wait(pid);
             }
         }
     }
-    // if not found, if it's a process check that args[0] == '|' and that args[1] is also a process
-
+    if(cfound && strcmp(args[0],"|")){
+        void *pArgs[2];
+        pArgs[0] = commands[n].fn;
+        int i = 0;
+        int pfound = 0;
+        for(;!pfound && i < AMOUNT_COMMANDS; i++){
+            if (strcmp(args[1], commands[i].name)) {
+                pArgs[1] = commands[i].fn;
+                pfound = 1;
+            }
+        }
+        if(pfound){
+            my_createProcess(&pipe_command, "pipe",2, pArgs, isForeground);   // revisar isforeground
+        }else {
+            setColor(255, 51, 51);
+            printf("%s: not a command. Valid pipe entry: 'p1 | p2' \n",args[1]);
+        }
+    }
     // if not a valid entry
     if(!cfound){
         setColor(255, 51, 51);

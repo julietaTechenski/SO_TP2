@@ -20,7 +20,7 @@
 
 #define MAX_SIZE 100
 #define USERNAME_MAX_SIZE 20
-#define AMOUNT_COMMANDS 23
+#define AMOUNT_COMMANDS 24
 
 
 typedef struct tcommand{
