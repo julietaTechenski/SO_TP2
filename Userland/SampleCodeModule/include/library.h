@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#define EOFILE '\377'
+
 //EXTERNS ---------------------------------------------------------------------------------
 
 extern int system_read(unsigned int fd, char * buffer, int count);
@@ -276,13 +278,6 @@ int64_t nice(uint64_t pid, uint64_t newPrio);
 
 /**
  *
- * @param
- * @return
- */
-void mem_state();
-
-/**
- *
  * @param sem_id
  * @param initialValue
  * @return
@@ -341,9 +336,21 @@ int dup(void * p, int oldfd, void * pipedir);
 void print_processes();
 
 /**
+ *
+ * @param
+ * @return
+ */
+void mem_state();
+
+/**
  * @def prints standard input
  */
 void cat();
+
+/**
+ * @def prints amount of lines in file
+ */
+void wc();
 
 #endif //LIBRARY_H
 

@@ -59,6 +59,10 @@ void printf(char * string, ...) {
                     auxStr = va_arg(argptr, char*); // next argument passed w type char * obtained with va_arg(argptr, char *)
                     printf(auxStr);  // recursive call to the function
                     break;
+                case 'c':  // format tag for char found
+                    auxStr = va_arg(argptr, char); // next argument passed w type char obtained with va_arg(argptr, char)
+                    printf(auxStr);  // recursive call to the function
+                    break;
             }
             i+=2;
         }else if(string[i]=='\\') {  // if \\ present then print the special character specified '\\' , 'n' or 't'
@@ -111,9 +115,13 @@ int scanf(char* format, ...) {
                     for (int j = 0; aux[j] != 0; ++j)
                         *argD = *argD * 10 + (aux[j] - '0');
                     break;
-
                 case 's':
                     argS = va_arg(args, char*);
+                    for (int j = 0; aux[j] != 0; ++j)
+                        argS[j] = aux[j];
+                    break;
+                case 'c':
+                    argS = va_arg(args, char);
                     for (int j = 0; aux[j] != 0; ++j)
                         argS[j] = aux[j];
                     break;
@@ -148,20 +156,6 @@ int strlen(char * s) {
         i++;
     }
     return i-1;
-}
-
-void mem_state(){
-    sys_mem_state();
-}
-
-void cat(){
-    char buffer[126];
-    int aux;
-    while((aux = read(0,buffer, 126)) != 0) {
-        system_write(1, buffer, aux);
-        printf("\n");
-    }
-    return;
 }
 
 //================================= similar to <stdlib.h> ==================================
@@ -411,4 +405,32 @@ int64_t change_process_state(uint64_t pid, int state){
 
 void print_processes(){
     system_print_processes();
+}
+
+//================================= command functions ==================================
+
+void mem_state(){
+    sys_mem_state();
+}
+
+void cat(){
+    char buffer[126];
+    int aux;
+    while((aux = read(0,buffer, 126)) != 0) {
+        system_write(1, buffer, aux);
+        printf("\n");
+    }
+    return;
+}
+
+void wc(){
+    int count = 0;
+    char read;
+    while((read = getChar()) != EOFILE){
+        printf("%c", read);
+        if(read == '\n'){
+            count++;
+        }
+    }
+    printf("\nAmount of lines: %d", count);
 }
