@@ -1,6 +1,29 @@
 #include "../include/process.h"
 
+//TYPES
 typedef void (*FunctionType)(uint64_t argc, char *argv[]);
+
+typedef enum State{
+    READY,
+    RUNNING,
+    BLOCKED,
+    EXITED
+} State;
+
+typedef struct PCB {
+    char name[MAX_NAME_LENGTH];
+    uint64_t pid;
+    void * rsp;   //stack pinter
+    void * rsb;   //stack base
+    char * argv[MAX_ARGC];
+    int priority;
+    char isForeground;  //0 no, 1 yes
+    State state;
+    uint64_t waitingPID[MAX_PARENT_AMOUNT];
+    uint64_t waitingAmount;
+    struct PCB *prev;
+    struct PCB *next;
+} PCB;
 
 //EXTERN FUNC
 extern void initHalt(void * rspHalt);
