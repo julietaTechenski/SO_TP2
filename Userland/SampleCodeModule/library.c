@@ -150,6 +150,20 @@ int strlen(char * s) {
     return i-1;
 }
 
+void mem_state(){
+    sys_mem_state();
+}
+
+void cat(){
+    char buffer[126];
+    int aux;
+    while((aux = read(0,buffer, 126)) != 0) {
+        system_write(1, buffer, aux);
+        printf("\n");
+    }
+    return;
+}
+
 //================================= similar to <stdlib.h> ==================================
 
 int charToInt(char c) {
@@ -165,7 +179,7 @@ int customRandInRange(int min, int max) {
     return min + (theSeed % (max - min + 1));
 }
 
-void exitProgram(char *args[]) {
+void exitProgram(uint64_t argc,char *args[]) {
     while(1){
         clear_screen();
     }
@@ -288,14 +302,16 @@ void decSize() {
     dec_size();
 }
 
-void clearScreen() {
-    clear_screen();
-}
+
 
 //================================ System Call Functions =================================
 
 void sleep(unsigned int ms){
     _sleep(ms);
+}
+
+void clearScreen() {
+    clear_screen();
 }
 
 void getRegs(){
@@ -315,24 +331,54 @@ void free(void * ptr){
     system_free(ptr);
 }
 
+int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground){
+    return system_create_process(process, name, argc, argv, isForeground);
+}
+
 int64_t getpid(){
     return system_getpid();
 }
 
-int64_t createProcess(char *name, uint64_t argc, char *argv[]){
-    return system_create_process(name,argc,argv);
-}
-
 int64_t kill(uint64_t pid){
-    return system_kill(pid);
+    if(pid > 0){
+        return system_kill(pid);
+    }
+    printf("Invalid arguments\nTry 'help kill' for more information\n");
+    return -1;
 }
 
 int64_t block(uint64_t pid){
-    return system_block(pid);
+    if(pid > 0){
+        int64_t ans = system_block(pid);
+        if(ans == 0){
+            printf("Process %d state modified\n", pid);
+        } else {
+            printf("Process %d is already blocked\n", pid);
+        }
+        return ans;
+    }
+    printf("Invalid arguments\nTry 'help block' for more information\n");
+    return -1;
 }
 
 int64_t unblock(uint64_t pid){
     return system_unblock(pid);
+}
+
+void wait(uint64_t pid){
+    system_wait(pid);
+}
+
+int64_t yield(){
+    return system_yield();
+}
+
+int64_t nice(uint64_t pid, uint64_t newPrio){
+    if(pid > 0 && 0 < newPrio && newPrio < 10){
+        return system_nice(pid, newPrio);
+    }
+    printf("Invalid arguments\nnice: usage: nice <PID> <newPriority>\nTry 'help nice' for more information\n");
+    return -1;
 }
 
 int64_t sem_init(char *sem_id, uint64_t initialValue){
@@ -351,17 +397,22 @@ int64_t sem_close(char *sem_id) {
     return system_sem_close(sem_id);
 }
 
-int64_t wait(char *sem_id){
-    return system_wait(sem_id);
+int pipe(void * pipefd[2]){
+    return system_pipe(pipefd);
 }
 
-int64_t yield(){
-    return system_yield();
+int dup(void * p, int oldfd, void * pipedir){
+    return system_dup(p, oldfd, pipedir);
 }
 
-int64_t nice(uint64_t pid, uint64_t newPrio){
-    return system_nice(pid, newPrio);
+int64_t change_process_state(uint64_t pid, int state){
+    return system_change_process_state(pid, state);
 }
+
+void print_processes(){
+    system_print_processes();
+}
+
 
 int pipe(void * pipefd[2]){
     return system_pipe(pipefd);

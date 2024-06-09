@@ -68,3 +68,33 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 
 	return destination;
 }
+
+void my_strcpy(char *dest, const char *src) {
+    while (*src != '\0') {
+        *dest = *src;
+        src++;
+        dest++;
+    }
+    *dest = '\0';
+}
+
+int my_strlen(char * s) {
+    int i = 0;
+    while(s[i] != 0){
+        i++;
+    }
+    return i;
+}
+
+int my_strcmp(char* s1, char *s2) {
+    int i = 0;
+    while(s1[i] != '\0' && s2[i] != '\0'){
+        if(s1[i] != s2[i])
+            return 0;
+        i++;
+    }
+    if(s1[i] == '\0' && s2[i] == '\0'){
+        return 1;
+    }
+    return 0;
+}

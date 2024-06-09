@@ -212,7 +212,7 @@ Point applePos = {START_X, START_Y};
 
 //================================ Command SNAKE function ================================
 
-void play(char * args[]) {
+void play(uint64_t argc,char * args[]) {
     setScreen();
     playGame();
     clearScreen();

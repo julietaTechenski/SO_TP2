@@ -1,10 +1,9 @@
 
+GLOBAL _hlt
 GLOBAL _cli
 GLOBAL _sti
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
-GLOBAL haltcpu
-GLOBAL _hlt
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
@@ -13,18 +12,28 @@ GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 
+GLOBAL initHalt
+
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
+
 GLOBAL _sysCallHandler
+GLOBAL haltcpu
+GLOBAL getKeyPressed
+
 GLOBAL sound
 GLOBAL noSnd
 
-GLOBAL getKeyPressed
+GLOBAL createStackContext
+GLOBAL int20
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN sysCallHandler
 EXTERN getStackBase
+EXTERN scheduler
+EXTERN printsth
+EXTERN keyboard_handler
 
 SECTION .text
 
@@ -65,9 +74,16 @@ SECTION .text
 %macro popState 0
 	popStateNoA
 	pop rax
+	mov [reg_rip], rax
+	pop rax ;RIP
+	mov rax, [reg_rip]
 %endmacro
 
 %macro pushState 0
+    mov [reg_rip], rax
+    mov rax, [rsp]
+    push rax    ;RIP
+    mov rax, [reg_rip]
 	push rax
     pushStateNoA
 %endmacro
@@ -102,7 +118,11 @@ SECTION .text
 	iretq
 %endmacro
 
+initHalt:
+    mov rsp, rdi
 
+    popState
+    iretq
 
 _hlt:
 	sti
@@ -137,13 +157,32 @@ picSlaveMask:
     retn
 
 
-;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+ 	pushState
+
+	mov rdi, rsp
+	call scheduler
+	mov rsp, rax
+
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 ;Keyboard
 _irq01Handler:
-	irqHandlerMaster 1
+	pushState
+
+    mov rdi, rsp    ; pointer to direction in stack where registers can be found
+    call keyboard_handler
+
+    ; signal pic EOI (End of Interrupt)
+    mov al, 20h
+    out 20h, al
+
+    popState
+    iretq
 
 ;Cascade pic never called
 _irq02Handler:
@@ -281,8 +320,38 @@ noSnd:
     pop rbp
     ret
 
+createStackContext:
+    push rbp
+    mov rbp, rsp
+
+    mov rsp, rdi
+
+    push 0x0
+    push 0x0    ; SS
+    push rdi    ; RSP
+    push 0x202  ; RFLAGS
+    push 0x8    ; CS
+    push rsi    ; RIP
+
+    mov rdi, rdx; process
+    mov rsi, rcx; argc
+    mov rdx, r8 ; argv
+    pushState   ; general purpose registers
+
+    mov rax, rsp
+
+    mov rsp, rbp
+    pop rbp
+
+    ret
+
+int20:
+    int 20h
+    ret
+
 section .data
     userland equ 0x400000
+    reg_rip dq 0
 
 SECTION .bss
 	aux resq 1

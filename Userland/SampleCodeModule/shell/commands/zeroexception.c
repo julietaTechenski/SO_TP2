@@ -2,7 +2,7 @@
 
 //================================ Command ZEROEXCEPTION function ================================
 
-void zeroexception(char *args[]){
+void zeroexception(uint64_t argc,char *args[]){
     int i = 5;
     i /= 0;
     return;

@@ -80,6 +80,11 @@ void printRegisters(RegAux regs) {
     char s[20];
     int longitud;
 
+    longitud = intToString(regs.rip, s);
+    writeString(1, "RIP: ", 5);
+    writeString(1, s, longitud);
+    writeString(1, "\n", 1);
+
     longitud = intToString(regs.rax, s);
     writeString(1, "RAX: ", 5);
     writeString(1, s, longitud);

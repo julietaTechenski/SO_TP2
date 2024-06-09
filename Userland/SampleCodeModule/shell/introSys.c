@@ -43,7 +43,7 @@ void intro() {
             }
         }
     }
-    playNotes();
+    //playNotes();
     clearScreen();
 }
 

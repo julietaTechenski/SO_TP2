@@ -13,7 +13,7 @@ typedef struct{
 // The Assembly function that obtains the time
 extern void getTimeRTC(TimeFormat* t);
 
-void printTime(char * args[]);
+void printTime(uint64_t argc,char * args[]);
 
 
 #endif //PRINTTIME_H

@@ -12,7 +12,15 @@ static int last = 0;
 
 static int shiftFlag = 0;
 static int bloqMayus = 0;
+static int ctrlFlag = 0;
 
+typedef struct bproc {
+    uint64_t pid;
+    int count;
+}bproc;
+
+
+static bproc * blocked;
 
 //Keyboard IRQ
 void keyboard_handler(uint64_t infoRegs){
@@ -21,6 +29,10 @@ void keyboard_handler(uint64_t infoRegs){
     RegAux * aux = (RegAux *) infoRegs;
 
     switch (keyCode) {
+        case CTRL:
+            ctrlFlag=1; return;
+        case CTRL_RELEASE:
+            ctrlFlag=0; return;
         case LSHIFT:
             shiftFlag=1; return;
         case LSHIFT_RELEASE:
@@ -50,13 +62,20 @@ void keyboard_handler(uint64_t infoRegs){
 
     //Differentiate between letters and special characters when pressing shift and capital letters
     char key = keyboardTable[keyCode][0];
-    if(key >= 'a' && key <= 'z')
+    if(key=='c' && ctrlFlag) {
+        killForeground();
+        return;
+    }else if(key=='d' && ctrlFlag) {
+        //end of file;
+        return;
+    }else if(key >= 'a' && key <= 'z')
         key = keyboardTable[keyCode][bloqMayus^shiftFlag];
     else
         key = keyboardTable[keyCode][shiftFlag];
 
     //Only adds it if it has an ASCII representation
     if(key != 0){
+        blocked->count--;
         addEntry(key);
     }
 }
@@ -67,6 +86,9 @@ void addEntry(char c){
         return;
     myBuffer[last] = c;
     last = (last + 1) % INITIAL_SIZE;
+    if(blocked->count==0){
+        unblock(blocked->pid);
+    }
 }
 
 //Gets first entry from the buffer
@@ -74,7 +96,6 @@ char getEntry(){
     if(first == last){
         return 0;
     }
-
     char ret = myBuffer[first];
     first = (first + 1) % INITIAL_SIZE;
     return ret;
@@ -82,7 +103,19 @@ char getEntry(){
 
 //SysCall 3
 int read(unsigned int fd, char * buffer, int count){
+    if(fd != 0){
+        return 0;
+    }
     int i = 0;
+    char c;
+    uint64_t pid = getPID();
+    blocked->pid = pid;
+    blocked->count = count;
+    block(pid);
+    while(i < count && (c = getEntry()) != 0){
+        buffer[i++] = c;
+    }
+    return i;
     uint64_t ppid = getpid();
     PCB *p = getProcess(ppid);
     if( p != NULL){

@@ -6,7 +6,7 @@
 #include "../../include/library.h"
 
 
-void size(char * args[]);
+void size(uint64_t argc,char * args[]);
 
 
 #endif //SIZE_H

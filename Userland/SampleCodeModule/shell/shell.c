@@ -14,23 +14,23 @@ char buffer[MAX_SIZE];
 
 static char username[USERNAME_MAX_SIZE];
 
-void test_mm_wrapper(char * args[]) {
+void test_mm_wrapper(uint64_t argc,char * args[]) {
     uint64_t i=0;
     while(args[i]!=0){
         i++;
     }
     uint64_t arg1 = i;
-    uint64_t result = test_mm(arg1, args);
+    test_mm(arg1, args);
 
 }
 
-void test_processes_wrapper(char * args[]) {
+void test_processes_wrapper(int argc,char * args[]) {
     uint64_t i=0;
     while(args[i]!=0){
         i++;
     }
     uint64_t arg1 = i;
-    uint64_t result = test_processes(arg1, args);
+    test_processes(arg1, args);
 }
 
 
@@ -40,7 +40,7 @@ void test_sync_wrapper(char * args[]) {
         i++;
     }
     uint64_t arg1 = i;
-    uint64_t result = test_sync(arg1, args);
+    test_sync(arg1, args);
 }
 
 tcommand commands[] = {
@@ -48,14 +48,22 @@ tcommand commands[] = {
         {"help", help},
         {"time", printTime},
         {"snake", play},
-        {"clear", clearScreen},
+        {"clear", clear_screen}, //wrapper?
+        {"mem", mem_state}, //wrapper?
         {"exit", exitProgram},
+        {"cat", cat}, //wrapper?
         {"zeroexception", zeroexception},
         {"ioexception", ioexception},
-        {"regs", getRegs},
-        {"test_mm", test_mm_wrapper},
-        {"test_processes", test_processes_wrapper},
+        {"regs", getRegs},  //wrapper?
+        {"test_mm", test_mm},
+        {"test_processes", (void*)test_processes},
         {"test_prio", test_prio},
+        {"test_sync", (void*)test_sync},
+        {"ps", print_processes},
+        {"nice", (void *)nice},
+        {"kill", (void *)kill},
+        {"block", (void *)block}
+
         {"test_sync", test_sync_wrapper},
         {"|", pipe_command}
 };
@@ -65,7 +73,6 @@ tcommand commands[] = {
 void shell() {
     //Into
     intro();
-
     //Username
     int c;
     setColor(141, 132, 255);
@@ -86,6 +93,7 @@ void shell() {
         buffer[c] = 0;
         getCommand(buffer);
     }
+
 }
 
 //====================================== Functions ======================================
@@ -95,14 +103,16 @@ void getCommand(char buffer[]) {
     //turns possible command to string
     char command[20];
     char * args[5] = {0};
-    int i;
-    for(i=0; buffer[i] != ' ' && buffer[i] != '\0'; i++){
+    int isForeground = 1;
+    int i = 0;
+
+    for( ; buffer[i] != ' ' && buffer[i] != '\0'; i++){
         command[i] = buffer[i];
     }
     command[i] = '\0';
 
+    int j = 0;
     if(buffer[i++]==' ') {  //builds args
-        int j = 0;
         while (buffer[i] != '\0' && buffer[i] != ' ') {
             int k = 0;
             char aux[20] = {0};
@@ -127,7 +137,11 @@ void getCommand(char buffer[]) {
     for (int n = 0; n < AMOUNT_COMMANDS && !cfound; n++) {
         if (strcmp(commands[n].name, command)) {
             cfound = 1;
-            commands[n].fn(args);
+            //commands[n].fn(args);
+            int64_t pid = my_createProcess(commands[n].fn, commands[n].name, j, args, isForeground);
+            if(isForeground){
+                wait(pid);
+            }
         }
     }
     // if not found, if it's a process check that args[0] == '|' and that args[1] is also a process
