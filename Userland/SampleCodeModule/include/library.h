@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #define FIVE_SEGS 5000
+#define MAX_SIZE 128
 #define EOFILE '\377'
 
 //EXTERNS ---------------------------------------------------------------------------------

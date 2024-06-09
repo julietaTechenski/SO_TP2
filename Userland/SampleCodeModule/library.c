@@ -438,11 +438,9 @@ void loop(){
 }
 
 void cat(){
-    char buffer[126];
-    int aux;
-    while((aux = read(0,buffer, 126)) != 0) {
-        system_write(1, buffer, aux);
-        printf("\n");
+    char buffer[MAX_SIZE];
+    while(read(0,buffer, MAX_SIZE) != 0) {
+        printf("%s\n\n", buffer);
     }
     return;
 }
@@ -450,18 +448,20 @@ void cat(){
 void wc(){
     int count = 0;
     char read;
-    while((read = getChar()) != EOFILE){
-        printf("%c", read);
+    do {
+        read = getChar();
+        putChar(read);
         if(read == '\n'){
             count++;
         }
     }
+    while(read != EOFILE);
     printf("\nAmount of lines: %d", count);
 }
 
 void filter(){
     char read;
-    while((read = getChar()) != EOFILE){
+    while((read = getChar()) != '\0'){
         if(!isVowel(read)){
             printf("%c", read);
         }
