@@ -19,7 +19,6 @@
 #include <stdint.h>
 #include <stdarg.h>
 
-#define MAX_SIZE 100
 #define USERNAME_MAX_SIZE 20
 #define AMOUNT_COMMANDS 24
 

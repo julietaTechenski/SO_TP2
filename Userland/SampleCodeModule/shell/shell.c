@@ -3,6 +3,7 @@
 #define NULL ((void*)0)
 #define MAX_ARGS 4
 #define MAX_ARG_LENGTH 16
+#define MAX_SIZE 100
 
 //============================== Function Declarations ==============================
 
@@ -108,13 +109,13 @@ void getCommand(char* buffer) {
         return;
 
     int cfound = 0;
-
+    int n = 0;
     //Finds command
-    for (int n = 0; n < AMOUNT_COMMANDS && !cfound; n++) {
+    for (; n < AMOUNT_COMMANDS && !cfound; n++) {
         if (strcmp(commands[n].name, command)) {
             cfound = 1;
             if(!strcmp(args[0],"|")){
-                int64_t pid = my_createProcess(commands[n].fn, commands[n].name, j, args, isForeground);
+                int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount, args, isForeground);
                 if(isForeground)
                     wait(pid);
             }

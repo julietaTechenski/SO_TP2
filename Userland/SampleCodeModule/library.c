@@ -1,4 +1,6 @@
 #include "library.h"
+#define MAX_SIZE 128
+
 
 char charBuf;
 
