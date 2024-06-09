@@ -52,19 +52,16 @@ void mm_free(void* ptr) {
         ptrNode->next = first;
         ptrNode->prev = NULL;
         first = ptrNode;
-        return;
     }
 
     Node * p = first;
-    while( !(ptrNode > p && ptrNode < p->next) ) //busco los bloques de memoria libre que encierran el bloque de memoria usada
-        if(p->next == NULL)
-            break; //me quedo con el ultimo nodo
+    while( !(ptrNode > p && ptrNode < p->next) && p->next != NULL ) //busco los bloques de memoria libre que encierran el bloque de memoria usada
+        p = p->next;
 
     if(p->next==NULL){ //bloque al final
         ptrNode->next=NULL;
         ptrNode->prev=p;
         p->next = ptrNode;
-        return;
     }
 
     if(ptrNode + ptrNode->size == p->next) {
