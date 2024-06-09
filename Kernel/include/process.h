@@ -17,7 +17,7 @@ extern void initHalt(void * rspHalt);
 
 #define MAX_NAME_LENGTH 20
 #define PRIORITY_AMOUNT 10
-#define MAX_STACK 1024/8
+#define MAX_STACK 1024
 #define MAX_PARENT_AMOUNT 5
 #define MAX_ARGC 5
 
