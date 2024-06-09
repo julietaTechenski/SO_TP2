@@ -14,12 +14,14 @@
 #include "test_processes.h"
 #include "test_prio.h"
 #include "test_sync.h"
+#include "phylos.h"
+#include "pipe.h"
 #include <stdint.h>
 #include <stdarg.h>
 
 #define MAX_SIZE 100
 #define USERNAME_MAX_SIZE 20
-#define AMOUNT_COMMANDS 23
+#define AMOUNT_COMMANDS 24
 
 
 typedef struct tcommand{

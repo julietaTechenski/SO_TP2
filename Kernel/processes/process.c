@@ -3,35 +3,12 @@
 //TYPES
 typedef int64_t (*FunctionType)(uint64_t argc, char *argv[]);
 
-typedef enum State{
-    READY,
-    RUNNING,
-    BLOCKED,
-    EXITED
-} State;
-
-typedef struct PCB {
-    char name[MAX_NAME_LENGTH];
-    uint64_t pid;
-    void * rsp;   //stack pinter
-    void * rsb;   //stack base
-    char * argv[MAX_ARGC];
-    int priority;
-    char isForeground;  //0 no, 1 yes
-    State state;
-    uint64_t waitingPID[MAX_PARENT_AMOUNT];
-    uint64_t waitingAmount;
-    struct PCB *prev;
-    struct PCB *next;
-} PCB;
-
 //EXTERN FUNC
 extern void initHalt(void * rspHalt);
 
 //STATIC FUNC
 static void addProcessToList(PCB *newProcess, int priority);
 static void removeProcessFromList(PCB *process, int priority);
-static PCB * findProcess(int64_t pid);
 static PCB * findNextProcess();
 static void haltWrapper();
 static void schedulingWrapper(FunctionType function, uint64_t argc, char *argv[]);
@@ -85,7 +62,7 @@ static void removeProcessFromList(PCB *process, int priority){
         (process->next)->prev = process->prev;
 }
 
-static PCB * findProcess(int64_t pid){
+PCB * findProcess(int64_t pid){
     PCB * iter;
     for(int i = 0 ; i < PRIORITY_AMOUNT ; i++){
         iter = priorityArray[i];

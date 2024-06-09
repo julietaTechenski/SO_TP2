@@ -59,10 +59,6 @@ void printf(char * string, ...) {
                     auxStr = va_arg(argptr, char*); // next argument passed w type char * obtained with va_arg(argptr, char *)
                     printf(auxStr);  // recursive call to the function
                     break;
-                case 'c':  // format tag for char found
-                    auxStr = va_arg(argptr, char); // next argument passed w type char obtained with va_arg(argptr, char)
-                    printf(auxStr);  // recursive call to the function
-                    break;
             }
             i+=2;
         }else if(string[i]=='\\') {  // if \\ present then print the special character specified '\\' , 'n' or 't'
@@ -117,11 +113,6 @@ int scanf(char* format, ...) {
                     break;
                 case 's':
                     argS = va_arg(args, char*);
-                    for (int j = 0; aux[j] != 0; ++j)
-                        argS[j] = aux[j];
-                    break;
-                case 'c':
-                    argS = va_arg(args, char);
                     for (int j = 0; aux[j] != 0; ++j)
                         argS[j] = aux[j];
                     break;
@@ -332,6 +323,7 @@ int64_t kill(uint64_t pid){
     if(pid > 0){
         return system_kill(pid);
     }
+    setColor(255, 51, 51);
     printf("Invalid arguments\nTry 'help kill' for more information\n");
     return -1;
 }
@@ -346,6 +338,7 @@ int64_t block(uint64_t pid){
         }
         return ans;
     }
+    setColor(255, 51, 51);
     printf("Invalid arguments\nTry 'help block' for more information\n");
     return -1;
 }
@@ -363,9 +356,10 @@ int64_t yield(){
 }
 
 int64_t nice(uint64_t pid, uint64_t newPrio){
-    if(pid > 0 && 0 < newPrio && newPrio < 10){
+    if(pid > 0 && 0 <= newPrio && newPrio < 10){
         return system_nice(pid, newPrio);
     }
+    setColor(255, 51, 51);
     printf("Invalid arguments\nnice: usage: nice <PID> <newPriority>\nTry 'help nice' for more information\n");
     return -1;
 }
@@ -399,6 +393,7 @@ int64_t change_process_state(uint64_t pid, int state){
 }
 
 void print_processes(){
+    setColor(20, 205, 197);
     system_print_processes();
 }
 
@@ -428,20 +423,22 @@ void wc(){
     char read;
     do {
         read = getChar();
-        putChar(read);
+        if(read != EOFILE){
+            putChar(read);
+        }
         if(read == '\n'){
             count++;
         }
     }
     while(read != EOFILE);
-    printf("\nAmount of lines: %d", count);
+    printf("\nAmount of lines: %d\n", count);
 }
 
 void filter(){
     char read;
-    while((read = getChar()) != '\0'){
-        if(!isVowel(read)){
-            printf("%c", read);
+    while((read = getChar()) != EOFILE){
+        if(isVowel(read) == 0){
+            putChar(read);
         }
     }
 }

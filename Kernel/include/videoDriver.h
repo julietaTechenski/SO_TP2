@@ -4,6 +4,8 @@
 
 #include <stdint.h>
 #include "lib.h"
+#include "process.h"
+#include "semaphore.h"
 
 //Struct that simulates the pushState that interrupts.asm does to in other to get the rsp
 typedef struct Reg{
@@ -96,6 +98,16 @@ void backUp();
  * @def backs up the cursors coordinate
  */
 void refresh();
+
+/**
+ * syscall write
+ * @param fd
+ * @param string
+ * @param count
+ * @return
+ */
+int write(unsigned int fd, char * string, int count);
+
 
 
 #endif //VIDEODRIVER_H
