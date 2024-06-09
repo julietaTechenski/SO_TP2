@@ -31,6 +31,13 @@ void addProcessToList(PCB *newProcess, int priority){
 
 }
 
+int64_t changePriority(PCB * process, uint64_t newPrio) {
+    removeProcessFromList(process, process->priority);
+    process->priority = newPrio;
+    addProcessToList(process, newPrio);
+    return newPrio;
+}
+
 int64_t changeStatePID(PCB * process, State newState){
     if(process == NULL){
         return -1;
@@ -257,11 +264,9 @@ int64_t kill(uint64_t pid) {
     return 0;
 }
 
-int64_t changePriority(PCB * process, uint64_t newPrio) {
-    removeProcessFromList(process, process->priority);
-    process->priority = newPrio;
-    addProcessToList(process, newPrio);
-    return newPrio;
+int64_t nice(uint64_t pid, uint64_t newPrio){
+    int priority;
+    return changePriority(findProcess(pid, &priority), newPrio);
 }
 
 int64_t block(uint64_t pid){

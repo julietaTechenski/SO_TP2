@@ -88,7 +88,7 @@ uint64_t sysCallHandler(Registers registers){
                 return 0;
             case 22:
                 //nice
-                return changePriority(registers->rdi, registers->rsi);
+                return nice(registers->rdi, registers->rsi);
             case 23:
                 //sem_init
                 return 0;
