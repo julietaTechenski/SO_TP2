@@ -41,6 +41,8 @@ extern int system_pipe(void * pipefd[2]);
 extern int system_dup(void * p, int oldfd, void *pipedir);
 extern int64_t system_change_process_state(uint64_t pid, int state);
 extern void system_print_processes();
+extern int system_pipe(void * pipefd[2]);
+extern int system_dup(void * p, int oldfd, void *pipedir);
 
 
 //FUNCTIONS -------------------------------------------------------------------------------
@@ -378,6 +380,21 @@ void wc();
  */
 void filter();
 
+/**
+ * @def creates a pipe
+ * @param pipefd array read fd (0) and write fd(1)
+ */
+int pipe(void * pipefd[2]);
+
+
+/**
+ *
+ * @param p
+ * @param oldfd
+ * @param pipedir
+ * @return -1 if error
+ */
+int dup(void * p, int oldfd, void * pipedir);
 #endif //LIBRARY_H
 
 

@@ -5,6 +5,7 @@
 #include "videoDriver.h"
 #include "interrupts.h"
 #include "process.h"
+#include "lib.h"
 
 #define INITIAL_SIZE 10
 

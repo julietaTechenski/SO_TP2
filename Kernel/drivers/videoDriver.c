@@ -168,7 +168,9 @@ void putPixel(Color hexColor, uint64_t x, uint64_t y) {
     framebuffer[offset] = hexColor;
 }
 
-//system call 4
+
+
+
 int writeString(unsigned int fd, char * string, int count) {
     Color aux = defForeGround;
     if (fd == 2){

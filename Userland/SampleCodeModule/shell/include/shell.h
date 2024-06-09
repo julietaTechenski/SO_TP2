@@ -15,6 +15,7 @@
 #include "test_prio.h"
 #include "test_sync.h"
 #include "phylos.h"
+#include "pipe.h"
 #include <stdint.h>
 #include <stdarg.h>
 

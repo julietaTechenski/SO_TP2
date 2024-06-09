@@ -151,7 +151,7 @@ sys_mem_state:
     sysCall 27
 
 system_pipe:
-    ;sysCall
+    sysCall 31
 
 system_dup:
     sysCall 28

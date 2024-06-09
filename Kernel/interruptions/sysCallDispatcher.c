@@ -39,7 +39,7 @@ uint64_t sysCallHandler(Registers registers){
             case 3:
                 return read(registers->rdi,(char *)registers->rsi,registers->rdx);
             case 4:
-                return writeString(registers->rdi,(char *) registers->rsi,registers->rdx);
+                return write(registers->rdi,(char *) registers->rsi,registers->rdx);
             case 5:
                 clearScreen();
                 return 0;
@@ -104,8 +104,6 @@ uint64_t sysCallHandler(Registers registers){
             case 27:
                 mm_state();
                 return 0;
-            //case 27: CAMBIAR NUMERO
-            //    return 0/*pipe((void**)registers->rdi)*/;
             case 28:
                 return 0/*dup((void *)registers->rdi, registers->rsi, (void*)registers->rdx)*/;
             case 29:
@@ -113,6 +111,8 @@ uint64_t sysCallHandler(Registers registers){
             case 30:
                 printProcesses();
                 return 0;
+            case 31:
+                return 0/*pipe((void**)registers->rdi)*/;
         }
         return 0;
     }

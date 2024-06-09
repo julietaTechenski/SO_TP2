@@ -1,4 +1,7 @@
 #include "keyboardDriver.h"
+#define STDOUT 1
+#define STDIN 1
+
 
 //Auxiliary functions
 void addEntry(char c);
@@ -105,17 +108,82 @@ char getEntry(){
 
 //SysCall 3
 int read(unsigned int fd, char * buffer, int count){
-    if(fd != 0){
-        return 0;
-    }
-    int i = 0;
-    char c;
     uint64_t pid = getPID();
     blocked->pid = pid;
     blocked->count = count;
     block(pid);
-    while(i < count && (c = getEntry()) != 0){
-        buffer[i++] = c;
+    int priority;
+    PCB * p = findProcess(pid, &priority);
+    if( p != NULL){
+        int i = 0;
+        if(p->fd[fd] != NULL){ //pipe read
+            int c = count;
+            char *rReady = "rReady";
+            my_sem_open(rReady, 0); // read => rReady = 1
+
+            char *wReady = "wReady";
+            my_sem_open(wReady, 0);
+
+            my_sem_wait(wReady); //waits for input
+
+            while(c > 0 && p->fd[STDIN][i] !=0){
+                for(;c > 0 && p->fd[STDIN][i] !=0 && i <128; i++, c--){
+                    buffer[i] = p->fd[STDIN][i];
+                }
+                if(i==128){
+                    i=0;
+                    my_sem_post(rReady);
+                    my_sem_wait(wReady);
+                }
+                if(p->fd[STDIN][i-1] ==0){
+                    i--;
+                }
+            }
+            my_sem_post(rReady);
+            return 0;
+        }else{ //reads from keyboard interrupts
+            char c;
+            while(i < count && (c = getEntry()) != 0){
+                buffer[i++] = c;
+            }
+            return i;
+        }
     }
-    return i;
+    return 0; //error
 }
+
+
+//system call 4
+int write(unsigned int fd, char * string, int count){
+    uint64_t ppid = getPID();
+    int prio;
+    PCB *p = findProcess(ppid, &prio);
+    if(p->fd[fd] != NULL){  //pipe write
+        char *rReady = "rReady";
+        my_sem_open(rReady, 0);
+
+        char *wReady = "wReady";
+        my_sem_open(wReady, 0);
+
+        int i=0;
+        int c = count;
+        while(c > 0 && string[i] != 0){
+            for( ;c > 0 && string[i]!=0 && i <128; i++, c--){
+                p->fd[fd][i] = string[i];
+            }
+            if(i==128){
+                i=0; //restart buffer pos counter
+                my_sem_post(wReady);
+                my_sem_wait(rReady);  // waiting buffer to be read
+            }
+            if(string[i-1]==0){
+                my_sem_post(wReady);
+                i--;
+            }
+        }
+        my_sem_post(wReady);
+    } else{ // STDOUT
+        writeString(STDOUT, string, count);
+    }
+}
+
