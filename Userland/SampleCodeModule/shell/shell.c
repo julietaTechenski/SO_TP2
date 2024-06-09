@@ -60,9 +60,13 @@ tcommand commands[] = {
         {"test_prio", test_prio},
         {"test_sync", (void*)test_sync},
         {"ps", print_processes},
+        {"loop", loop},
         {"nice", (void *)nice},
         {"kill", (void *)kill},
-        {"block", (void *)block}
+        {"block", (void *)block},
+        {"cat", cat},
+        {"wc", wc},
+        {"filter", filter}
 
 };
 
