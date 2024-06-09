@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#define FIVE_SEGS 5000
 #define EOFILE '\377'
 
 //EXTERNS ---------------------------------------------------------------------------------
@@ -341,6 +342,11 @@ void print_processes();
  * @return
  */
 void mem_state();
+
+/**
+ * @def prints ID with a greeting every n seconds
+ */
+void loop();
 
 /**
  * @def prints standard input

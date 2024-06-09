@@ -413,6 +413,13 @@ void mem_state(){
     sys_mem_state();
 }
 
+void loop(){
+    while(1){
+        sleep(FIVE_SEGS);
+        printf("Hi! I'm process %d!\n", getpid());
+    }
+}
+
 void cat(){
     char buffer[126];
     int aux;
