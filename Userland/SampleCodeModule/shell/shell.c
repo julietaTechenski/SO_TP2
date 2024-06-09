@@ -62,9 +62,7 @@ tcommand commands[] = {
         {"ps", print_processes},
         {"nice", (void *)nice},
         {"kill", (void *)kill},
-        {"block", (void *)block}
-
-        {"test_sync", test_sync_wrapper},
+        {"block", (void *)block},
         {"|", pipe_command}
 };
 

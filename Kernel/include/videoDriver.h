@@ -4,6 +4,8 @@
 
 #include <stdint.h>
 #include "lib.h"
+#include "process.h"
+#include "semaphore.h"
 
 //Struct that simulates the pushState that interrupts.asm does to in other to get the rsp
 typedef struct Reg{

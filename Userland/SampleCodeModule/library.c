@@ -412,12 +412,3 @@ int64_t change_process_state(uint64_t pid, int state){
 void print_processes(){
     system_print_processes();
 }
-
-
-int pipe(void * pipefd[2]){
-    return system_pipe(pipefd);
-}
-
-int dup(void * p, int oldfd, void * pipedir){
-    return system_dup(p, fd, pipedir);
-}

@@ -41,6 +41,7 @@ typedef struct PCB {
     uint64_t waitingAmount;
     struct PCB *prev;
     struct PCB *next;
+    char * fd[2];
 } PCB;
 
 //INTERNAL FUNCTIONS -------------------------------------------------------------------------------

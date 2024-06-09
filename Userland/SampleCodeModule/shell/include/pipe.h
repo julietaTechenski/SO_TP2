@@ -3,7 +3,6 @@
 
 #include "../../include/library.h"
 
-void pipe_command(void * p1, void * p2);
-
+void pipe_command(uint64_t argc, char* argv[]);
 
 #endif //SO_TP2_PIPE_H

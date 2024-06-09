@@ -116,8 +116,7 @@ int read(unsigned int fd, char * buffer, int count){
         buffer[i++] = c;
     }
     return i;
-    uint64_t ppid = getpid();
-    PCB *p = getProcess(ppid);
+    /*
     if( p != NULL){
         if(p->fds[fd] != NULL){
             char *sem_pipe = "sem_pipe";
@@ -139,7 +138,7 @@ int read(unsigned int fd, char * buffer, int count){
         }
         return i;
     }
-    return 0; //error
+    return 0; //error*/
 }
 
 
