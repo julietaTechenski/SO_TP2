@@ -46,25 +46,22 @@ void * mm_alloc(size_t n_bytes) {
 void mm_free(void* ptr) {
     Node * ptrNode = (Node *)ptr - 1; //accede al header de la zona de memoria. El next y prev de la zona ocupada no tiene informacion valida
 
-    freeMem += ptrNode->size;
+    freeMem += ptrNode->size / sizeof(Node);
 
     if(first==NULL || first >= ptrNode){ //bloque al principio
         ptrNode->next = first;
         ptrNode->prev = NULL;
         first = ptrNode;
-        return;
     }
 
     Node * p = first;
-    while( !(ptrNode > p && ptrNode < p->next) ) //busco los bloques de memoria libre que encierran el bloque de memoria usada
-        if(p->next == NULL)
-            break; //me quedo con el ultimo nodo
+    while( !(ptrNode > p && ptrNode < p->next) && p->next != NULL ) //busco los bloques de memoria libre que encierran el bloque de memoria usada
+        p = p->next;
 
     if(p->next==NULL){ //bloque al final
         ptrNode->next=NULL;
         ptrNode->prev=p;
         p->next = ptrNode;
-        return;
     }
 
     if(ptrNode + ptrNode->size == p->next) {

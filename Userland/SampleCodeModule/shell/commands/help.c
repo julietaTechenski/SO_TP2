@@ -64,7 +64,7 @@ void help(uint64_t argc,char * args[]){
     int flag = 0;   // If its 1 then the argument was a command
     setColor(192, 192, 192);
 
-    if(*args[0] != 0){
+    if(argc != 0){
         // Checks the user inserted a valid argument
         for(int i=0; i < COM_SIZE;i++){
             if(strcmp(args[0], comm[i])){

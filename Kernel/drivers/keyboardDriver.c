@@ -66,7 +66,7 @@ void keyboard_handler(uint64_t infoRegs){
         killForeground();
         return;
     }else if(key=='d' && ctrlFlag) {
-        //end of file;
+        writeString(1, EOFILE, 1);
         return;
     }else if(key >= 'a' && key <= 'z')
         key = keyboardTable[keyCode][bloqMayus^shiftFlag];

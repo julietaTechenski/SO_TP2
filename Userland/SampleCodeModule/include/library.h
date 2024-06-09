@@ -4,6 +4,10 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#define FIVE_SEGS 5000
+#define MAX_SIZE 128
+#define EOFILE '\377'
+
 //EXTERNS ---------------------------------------------------------------------------------
 
 extern int system_read(unsigned int fd, char * buffer, int count);
@@ -165,6 +169,20 @@ void intToString(int n, char* s);
 int digits(int n);
 
 /**
+ * @def turns letter to lowercase if in uppercase
+ * @param letter
+ * @return char in lowercase
+ */
+char toLower(char letter);
+
+/**
+ *
+ * @param letter
+ * @return
+ */
+int isVowel(char letter);
+
+/**
  * @def reads from fd specified and stores it in the buffer
  * @param fd : file descriptor
  * @param buffer : destination of read characters
@@ -278,13 +296,6 @@ int64_t nice(uint64_t pid, uint64_t newPrio);
 
 /**
  *
- * @param
- * @return
- */
-void mem_state();
-
-/**
- *
  * @param sem_id
  * @param initialValue
  * @return
@@ -343,9 +354,31 @@ int dup(void * p, int oldfd, void * pipedir);
 void print_processes();
 
 /**
+ *
+ * @param
+ * @return
+ */
+void mem_state();
+
+/**
+ * @def prints ID with a greeting every n seconds
+ */
+void loop();
+
+/**
  * @def prints standard input
  */
 void cat();
+
+/**
+ * @def prints amount of lines in file
+ */
+void wc();
+
+/**
+ * @def filter vowels from standard input
+ */
+void filter();
 
 /**
  * @def creates a pipe

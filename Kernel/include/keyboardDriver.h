@@ -18,6 +18,8 @@
 #define F2 60
 #define F3 61
 
+#define EOFILE '\377'
+
 //Scancode Set 2 (key=scancode - value=ascii)
 const static char keyboardTable[][2] = {
         {0,0},

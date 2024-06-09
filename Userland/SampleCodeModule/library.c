@@ -59,6 +59,10 @@ void printf(char * string, ...) {
                     auxStr = va_arg(argptr, char*); // next argument passed w type char * obtained with va_arg(argptr, char *)
                     printf(auxStr);  // recursive call to the function
                     break;
+                case 'c':  // format tag for char found
+                    auxStr = va_arg(argptr, char); // next argument passed w type char obtained with va_arg(argptr, char)
+                    printf(auxStr);  // recursive call to the function
+                    break;
             }
             i+=2;
         }else if(string[i]=='\\') {  // if \\ present then print the special character specified '\\' , 'n' or 't'
@@ -111,9 +115,13 @@ int scanf(char* format, ...) {
                     for (int j = 0; aux[j] != 0; ++j)
                         *argD = *argD * 10 + (aux[j] - '0');
                     break;
-
                 case 's':
                     argS = va_arg(args, char*);
+                    for (int j = 0; aux[j] != 0; ++j)
+                        argS[j] = aux[j];
+                    break;
+                case 'c':
+                    argS = va_arg(args, char);
                     for (int j = 0; aux[j] != 0; ++j)
                         argS[j] = aux[j];
                     break;
@@ -148,20 +156,6 @@ int strlen(char * s) {
         i++;
     }
     return i-1;
-}
-
-void mem_state(){
-    sys_mem_state();
-}
-
-void cat(){
-    char buffer[126];
-    int aux;
-    while((aux = read(0,buffer, 126)) != 0) {
-        system_write(1, buffer, aux);
-        printf("\n");
-    }
-    return;
 }
 
 //================================= similar to <stdlib.h> ==================================
@@ -221,6 +215,23 @@ int digits(int n){
         rta++;
     }
     return rta;
+}
+
+//================================= similar to <ctype.h> ==================================
+
+char toLower(char letter){
+    if(letter >= 65 && letter <= 90){
+        return letter + 32;
+    }
+    return -1;
+}
+
+int isVowel(char letter){
+    int lett = toLower(letter);
+    if(lett == 'a' || lett == 'e' || lett == 'i' || lett == 'o' || lett == 'u'){
+        return 1;
+    }
+    return 0;
 }
 
 //================================= Reading Functions ==================================
@@ -411,4 +422,48 @@ int64_t change_process_state(uint64_t pid, int state){
 
 void print_processes(){
     system_print_processes();
+}
+
+//================================= command functions ==================================
+
+void mem_state(){
+    sys_mem_state();
+}
+
+void loop(){
+    while(1){
+        sleep(FIVE_SEGS);
+        printf("Hi! I'm process %d!\n", getpid());
+    }
+}
+
+void cat(){
+    char buffer[MAX_SIZE];
+    while(read(0,buffer, MAX_SIZE) != 0) {
+        printf("%s\n\n", buffer);
+    }
+    return;
+}
+
+void wc(){
+    int count = 0;
+    char read;
+    do {
+        read = getChar();
+        putChar(read);
+        if(read == '\n'){
+            count++;
+        }
+    }
+    while(read != EOFILE);
+    printf("\nAmount of lines: %d", count);
+}
+
+void filter(){
+    char read;
+    while((read = getChar()) != '\0'){
+        if(!isVowel(read)){
+            printf("%c", read);
+        }
+    }
 }

@@ -128,7 +128,7 @@ PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[], uin
     for(int i = 0; i < argc; i++){
         my_strcpy(result->argv[i], argv[i]);
     }
-    result->rsp = createStackContext(result->rsb + MAX_STACK, &schedulingWrapper, process, argc, result->argv);
+    result->rsp = createStackContext((uint64_t *)((char *)result->rsb + MAX_STACK - 1), &schedulingWrapper, process, argc, result->argv);
     result->priority = 0;
     result->isForeground = isForeground;
     result->state = READY;
