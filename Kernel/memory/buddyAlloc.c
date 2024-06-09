@@ -17,8 +17,11 @@ static int max_order;
 int freeMem;
 int total;
 
-int firstAllocRun = 1;
-int firstFreeRun = 1;
+static int firstAllocRun = 1;
+static int firstFreeRun = 1;
+
+static int free_recursion_counter = 0;
+static int alloc_recursion_counter = 0;
 
 
 
@@ -69,8 +72,11 @@ void mm_init(void * ptr, size_t max_size) {
 }
 
 void* mm_alloc(size_t size) {
-    if(firstAllocRun){
-        freeMem -= sizeof(block_t) + size;
+    int first_call = (alloc_recursion_counter == 0);
+    alloc_recursion_counter++;
+
+   if (first_call && firstAllocRun) {
+        freeMem -= size;
         firstAllocRun = !firstAllocRun;
     }
     int i = 0;
@@ -79,13 +85,15 @@ void* mm_alloc(size_t size) {
         i++;
     }
 
+    void* result = NULL;
     if(i > max_order){
-        return NULL;
+         result = NULL;
     } else if (free_blocks[i] != NULL) {
+        firstAllocRun = !firstAllocRun;
         block_t* block = free_blocks[i];
         free_blocks[i] = free_blocks[i]->next;
         block->size = BLOCKSIZE(i);
-        return (void*)(block);
+        result = (void*)(block);
     } else {
         block_t* block = (block_t*)mm_alloc(BLOCKSIZE(i + 1) - sizeof(block_t));
         if (block != NULL) {
@@ -100,15 +108,24 @@ void* mm_alloc(size_t size) {
             free_blocks[i] = buddy;
             block = (block_t*)((uintptr_t)block + (uintptr_t)base_memory);  // reverse to absolute after getting the buddy
             block->size = BLOCKSIZE(i);
-            return (void*)(block);
+            result = (void*)(block);
         }
-        return NULL;
     }
+
+    alloc_recursion_counter--;
+
+    if (alloc_recursion_counter == 0) {
+        firstAllocRun = 1;
+    }
+
+    return result;
 }
 
 void mm_free(void * ptr) {
+
+    free_recursion_counter++;
      if(firstFreeRun){
-        freeMem += sizeof(block_t) + ((block_t*)(ptr-sizeof(block_t)))->size;
+        freeMem += ((block_t*)(ptr-sizeof(block_t)))->size;
         firstAllocRun = !firstAllocRun;
     }
     block_t *block = (block_t *)ptr - sizeof(block_t) ;
@@ -118,6 +135,11 @@ void mm_free(void * ptr) {
     }
 
     if(i > max_order){
+        free_recursion_counter--;
+        // Resetear firstFreeRun si no hay más llamadas recursivas
+        if (free_recursion_counter == 0) {
+            firstFreeRun = 1;
+        }
         return;
     }
     block = (block_t*)((uintptr_t)block - (uintptr_t)base_memory);
@@ -143,6 +165,12 @@ void mm_free(void * ptr) {
         }else{
             mm_free(block + sizeof(block_t));
         }
+    }
+
+    free_recursion_counter--;
+    // Resetear firstFreeRun si no hay más llamadas recursivas
+    if (free_recursion_counter == 0) {
+        firstFreeRun = 1;
     }
 }
 
