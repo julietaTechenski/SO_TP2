@@ -104,11 +104,6 @@ void getCommand(char buffer[]) {
     int isForeground = 1;
     int i = 0;
 
-    if(buffer[i] == '&'){
-        isForeground = 0;
-        i++;
-    }
-
     for( ; buffer[i] != ' ' && buffer[i] != '\0'; i++){
         command[i] = buffer[i];
     }
@@ -141,7 +136,10 @@ void getCommand(char buffer[]) {
         if (strcmp(commands[n].name, command)) {
             cfound = 1;
             //commands[n].fn(args);
-            my_createProcess(&commands[n].fn, commands[n].name, j, args, isForeground);
+            int64_t pid = my_createProcess(commands[n].fn, commands[n].name, j, args, isForeground);
+            if(isForeground){
+                wait(pid);
+            }
         }
     }
     //If not found, prints error message

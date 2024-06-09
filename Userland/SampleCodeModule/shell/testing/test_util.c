@@ -63,12 +63,12 @@ void endless_loop() {
       printf("hello\n");
   }
 }
-//
-//void endless_loop_print(uint64_t wait) {
-////  int64_t pid = my_getpid();   // DESCOMENTAR CUANDO TENGAMOS GET PID
-//
-//  while (1) {
-//    printf("%d ", pid);
-//    bussy_wait(wait);
-//  }
-//}
+
+void endless_loop_print(uint64_t wait) {
+  int64_t pid = getpid();
+
+  while (1) {
+    printf("%d ", pid);
+    bussy_wait(wait);
+  }
+}
