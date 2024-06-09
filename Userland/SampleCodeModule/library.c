@@ -217,6 +217,23 @@ int digits(int n){
     return rta;
 }
 
+//================================= similar to <ctype.h> ==================================
+
+char toLower(char letter){
+    if(letter >= 65 && letter <= 90){
+        return letter + 32;
+    }
+    return -1;
+}
+
+int isVowel(char letter){
+    int lett = toLower(letter);
+    if(lett == 'a' || lett == 'e' || lett == 'i' || lett == 'o' || lett == 'u'){
+        return 1;
+    }
+    return 0;
+}
+
 //================================= Reading Functions ==================================
 
 int readDelim(int fd, char * buffer, int count, char delim) {
@@ -440,4 +457,13 @@ void wc(){
         }
     }
     printf("\nAmount of lines: %d", count);
+}
+
+void filter(){
+    char read;
+    while((read = getChar()) != EOFILE){
+        if(!isVowel(read)){
+            printf("%c", read);
+        }
+    }
 }

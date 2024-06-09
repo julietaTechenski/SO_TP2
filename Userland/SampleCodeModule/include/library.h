@@ -166,6 +166,20 @@ void intToString(int n, char* s);
 int digits(int n);
 
 /**
+ * @def turns letter to lowercase if in uppercase
+ * @param letter
+ * @return char in lowercase
+ */
+char toLower(char letter);
+
+/**
+ *
+ * @param letter
+ * @return
+ */
+int isVowel(char letter);
+
+/**
  * @def reads from fd specified and stores it in the buffer
  * @param fd : file descriptor
  * @param buffer : destination of read characters
@@ -357,6 +371,11 @@ void cat();
  * @def prints amount of lines in file
  */
 void wc();
+
+/**
+ * @def filter vowels from standard input
+ */
+void filter();
 
 #endif //LIBRARY_H
 
