@@ -66,7 +66,7 @@ tcommand commands[] = {
         {"block", (void *)block},
         {"cat", cat}, //wrapper?
         {"wc", wc},  //wrapper?
-        {"filter", filter, //wrapper?
+        {"filter", filter}, //wrapper?
         {"|", pipe_command}
 };
 
