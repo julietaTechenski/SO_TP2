@@ -3,6 +3,8 @@
 #define STDOUT 1
 #define STDIN 0
 
+#define NULL  ((void*)0)
+
 void pipe_command(uint64_t argc, char* argv[]){
     void * pipefd[2];
 
