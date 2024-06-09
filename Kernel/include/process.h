@@ -53,6 +53,14 @@ typedef struct PCB {
 void addProcessToList(PCB *newProcess, int priority);
 
 /**
+ * @def modifies process priority
+ * @param process
+ * @param newPrio
+ * @return new process priority
+ */
+int64_t changePriority(PCB * process, uint64_t newPrio);
+
+/**
  * @def modifies process state to newState if possible
  * @param process
  * @param newState new process state
@@ -157,11 +165,11 @@ int64_t kill(uint64_t pid);
 
 /**
  * @def modifies process priority
- * @param process
+ * @param pid process to change priority's pid
  * @param newPrio
  * @return new process priority
  */
-int64_t changePriority(PCB * process, uint64_t newPrio);
+int64_t nice(uint64_t pid, uint64_t newPrio);
 
 /**
  * @def blocks process with matching pid if possible
