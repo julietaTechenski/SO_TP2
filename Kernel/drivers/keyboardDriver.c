@@ -112,20 +112,19 @@ int read(unsigned int fd, char * buffer, int count){
     blocked->pid = pid;
     blocked->count = count;
     block(pid);
-    while(i < count && (c = getEntry()) != 0){
-        buffer[i++] = c;
-    }
-    return i;
-    /*
+    int priority;
+    PCB * p = findProcess(p, &priority);
+
     if( p != NULL){
-        if(p->fds[fd] != NULL){
+        if(p->fd[fd] != NULL){
+            int read;
             char *sem_pipe = "sem_pipe";
             sem_init("sem_pipe", 1);
             //reads from pipe
             sem_wait(sem_pipe);
             while(i < count){
-                buffer[i] = *p->fds[0];
-                p->fds[fd] += sizeof(char);
+                buffer[i] = *p->fd[0];
+                p->fd[fd] += sizeof(char);
                 i++;
             }
             sem_post(sem_pipe);
@@ -138,7 +137,27 @@ int read(unsigned int fd, char * buffer, int count){
         }
         return i;
     }
-    return 0; //error*/
+    return 0; //error
 }
 
+
+//system call 4
+int write(unsigned int fd, char * string, int count){
+    uint64_t ppid = getPID();
+    int prio;
+    PCB *p = findProcess(ppid, &prio);
+    if(p->fd[fd] != NULL){
+        char *sem_pipe = "sem_pipe";
+        my_sem_open("sem_pipe", 1);
+        my_sem_wait(sem_pipe);
+        for(int i= 0; i < count && *string != '\0'; i++){
+            *p->fd[fd] = *string;
+            string++;
+            p->fd[fd] += sizeof(char);
+        }
+        my_sem_post(sem_pipe);
+    }
+    //write to STDOUT
+    writeString(fd, string, count);
+}
 

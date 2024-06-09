@@ -168,26 +168,6 @@ void putPixel(Color hexColor, uint64_t x, uint64_t y) {
     framebuffer[offset] = hexColor;
 }
 
-//system call 4
-int write(unsigned int fd, char * string, int count){
-    uint64_t ppid = getPID();
-    int prio;
-    PCB *p = findProcess(ppid, &prio);
-    if(p->fd[fd] != NULL){
-        char *sem_pipe = "sem_pipe";
-        my_sem_open("sem_pipe", 1);
-        my_sem_wait(sem_pipe);
-        for(int i= 0; i < count && *string != '\0'; i++){
-            *p->fd[fd] = *string;
-            string++;
-            p->fd[fd] += sizeof(char);
-        }
-        my_sem_post(sem_pipe);
-    }
-    //write to STDOUT
-    writeString(fd, string, count);
-}
-
 
 
 
