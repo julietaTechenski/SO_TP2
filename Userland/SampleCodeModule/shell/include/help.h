@@ -5,7 +5,7 @@
 #include "../../include/library.h"
 
 
-void help(char * args[]);
+void help(uint64_t argc,char * args[]);
 
 
 #endif //HELP_H

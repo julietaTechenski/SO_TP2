@@ -6,7 +6,7 @@ static char* SUBSTRACT = "-";
 
 //================================ Command SIZE function ================================
 
-void size(char * args[]){
+void size(uint64_t argc,char * args[]){
     // User inserted 'size +'
     if(strcmp(ADD, args[0])){
         incSize();

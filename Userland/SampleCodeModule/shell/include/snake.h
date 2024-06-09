@@ -102,7 +102,7 @@ typedef struct {
     int y;
 } Point;
 
-void play(char * args[]);
+void play(uint64_t argc,char * args[]);
 
 
 #endif //SNAKE_H

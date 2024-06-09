@@ -114,17 +114,14 @@ void killProcess(PCB *process){
 
 PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground){
     PCB * result = (PCB *) mm_alloc(sizeof(PCB));
-
-    char* args[10] = {0};
-
-    for(int i = 0; i < argc; i++){
-        my_strcpy(args[i], argv[i]);
-    }
-
     my_strcpy(result->name, name);
     result->pid = currentPID++;
     result->rsb = mm_alloc(MAX_STACK);
-    result->rsp = createStackContext(result->rsb + MAX_STACK, &schedulingWrapper, process, argc, args);
+
+    for(int i = 0; i < argc; i++){
+        my_strcpy(result->argv[i], argv[i]);
+    }
+    result->rsp = createStackContext(result->rsb + MAX_STACK, &schedulingWrapper, process, argc, result->argv);
     result->priority = 0;
     result->isForeground = isForeground;
     result->state = READY;

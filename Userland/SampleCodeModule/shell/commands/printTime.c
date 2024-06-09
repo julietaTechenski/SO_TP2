@@ -2,7 +2,7 @@
 
 //================================ Command TIME function ================================
 
-void printTime(char * args[]){
+void printTime(uint64_t argc,char * args[]){
     setColor(192, 192, 192);
 
     // Where time will be stored

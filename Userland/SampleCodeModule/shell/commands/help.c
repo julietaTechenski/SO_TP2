@@ -60,7 +60,7 @@ void helpWithoutParams();
 
 //================================ Command HELP function ================================
 
-void help(char * args[]){
+void help(uint64_t argc,char * args[]){
     int flag = 0;   // If its 1 then the argument was a command
     setColor(192, 192, 192);
 

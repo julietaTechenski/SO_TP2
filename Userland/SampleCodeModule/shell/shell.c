@@ -14,7 +14,7 @@ char buffer[MAX_SIZE];
 
 static char username[USERNAME_MAX_SIZE];
 
-void test_mm_wrapper(char * args[]) {
+void test_mm_wrapper(uint64_t argc,char * args[]) {
     uint64_t i=0;
     while(args[i]!=0){
         i++;
@@ -24,7 +24,7 @@ void test_mm_wrapper(char * args[]) {
 
 }
 
-void test_processes_wrapper(char * args[]) {
+void test_processes_wrapper(int argc,char * args[]) {
     uint64_t i=0;
     while(args[i]!=0){
         i++;
@@ -48,17 +48,17 @@ tcommand commands[] = {
         {"help", help},
         {"time", printTime},
         {"snake", play},
-        {"clear", clear_screen},
-        {"mem", mem_state},
+        {"clear", clear_screen}, //wrapper?
+        {"mem", mem_state}, //wrapper?
         {"exit", exitProgram},
-        {"cat", cat},
+        {"cat", cat}, //wrapper?
         {"zeroexception", zeroexception},
         {"ioexception", ioexception},
-        {"regs", getRegs},
-        {"test_mm", test_mm_wrapper},
-        {"test_processes", test_processes_wrapper},
+        {"regs", getRegs},  //wrapper?
+        {"test_mm", test_mm},
+        {"test_processes", (void*)test_processes},
         {"test_prio", test_prio},
-        {"test_sync", test_sync_wrapper},
+        {"test_sync", (void*)test_sync},
         {"ps", print_processes},
         {"nice", (void *)nice},
         {"kill", (void *)kill},

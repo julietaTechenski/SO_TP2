@@ -8,7 +8,7 @@
 #include "../../include/_loader.h"
 #include <stdint.h>
 
-uint64_t test_mm(uint64_t argc, char *argv[]);
+void test_mm(uint64_t argc, char *argv[]);
 
 
 #endif //T_MM_H

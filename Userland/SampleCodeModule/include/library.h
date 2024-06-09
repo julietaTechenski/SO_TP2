@@ -146,7 +146,7 @@ int customRandInRange(int min, int max);
  * @def terminates process
  * @param args 0
  */
-void exitProgram(char *args[]);
+void exitProgram(uint64_t argc,char *args[]);
 
 /**
  * @def turns an integer into a string, char *

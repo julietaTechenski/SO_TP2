@@ -179,7 +179,7 @@ int customRandInRange(int min, int max) {
     return min + (theSeed % (max - min + 1));
 }
 
-void exitProgram(char *args[]) {
+void exitProgram(uint64_t argc,char *args[]) {
     while(1){
         clear_screen();
     }

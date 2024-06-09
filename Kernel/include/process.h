@@ -19,6 +19,7 @@ extern void initHalt(void * rspHalt);
 #define PRIORITY_AMOUNT 10
 #define MAX_STACK 1024/8
 #define MAX_PARENT_AMOUNT 5
+#define MAX_ARGC 5
 
 typedef enum State{
     READY,
@@ -32,7 +33,7 @@ typedef struct PCB {
     uint64_t pid;
     void * rsp;   //stack
     void * rsb;   //base pointer
-    char ** argv;
+    char * argv[MAX_ARGC];
     int priority;
     char isForeground;  //0 no, 1 yes
     State state;
