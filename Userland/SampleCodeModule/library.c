@@ -244,25 +244,7 @@ int readDelim(int fd, char * buffer, int count, char delim) {
     char c;
     int i = 0; //read characters tracker
 
-    char flag = 0; //cursor flag
     while((c = getChar()) != delim){ //analyze the selected key to decide whether or not to keep reading
-
-        //Updates the cursor every second
-        if(getSeconds() % 2 == 0 && flag == 0) {
-            putChar('|');
-            flag = 1;
-        }
-
-        if(getSeconds() % 2 == 1 && flag == 1){
-            putChar('\b');
-            flag = 0;
-        }
-
-        //If the user will write or delete, the cursor must be deleted
-        if(c != 0 && flag == 1) {
-            putChar('\b');
-            flag = 0;
-        }
 
         switch (c) {
             case 0: //The buffer is empty
@@ -284,10 +266,6 @@ int readDelim(int fd, char * buffer, int count, char delim) {
                 putChar(c);
         }
 
-    }
-    //Delete the cursor
-    if(flag == 1){
-        putChar('\b');
     }
 
     return i; // Returns the amount of copied characters

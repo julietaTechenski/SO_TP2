@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "memory_manager.h"
+#include "process.h"
 
 #define MAX_LENGTH_NAME 255
 

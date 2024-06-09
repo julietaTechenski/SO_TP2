@@ -1,6 +1,8 @@
 #include "include/shell.h"
 
 #define NULL ((void*)0)
+#define MAX_ARGS 4
+#define MAX_ARG_LENGTH 16
 
 //============================== Function Declarations ==============================
 
@@ -14,59 +16,30 @@ char buffer[MAX_SIZE];
 
 static char username[USERNAME_MAX_SIZE];
 
-void test_mm_wrapper(uint64_t argc,char * args[]) {
-    uint64_t i=0;
-    while(args[i]!=0){
-        i++;
-    }
-    uint64_t arg1 = i;
-    test_mm(arg1, args);
-
-}
-
-void test_processes_wrapper(int argc,char * args[]) {
-    uint64_t i=0;
-    while(args[i]!=0){
-        i++;
-    }
-    uint64_t arg1 = i;
-    test_processes(arg1, args);
-}
-
-
-void test_sync_wrapper(char * args[]) {
-    uint64_t i=0;
-    while(args[i]!=0){
-        i++;
-    }
-    uint64_t arg1 = i;
-    test_sync(arg1, args);
-}
-
 tcommand commands[] = {
-        {"size", size},
-        {"help", help},
-        {"time", printTime},
-        {"snake", play},
-        {"clear", clear_screen}, //wrapper?
-        {"mem", mem_state}, //wrapper?
-        {"exit", exitProgram},
-        {"cat", cat}, //wrapper?
-        {"zeroexception", zeroexception},
-        {"ioexception", ioexception},
-        {"regs", getRegs},  //wrapper?
-        {"test_mm", test_mm},
-        {"test_processes", (void*)test_processes},
-        {"test_prio", test_prio},
-        {"test_sync", (void*)test_sync},
-        {"ps", print_processes},
-        {"loop", loop},
-        {"nice", (void *)nice},
-        {"kill", (void *)kill},
-        {"block", (void *)block},
-        {"cat", cat}, //wrapper?
-        {"wc", wc},  //wrapper?
-        {"filter", filter} //wrapper?
+        {"size", &size},
+        {"help", &help},
+        {"time", &printTime},
+        {"snake", &play},
+        {"clear", &clear_screen}, //wrapper?
+        {"mem", &mem_state}, //wrapper?
+        {"exit", &exitProgram},
+        {"cat", &cat}, //wrapper?
+        {"zeroexception", &zeroexception},
+        {"ioexception", &ioexception},
+        {"regs", &getRegs},  //wrapper?
+        {"test_mm", &test_mm},
+        {"test_processes", &test_processes},
+        {"test_prio", &test_prio},
+        {"test_sync", &test_sync},
+        {"ps", &print_processes},
+        {"loop", &loop},
+        {"nice", &nice},
+        {"kill",&kill},
+        {"block", &block},
+        {"cat", &cat}, //wrapper?
+        {"wc", &wc},  //wrapper?
+        {"filter", &filter} //wrapper?
 
 };
 
@@ -101,32 +74,33 @@ void shell() {
 //====================================== Functions ======================================
 
 //Obtains the command inserted by the user
-void getCommand(char buffer[]) {
+void getCommand(char* buffer) {
     //turns possible command to string
     char command[20];
-    char * args[5] = {0};
+    char args[MAX_ARGS][MAX_ARG_LENGTH];
+    int argsAmount = 0;
     int isForeground = 1;
-    int i = 0;
+    int index = 0;
 
-    for( ; buffer[i] != ' ' && buffer[i] != '\0'; i++){
-        command[i] = buffer[i];
+    while(buffer[index] != ' ' && buffer[index] != '\0'){
+        command[index] = buffer[index];
+        index++;
     }
-    command[i] = '\0';
+    command[index] = '\0';
 
-    int j = 0;
-    if(buffer[i++]==' ') {  //builds args
-        while (buffer[i] != '\0' && buffer[i] != ' ') {
-            int k = 0;
-            char aux[20] = {0};
-            while (buffer[i] != ' ' && buffer[i] != '\0') {
-                aux[k] = buffer[i];
-                i++;
-                k++;
-            }
-            aux[k] = 0;
-            args[j] = aux;
-            j++;
+    while (buffer[index] == ' ') index++;
+
+    while (buffer[index] != '\0') {
+        int k = 0;
+        while (buffer[index] != ' ' && buffer[index] != '\0' && k < MAX_ARG_LENGTH - 1) {
+            args[argsAmount][k++] = buffer[index++];
         }
+        args[argsAmount][k] = '\0';
+
+        if (k > 0) argsAmount++;
+
+        // Skip any extra spaces
+        while (buffer[index] == ' ') index++;
     }
 
     //If there was no command inserted
@@ -139,8 +113,7 @@ void getCommand(char buffer[]) {
     for (int n = 0; n < AMOUNT_COMMANDS && !cfound; n++) {
         if (strcmp(commands[n].name, command)) {
             cfound = 1;
-            //commands[n].fn(args);
-            int64_t pid = my_createProcess(commands[n].fn, commands[n].name, j, args, isForeground);
+            int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount,  args, isForeground);
             if(isForeground){
                 wait(pid);
             }

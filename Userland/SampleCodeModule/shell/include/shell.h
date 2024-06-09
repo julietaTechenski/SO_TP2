@@ -24,7 +24,7 @@
 
 typedef struct tcommand{
     char * name;                //command
-    void (*fn)(uint64_t argc, char * args[]);  //function
+    void * fn;  //function
 }tcommand;
 
 void shell();

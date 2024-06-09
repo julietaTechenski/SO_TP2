@@ -1,7 +1,7 @@
 #include "../include/process.h"
 
 //TYPES
-typedef void (*FunctionType)(uint64_t argc, char *argv[]);
+typedef int64_t (*FunctionType)(uint64_t argc, char *argv[]);
 
 typedef enum State{
     READY,
@@ -39,6 +39,7 @@ static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv
 static int64_t changePriority(PCB * process, uint64_t newPrio);
 static int64_t changeStatePID(PCB * process, State newState);
 static void killProcess(PCB *process);
+static void printProcess(PCB * process);
 
 //GLOBAL PROCESS ARRAY
 static PCB * priorityArray[PRIORITY_AMOUNT] = {NULL};
@@ -172,7 +173,12 @@ void * scheduler(void * prevRsp){
 //=====================================================================================================================
 
 static void schedulingWrapper(FunctionType function, uint64_t argc, char *argv[]){
-    (*function)(argc, argv);
+    uint64_t res = function(argc, argv);
+    if(res != 0) {
+        writeString(1, "Error during process execution: ", 32);
+        writeString(1, current->name, my_strlen(current->name));
+        writeString(1, "\n", 1);
+    }
     exit();
 }
 
@@ -182,8 +188,10 @@ static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv
     result->pid = currentPID++;
     result->rsb = mm_alloc(MAX_STACK);
 
-    for(int i = 0; i < argc; i++)
-        my_strcpy(result->argv[i], argv[i]);
+    for(int i = 0; i < argc; i++) {
+        result->argv[i] = mm_alloc(MAX_ARG_LENGTH);
+        my_strcpy((result->argv)[i], argv[i]);
+    }
 
     result->rsp = createStackContext((uint64_t *)((char *)result->rsb + MAX_STACK - 1), &schedulingWrapper, process, argc, result->argv);
     result->priority = 0;
@@ -240,41 +248,47 @@ int64_t getPID(){
     return current->pid;
 }
 
-void printProcesses() {
+static void printProcess(PCB * process){
     uint32_t aux;
     char buffer[MAX_NAME_LENGTH];
+
+    writeString(1, process->name, my_strlen(process->name));
+    writeString(1, "  ", 2);
+
+    aux = intToString(process->pid, buffer);
+    writeString(1, buffer, aux);
+    writeString(1, "       ", 7);
+
+    aux = intToString(process->priority, buffer);
+    writeString(1, buffer, aux);
+    writeString(1, "       ", 7);
+
+    aux = intToString((uint64_t)process->rsp, buffer);
+    writeString(1, buffer, aux);
+    writeString(1, "  ", 2);
+
+    aux = intToString((uint64_t *)((char *)process->rsb + MAX_STACK - 1), buffer);
+    writeString(1, buffer, aux);
+    writeString(1, "  ", 2);
+
+    writeString(1, stateArray[process->state], 1);
+
+    if (process->isForeground)
+        writeString(1, "+", 1);
+
+    writeString(1, "\n", 1);
+
+}
+
+
+void printProcesses() {
     writeString(1, "NAME  PID  PRIORITY    RSP        RBP    STATE\n", 47);
     PCB *iter;
 
     for(int i = 0 ; i < PRIORITY_AMOUNT ; i++){
         iter = priorityArray[i];
         while (iter != NULL) {
-            writeString(1, iter->name, my_strlen(iter->name));
-            writeString(1, "  ", 2);
-
-            aux = intToString(iter->pid, buffer);
-            writeString(1, buffer, aux);
-            writeString(1, "       ", 7);
-
-            aux = intToString(iter->priority, buffer);
-            writeString(1, buffer, aux);
-            writeString(1, "       ", 7);
-
-            aux = intToString((uint64_t)iter->rsp, buffer);
-            writeString(1, buffer, aux);
-            writeString(1, "  ", 2);
-
-            aux = intToString((uint64_t *)((char *)iter->rsb + MAX_STACK - 1), buffer);
-            writeString(1, buffer, aux);
-            writeString(1, "  ", 2);
-
-            writeString(1, stateArray[iter->state], 1); //todo CHECK INDEX
-
-            if (current->isForeground)
-                writeString(1, "+", 1);
-
-            writeString(1, "\n", 1);
-
+            printProcess(iter);
             iter = iter->next;
         }
     }

@@ -126,8 +126,6 @@ ListNode* find_sem(char * sem_id){
     return NULL;
 }
 
-//Retorna 0 si no se pudo crear con exito
-//TODO ANALIZAR QUE PASA SI UN PROCESO HACE OPEN DE UN SEMAFORO CREADO (TIRA ERROR O NO)
 int64_t my_sem_open(char *sem_id, uint64_t initialValue){
     if(find_sem(sem_id) == NULL)
         insertSem(&semaphoresHead, sem_id, initialValue);
@@ -142,9 +140,9 @@ int64_t my_sem_wait(char *sem_id){
     acquireLock(&(node->mutex));
     if(node->count == 0) {
         releaseLock(&(node->mutex));
-        //int pid = getpid(); //TODO REMPLAZAR GETPID
-        //enqueue(node->processWaitingQueue, pid);
-        //blockProcces(); //TODO BLOQUEAR PROCESO
+        int pid = getPID();
+        enqueue(node->processWaitingQueue, pid);
+        block(pid);
     } else {
         node->count--;
         releaseLock(&(node->mutex));
@@ -163,7 +161,7 @@ int64_t my_sem_post(char *sem_id){
         node->count++;
     else {
         int pid = dequeue(node->processWaitingQueue);
-        //unblock(pid); //TODO CAMBIAR POR DESBLOQUEAR PROCESO
+        unblock(pid);
     }
     releaseLock(&(node->mutex));
     return 0;
