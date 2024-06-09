@@ -14,11 +14,10 @@ int pipe(void* pipesfd[2]){
 }
 
 int dup(int oldfd, void* pipedir){
-    int priority;
     if(oldfd != 0 && oldfd !=1)
         return -1;
     uint64_t ppid = getPID();
-    PCB *p = findProcess(ppid, &priority);
+    PCB *p = findProcess(ppid);
     p->fd[oldfd] = pipedir;
     return 1;
 }

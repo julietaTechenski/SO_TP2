@@ -112,8 +112,7 @@ int read(unsigned int fd, char * buffer, int count){
     blocked->pid = pid;
     blocked->count = count;
     block(pid);
-    int priority;
-    PCB * p = findProcess(pid, &priority);
+    PCB * p = findProcess(pid);
     if( p != NULL){
         int i = 0;
         if(p->fd[fd] != NULL){ //pipe read
@@ -156,8 +155,7 @@ int read(unsigned int fd, char * buffer, int count){
 //system call 4
 int write(unsigned int fd, char * string, int count){
     uint64_t ppid = getPID();
-    int prio;
-    PCB *p = findProcess(ppid, &prio);
+    PCB *p = findProcess(ppid);
     if(p->fd[fd] != NULL){  //pipe write
         char *rReady = "rReady";
         my_sem_open(rReady, 0);

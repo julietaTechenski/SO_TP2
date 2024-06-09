@@ -26,11 +26,12 @@ typedef enum State{
     EXITED
 } State;
 
+
 typedef struct PCB {
     char name[MAX_NAME_LENGTH];
     uint64_t pid;
-    void * rsp;   //stack
-    void * rsb;   //base pointer
+    void * rsp;   //stack pinter
+    void * rsb;   //stack base
     char * argv[MAX_ARGC];
     int priority;
     char isForeground;  //0 no, 1 yes
@@ -41,7 +42,6 @@ typedef struct PCB {
     struct PCB *next;
     char * fd[2];
 } PCB;
-
 //INTERNAL FUNCTIONS -------------------------------------------------------------------------------
 
 
@@ -131,6 +131,8 @@ void waitPID(uint64_t pid);
  * @def kills foreground process if not shell
  */
 void killForeground();
+
+PCB * findProcess(int64_t pid);
 
 
 #endif

@@ -4,7 +4,6 @@
 #include "memory_manager.h"
 #include "semaphore.h"
 #include "process.h"
-#include "process.h"
 
 typedef struct fd {
     int fd;
