@@ -46,7 +46,7 @@ void * mm_alloc(size_t n_bytes) {
 void mm_free(void* ptr) {
     Node * ptrNode = (Node *)ptr - 1; //accede al header de la zona de memoria. El next y prev de la zona ocupada no tiene informacion valida
 
-    freeMem += ptrNode->size;
+    freeMem += ptrNode->size / sizeof(Node);
 
     if(first==NULL || first >= ptrNode){ //bloque al principio
         ptrNode->next = first;
