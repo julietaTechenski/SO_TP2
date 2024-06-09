@@ -109,7 +109,7 @@ uint64_t sysCallHandler(Registers registers){
             case 28:
                 return 0/*dup((void *)registers->rdi, registers->rsi, (void*)registers->rdx)*/;
             case 29:
-                return changeStatePID(registers->rdi, registers->rsi);
+                return 0; //changeStatePID(registers->rdi, registers->rsi)
             case 30:
                 printProcesses();
                 return 0;
