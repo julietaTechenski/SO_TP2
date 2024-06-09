@@ -50,10 +50,6 @@ typedef struct PCB {
  */
 void initScheduler();
 
-/**
- * @def kills foreground process if not shell
- */
-void killForeground();
 
 /**
  * @def Priority Based Round Robin algorithm for scheduling
@@ -130,5 +126,11 @@ int64_t yield();
  * @param pid child process
  */
 void waitPID(uint64_t pid);
+
+/**
+ * @def kills foreground process if not shell
+ */
+void killForeground();
+
 
 #endif

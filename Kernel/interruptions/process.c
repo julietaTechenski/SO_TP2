@@ -2,6 +2,7 @@
 
 typedef void (*FunctionType)(uint64_t argc, char *argv[]);
 
+//EXTERN FUNC
 extern void initHalt(void * rspHalt);
 
 //STATIC FUNC
@@ -84,6 +85,14 @@ static PCB * findNextProcess(){
         }
     }
     return NULL;
+}
+
+
+static int64_t changePriority(PCB * process, uint64_t newPrio) {
+    removeProcessFromList(process, process->priority);
+    process->priority = newPrio;
+    addProcessToList(process, newPrio);
+    return newPrio;
 }
 
 //=====================================================================================================================
@@ -174,48 +183,25 @@ int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], u
 //========================================= UTILS ==============================================================
 //==============================================================================================================
 
-static int64_t changePriority(PCB * process, uint64_t newPrio) {
-    removeProcessFromList(process, process->priority);
-    process->priority = newPrio;
-    addProcessToList(process, newPrio);
-    return newPrio;
-}
 
 static int64_t changeStatePID(PCB * process, State newState){
-    if(process == NULL){
-        return -1;
-    }
-    if(process->state == newState){
-        return 0;
-    }
-    // in READY
-    if(process->state == READY){
-        process->state = newState;
-        return 0;
-    }
     //in BLOCKED
-    if(process->state == BLOCKED && newState == READY){
-        process->state = newState;
-        return 0;
-    }
-    // in RUNNING, can go to READY and BLOCKED
-    if(process->state == RUNNING){
-        process->state = newState;
-        return 0;
-    }
-    return -1;  //made an invalid change of state
+    if(process->state == BLOCKED && newState != READY)
+        return -1;
+
+    process->state = newState;
+    return 0;
 }
 
 
 void killForeground(){
-    if(my_strcmp(foreground->name, "shell") != 0){
+    if(my_strcmp(foreground->name, "shell") != 0)
         kill(foreground->pid);
-    }
 }
 
 static void killProcess(PCB *process){
     removeProcessFromList(process, process->priority);
-    mm_free((void*) process->rsb);
+    mm_free(process->rsb);
     mm_free((void*) process);
 }
 
@@ -232,6 +218,7 @@ int64_t getPID(){
 }
 
 void printProcesses() {
+    uint32_t aux;
     char buffer[MAX_NAME_LENGTH];
     writeString(1, "NAME  PID  PRIORITY    RSP        RBP    STATE\n", 47);
     PCB *iter;
@@ -242,41 +229,29 @@ void printProcesses() {
             writeString(1, iter->name, my_strlen(iter->name));
             writeString(1, "  ", 2);
 
-            uint32_t pidStringLen = intToString(iter->pid, buffer);
-            writeString(1, buffer, pidStringLen);
+            aux = intToString(iter->pid, buffer);
+            writeString(1, buffer, aux);
             writeString(1, "       ", 7);
 
-            uint32_t priorityStringLen = intToString(i, buffer);
-            writeString(1, buffer, priorityStringLen);
+            aux = intToString(iter->priority, buffer);
+            writeString(1, buffer, aux);
             writeString(1, "       ", 7);
 
-            uint32_t rspStringLen = intToString(iter->rsp, buffer);
-            writeString(1, buffer, rspStringLen);
+            aux = intToString((uint64_t)iter->rsp, buffer);
+            writeString(1, buffer, aux);
             writeString(1, "  ", 2);
 
-            uint32_t s = intToString(iter, buffer);
-            writeString(1, buffer, s);
-            writeString(1, "     ", 5);
+            aux = intToString((uint64_t *)((char *)iter->rsb + MAX_STACK - 1), buffer);
+            writeString(1, buffer, aux);
+            writeString(1, "  ", 2);
 
-            switch (iter->state) {
-                case READY:
-                    writeString(1, stateArray[0], 1);
-                    break;
-                case RUNNING:
-                    writeString(1, stateArray[1], 1);
-                    break;
-                case BLOCKED:
-                    writeString(1, stateArray[2], 1);
-                    break;
-                case EXITED:
-                    writeString(1,"E",1);
-                    break;
-            }
-            if (current->isForeground) {
+            writeString(1, stateArray[iter->state], 1); //todo CHECK INDEX
+
+            if (current->isForeground)
                 writeString(1, "+", 1);
-            }
 
             writeString(1, "\n", 1);
+
             iter = iter->next;
         }
     }
@@ -284,9 +259,9 @@ void printProcesses() {
 
 int64_t kill(uint64_t pid) {
     PCB * process = findProcess(pid);
-    if(process == NULL){
+    if(process == NULL)
         return -1;
-    }
+
     killProcess(process);
     return 0;
 }
