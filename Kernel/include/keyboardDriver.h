@@ -19,6 +19,9 @@
 #define F2 60
 #define F3 61
 
+#define STDIN 0
+#define STDOUT 1
+
 #define EOFILE '\377'
 
 //Scancode Set 2 (key=scancode - value=ascii)

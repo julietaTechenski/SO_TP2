@@ -7,6 +7,8 @@
 #include "process.h"
 #include "semaphore.h"
 
+#define EOFILE '\377'
+
 //Struct that simulates the pushState that interrupts.asm does to in other to get the rsp
 typedef struct Reg{
     uint64_t r15;

@@ -1,7 +1,4 @@
 #include "keyboardDriver.h"
-#define STDOUT 1
-#define STDIN 1
-
 
 //Auxiliary functions
 void addEntry(char c);
