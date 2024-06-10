@@ -105,8 +105,7 @@ void getCommand(char* buffer) {
     }
     command[index] = '\0';
 
-    if(buffer[index] == ' ') {
-        index++;
+    if(buffer[index++] == ' ') {
         if (buffer[index] == '&') { //is process in background?
             isForeground1 = 0;
             index++;
