@@ -56,7 +56,9 @@ void shell() {
     setColor(141, 132, 255);
     printf("\nInsert username: ");
     c = read(0, username, USERNAME_MAX_SIZE);
-    username[c] = '\0';
+    if(c > 0 && c < USERNAME_MAX_SIZE){
+        username[c] = '\0';
+    }
     clearScreen();
 
     //Start of terminal
@@ -69,7 +71,10 @@ void shell() {
         setColor(255,255,255);
         printf("%s:$>", username);
         c = read(0, buffer, MAX_SIZE);
-        buffer[c] = 0;
+        if(strcmp(buffer, "this project is wrong") > 0){
+            exitProgram(0, NULL);
+        }
+        buffer[c] = '\0';
         getCommand(buffer);
     }
 
@@ -80,11 +85,12 @@ void shell() {
 //Obtains the command inserted by the user
 void getCommand(char* buffer) {
     //turns possible command to string
-    char command[20];
+    char command[MAX_ARG_LENGTH];
     char * args[MAX_ARGS];
 
-    for (int i = 0; i < MAX_ARGS; ++i)
+    for (int i = 0; i < MAX_ARGS; ++i){
         args[i] = (char*) malloc(MAX_ARG_LENGTH);
+    }
 
     int argsAmount = 0;
     int isForeground1 = 1;
@@ -129,22 +135,22 @@ void getCommand(char* buffer) {
     int n = 0;
     //Finds command
     for (; n < AMOUNT_COMMANDS && !cfound; n++) {
-        if (strcmp(commands[n].name, command)) {
+        if (strcmp(commands[n].name, command) > 0) {
             cfound = 1;
-            if(!strcmp(args[0],"|")){
+            if(strcmp(args[0],"|") == 0){
                 int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount, args, isForeground1);
                 if(isForeground1)
                     wait(pid);
             }
         }
     }
-    if(cfound && strcmp(args[0],"|")){
+    if(cfound && strcmp(args[0],"|") > 0){
         char *pArgs[2];
         pArgs[0] = commands[n].fn;
         int i = 0;
         int pfound = 0;
         for(;!pfound && i < AMOUNT_COMMANDS; i++){
-            if (strcmp(args[1], commands[i].name)) {
+            if (strcmp(args[1], commands[i].name) > 0) {
                 pArgs[1] = commands[i].fn;
                 pfound = 1;
             }
@@ -157,6 +163,12 @@ void getCommand(char* buffer) {
             printf("%s: not a command. Valid pipe entry: 'p1 | p2' \n",args[1]);
         }
     }
+    // reset values
+
+
+    for(int i = 0; i < MAX_ARGS; i++)
+        free((void*)args[i]);
+
     // if not a valid entry
     if(!cfound){
         setColor(255, 51, 51);

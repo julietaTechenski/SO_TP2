@@ -43,6 +43,9 @@ void phylos(){
 
     while(1){
         sem_wait(char_mutex);
+        if(c == NULL){
+            return;
+        }
         if(*c!=0) {
             switch (*c) {
                 case 'a':

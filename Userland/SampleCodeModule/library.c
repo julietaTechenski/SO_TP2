@@ -335,24 +335,19 @@ int64_t kill(uint64_t pid){
 }
 
 int64_t block(uint64_t pid){
-    if(pid >= 0){
-        int64_t ans = system_block(pid);
-        switch (ans) {
-            case 0:
-                printf("Process state modified\n");
-                break;
-            case -1:
-                printf("Process is already blocked\n");
-                break;
-            case -2:
-                printf("Process not running\n");
-                break;
-        }
-        return ans;
+    int64_t ans = system_block(pid);
+    switch (ans) {
+        case 0:
+            printf("Process state modified\n");
+            break;
+        case -1:
+            printf("Process is already blocked\n");
+            break;
+        case -2:
+            printf("Process not running\n");
+            break;
     }
-    setColor(255, 51, 51);
-    printf("Invalid arguments\nTry 'help block' for more information\n");
-    return -1;
+    return ans;
 }
 
 int64_t unblock(uint64_t pid){
@@ -368,7 +363,7 @@ int64_t yield(){
 }
 
 int64_t nice(uint64_t pid, uint64_t newPrio){
-    if(pid > 0 && 0 <= newPrio && newPrio < 10){
+    if(newPrio < 10){
         return system_nice(pid, newPrio);
     }
     setColor(255, 51, 51);
@@ -417,7 +412,7 @@ int64_t mem_state(){
 int64_t loop(){
     while(1){
         sleep(FIVE_SEGS);
-        printf("Hi! I'm process %d!\n", getpid());
+        printf("Hi! I'm process %d!\n", (int32_t)getpid());
     }
     return 0;
 }

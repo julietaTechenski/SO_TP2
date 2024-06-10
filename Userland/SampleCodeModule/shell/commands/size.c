@@ -10,12 +10,12 @@ static char* SUBSTRACT = "-";
 
 void size(uint64_t argc,char * args[]){
     // User inserted 'size +'
-    if(strcmp(ADD, args[0])){
+    if(strcmp(ADD, args[0]) > 0){
         incSize();
         return;
     }
     // User inserted 'size -'
-    if(strcmp(SUBSTRACT, args[0])){
+    if(strcmp(SUBSTRACT, args[0]) > 0){
         decSize();
         return;
     }
