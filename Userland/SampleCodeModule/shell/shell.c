@@ -48,7 +48,7 @@ tcommand commands[] = {
 
 void shell() {
     for (int i = 0; i < MAX_ARGS; ++i)
-        args[i] = malloc(MAX_ARG_LENGTH);
+        args[i] = (char*)malloc(MAX_ARG_LENGTH);
 
     //Into
     intro();

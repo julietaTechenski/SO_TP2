@@ -175,6 +175,8 @@ static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv
     result->priority = 0;
     result->isForeground = isForeground;
     result->state = READY;
+    result->fd[0] = NULL;
+    result->fd[1] = NULL;
     result->waitingAmount = 0;
     result->prev = NULL;
     result->next = NULL;
