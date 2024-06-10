@@ -60,7 +60,7 @@ void freeQueue(Queue *queue) {
 typedef struct ListNode {
     char name[MAX_LENGTH_NAME];
     int count;
-    uint32_t mutex;
+    int32_t mutex;
     Queue * processWaitingQueue;
     struct ListNode *next;
 } ListNode;
@@ -87,14 +87,14 @@ void deleteSem(ListNode **head, char * name){
     ListNode *temp = *head;
     ListNode *prev = NULL;
 
-    if (my_strcmp(temp->name, name) == 0) {
+    if (temp != NULL && my_strcmp(temp->name, name) == 1) {
         *head = temp->next;
         freeQueue(temp->processWaitingQueue);
         mm_free(temp);
         return;
     }
 
-    while (temp != NULL && my_strcmp(temp->name, name) != 0) {
+    while (temp != NULL && my_strcmp(temp->name, name) != 1) {
         prev = temp;
         temp = temp->next;
     }
@@ -119,7 +119,7 @@ static ListNode* semaphoresHead = NULL;
 ListNode* find_sem(char * sem_id){
     ListNode * aux = semaphoresHead;
     while(aux != NULL){
-        if(my_strcmp(aux->name, sem_id) == 0)
+        if(my_strcmp(aux->name, sem_id) == 1)
             return aux;
         aux = aux->next;
     }
@@ -129,7 +129,7 @@ ListNode* find_sem(char * sem_id){
 int64_t my_sem_open(char *sem_id, uint64_t initialValue){
     if(find_sem(sem_id) == NULL)
         insertSem(&semaphoresHead, sem_id, initialValue);
-    return 1;
+    return 0;
 }
 
 int64_t my_sem_wait(char *sem_id){
@@ -137,7 +137,9 @@ int64_t my_sem_wait(char *sem_id){
     if((node = find_sem(sem_id)) == NULL)
         return 1;
 
+    writeString(1,"lock get", 8);
     acquireLock(&(node->mutex));
+    writeString(1,"lock acq", 8);
     if(node->count == 0) {
         releaseLock(&(node->mutex));
         int pid = getPID();

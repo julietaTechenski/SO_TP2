@@ -87,20 +87,15 @@ uint64_t sysCallHandler(Registers registers){
                 yield();
                 return 0;
             case 22:
-                //nice
                 return nice(registers->rdi, registers->rsi);
             case 23:
-                //sem_init
-                return 0;
+                return my_sem_open((char *)registers->rdi, (uint64_t) registers->rsi);
             case 24:
-                //sem_wait
-                return 0;
+                return my_sem_wait((char *)registers->rdi);
             case 25:
-                //sem_post
-                return 0;
+                return my_sem_post((char *)registers->rdi);
             case 26:
-                //sem_close
-                return 0;
+                return my_sem_close((char *)registers->rdi);
             case 27:
                 mm_state();
                 return 0;

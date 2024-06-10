@@ -8,8 +8,8 @@
 
 #define MAX_LENGTH_NAME 255
 
-extern void releaseLock(uint32_t* lock);
-extern void acquireLock(uint32_t* lock);
+extern void releaseLock(int32_t * lock);
+extern void acquireLock(int32_t * lock);
 
 int64_t my_sem_open(char *sem_id, uint64_t initialValue);
 int64_t my_sem_wait(char *sem_id);

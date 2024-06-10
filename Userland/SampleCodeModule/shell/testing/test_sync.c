@@ -29,11 +29,12 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   if ((use_sem = satoi(argv[2])) < 0)
     return -1;
 
-  if (use_sem)
-    if (sem_init(SEM_ID, 1)) {
-      printf("test_sync: ERROR opening semaphore\n");
-      return -1;
-    }
+  if (use_sem) {
+      if (sem_init(SEM_ID, 1)) {
+          printf("test_sync: ERROR opening semaphore\n");
+          return -1;
+      }
+  }
 
   uint64_t i;
   for (i = 0; i < n; i++) {
