@@ -215,7 +215,7 @@ int digits(int n){
 char toLower(char letter){
     if(letter >= 65 && letter <= 90){
         return letter + 32;
-    }
+    } else if(letter>=97 && letter <=122) return letter;
     return -1;
 }
 
