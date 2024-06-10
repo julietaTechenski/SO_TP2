@@ -280,6 +280,7 @@ int64_t kill(uint64_t pid) {
         return -1;
 
     killProcess(process);
+    int20();
     return 0;
 }
 
