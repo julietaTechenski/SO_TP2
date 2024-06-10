@@ -410,6 +410,7 @@ int64_t print_processes(){
 
 int64_t mem_state(){
     sys_mem_state();
+    return 0;
 }
 
 int64_t loop(){
