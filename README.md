@@ -29,17 +29,17 @@ On the project directory, start the container:
 ### Project compilation
 
 In compilation time, user can set the memory of choice :
-- Buddy
-- Free List
-The default memory is Buddy.
+    - Buddy
+    - Free List
+The default memory is Free List.
 
 Execute the following commands on the project directory (outside Docker):
 
     ./compile.sh
 
-To run Free List execute the following commands on the project directory (outside Docker):
+To run Buddy execute the following commands on the project directory (outside Docker):
 
-    ./compile.sh LIST
+    ./compile.sh BUDDY
 
 ### Project execution
 
