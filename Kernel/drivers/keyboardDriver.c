@@ -107,10 +107,13 @@ char getEntry(){
 //SysCall 3
 int read(unsigned int fd, char * buffer, int count){
     uint64_t pid = getPID();
+    PCB * p = findProcess(pid);
+    if(!p->isForeground){
+        return 0;
+    }
     blocked->pid = pid;
     blocked->count = count;
     block(pid);
-    PCB * p = findProcess(pid);
     if( p != NULL){
         int i = 0;
         if(p->fd[fd] != NULL){ //pipe read

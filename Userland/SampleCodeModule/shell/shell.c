@@ -90,7 +90,8 @@ void getCommand(char* buffer) {
     char command[20];
 
     int argsAmount = 0;
-    int isForeground = 1;
+    int isForeground1 = 1;
+    int isForeground2 = 1;
     int index = 0;
 
     while(buffer[index] != ' ' && buffer[index] != '\0'){
@@ -98,6 +99,14 @@ void getCommand(char* buffer) {
         index++;
     }
     command[index] = '\0';
+
+    if(buffer[index++] == ' ') {
+        if (buffer[index] == '&') { //is process in background?
+            isForeground1 = 0;
+            index++;
+        }
+        index--;
+    }
 
     while (buffer[index] == ' ') index++;
 
@@ -125,14 +134,14 @@ void getCommand(char* buffer) {
         if (strcmp(commands[n].name, command)) {
             cfound = 1;
             if(!strcmp(args[0],"|")){
-                int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount, args, isForeground);
-                if(isForeground)
+                int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount, args, isForeground1);
+                if(isForeground1)
                     wait(pid);
             }
         }
     }
     if(cfound && strcmp(args[0],"|")){
-        void *pArgs[2];
+        char *pArgs[2];
         pArgs[0] = commands[n].fn;
         int i = 0;
         int pfound = 0;
@@ -143,7 +152,7 @@ void getCommand(char* buffer) {
             }
         }
         if(pfound){
-            my_createProcess(&pipe_command, "pipe",2, pArgs, isForeground);   // revisar isforeground
+            my_createProcess(&pipe_command, "pipe",2, pArgs, isForeground2);   // revisar isforeground
         }else {
             setColor(255, 51, 51);
             printf("%s: not a command. Valid pipe entry: 'p1 | p2' \n",args[1]);
