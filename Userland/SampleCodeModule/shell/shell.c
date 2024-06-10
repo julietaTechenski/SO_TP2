@@ -85,12 +85,11 @@ void shell() {
 //Obtains the command inserted by the user
 void getCommand(char* buffer) {
     //turns possible command to string
-    char command[20];
+    char command[MAX_ARG_LENGTH];
     char * args[MAX_ARGS];
 
     for (int i = 0; i < MAX_ARGS; ++i){
         args[i] = (char*) malloc(MAX_ARG_LENGTH);
-        args[i] = '\0';
     }
 
     int argsAmount = 0;
@@ -164,6 +163,12 @@ void getCommand(char* buffer) {
             printf("%s: not a command. Valid pipe entry: 'p1 | p2' \n",args[1]);
         }
     }
+    // reset values
+
+
+    for(int i = 0; i < MAX_ARGS; i++)
+        free((void*)args[i]);
+
     // if not a valid entry
     if(!cfound){
         setColor(255, 51, 51);
