@@ -243,11 +243,11 @@ static void killProcess(PCB *process){ //USE ONLY IN SCHEDULER
     mm_free((void*) process);
 }
 
-int64_t kill(uint64_t pid) {
+int64_t kill(int64_t pid) {
     PCB * process = findProcess(pid);
     if(process==NULL)
         return -1;
-    process->state = EXITED;
+    killProcess(process);
     return 0;
 }
 
@@ -257,7 +257,7 @@ void killForeground(){
 }
 
 void exit(){
-    kill(current->pid);
+    current->state=EXITED;
     int20();
 }
 

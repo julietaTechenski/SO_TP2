@@ -4,6 +4,7 @@
 
 #include "library.h"
 #include "help.h"
+#include "wrapper.h"
 #include "printTime.h"
 #include "size.h"
 #include "snake.h"

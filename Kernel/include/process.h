@@ -92,7 +92,7 @@ void printProcesses();
  * @param pid process to kill pid
  * @return 0 if successful, -1 if not
  */
-int64_t kill(uint64_t pid);
+int64_t kill(int64_t pid);
 
 /**
  * @def modifies process priority

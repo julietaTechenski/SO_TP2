@@ -38,7 +38,7 @@ tcommand commands[] = {
         {"ps", &print_processes},
         {"loop", &loop},
         {"nice", &nice},
-        {"kill",&kill},
+        {"kill",&killProcess},
         {"block", &block},
         {"cat", &cat}, //wrapper?
         {"wc", &wc},  //wrapper?
@@ -138,7 +138,7 @@ void getCommand(char* buffer) {
     for (; n < AMOUNT_COMMANDS && !cfound; n++) {
         if (strcmp(commands[n].name, command) > 0) {
             cfound = 1;
-            if(strcmp(args[0],"|") == 0){
+            if(strcmp(args[0], "|") == 0){
                 int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount, args, isForeground1);
                 if(isForeground1)
                     wait(pid);
