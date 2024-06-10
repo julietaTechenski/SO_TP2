@@ -13,7 +13,7 @@ void intro();
 
 //================================= Variables  =================================
 
-char buffer[MAX_SIZE];
+char * buffer;
 
 static char username[USERNAME_MAX_SIZE];
 
@@ -61,6 +61,7 @@ void shell() {
     setColor(255, 153, 102);
     printf("\n\nWelcome %s!\n\nThe 'help' command to display a menu with all the functionalities.\n\n", username);
 
+    buffer = (char*)malloc(sizeof(char)*128);
     //terminal
     while(1) {
         setColor(255,255,255);
@@ -76,6 +77,9 @@ void shell() {
 
 //Obtains the command inserted by the user
 void getCommand(char* buffer) {
+
+
+
     //turns possible command to string
     char command[20];
     char args[MAX_ARGS][MAX_ARG_LENGTH];
