@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "../include/phylos.h"
 #define MAX_PHYLOS 10
 #define MIN_PHYLOS 3
@@ -16,11 +18,21 @@ static char * palillos[MAX_PHYLOS-1];  // semaphore array
 static int state[MAX_PHYLOS-1]; // print phylos array
 
 static char*  mutex = "access_array";
+static char*  char_mutex = "char_mutex";
+static char*  controllers_mutex = "controllers_mutex";
 
 
 void phylos(){
     // initializing
     sem_init(mutex, 1);
+    sem_init(char_mutex, 1);
+
+    char * c = malloc(sizeof(char));
+    char* argv[1];
+    argv[0] = c;
+
+
+    my_createProcess(&controllers_handler, "controllers_handler", 1, argv, 1);
 
     for(int i= 0; i < thinkers; i++){
         char *sem = (char*)malloc(sizeof(char)*2); // me guardo la direccion de chars
@@ -30,23 +42,34 @@ void phylos(){
     }
 
     while(1){
-        switch(getChar()){
-            case 'a':
-                add();
-                clear_screen();
-                sem_wait(mutex);
-                reprint();
-                sem_post(mutex);
-                break;
-            case 'r':
-                remove();
-                clear_screen();
-                sem_wait(mutex);
-                reprint();
-                sem_post(mutex);
-                break;
-            default:
-                break;
+        sem_wait(char_mutex);
+        if(*c!=0) {
+            switch (*c) {
+                case 'a':
+                    *c = 0;
+                    sem_post(char_mutex);
+                    add();
+                    clear_screen();
+                    sem_wait(mutex);
+                    reprint();
+                    sem_post(mutex);
+                    break;
+                case 'r':
+                    *c=0;
+                    sem_post(char_mutex);
+                    remove();
+                    clear_screen();
+                    sem_wait(mutex);
+                    reprint();
+                    sem_post(mutex);
+                    break;
+                default:
+                    *c =0;
+                    sem_post(char_mutex);
+                    break;
+            }
+        } else {
+            sem_post(char_mutex);
         }
         phylo(customRandInRange(0, thinkers-1));
     }
@@ -54,7 +77,6 @@ void phylos(){
 
 
 void phylo(int i){
-    // come necesito modificar el valor de array de filósofos
     int left = i;
     int right = (i + 1) % thinkers;
     if(i % 2){ //odd philosopher
@@ -75,7 +97,6 @@ void think(int phy){
     state[phy] = 0;
     reprint();
     sem_post(mutex);
-    sleep(3);
 }
 
 void eat(int phy){
@@ -83,7 +104,6 @@ void eat(int phy){
     state[phy] = 1;
     reprint();
     sem_post(mutex);
-    sleep(3);
 }
 
 void add(){
@@ -103,10 +123,19 @@ void remove(){
     }
 }
 
+void controllers_handler(int argc, char * argv[]){
+    while(1){
+        char aux = getChar();
+        sem_wait(char_mutex);
+        *argv[0] = aux;
+        sem_post(char_mutex);
+    }
+}
+
 void reprint(){
-    printf("CANTIDAD DE FILOSOFOS: %d\n",thinkers);
+    printf("%d ->\t ",thinkers);
     for(int i = 0; i< thinkers; i++){
-        printf("%s", state[i] == 1? "\tE\t": "\t.\t");
+        printf("%s",state[i] == 1? "E   ": ".   ");
     }
     printf("\n\n");
 }
