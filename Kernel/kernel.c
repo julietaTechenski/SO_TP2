@@ -3,7 +3,7 @@
 #include "include/kernel.h"
 
 #define PAGE_SIZE 4096
-#define MAX_MEM_SIZE 128*1024*1024
+#define MAX_MEM_SIZE 128*(1024*8)
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -45,7 +45,7 @@ void * initializeKernelBinary(){
 	loadModules(&endOfKernelBinary, moduleAddresses);
     clearBSS(&bss, &endOfKernel - &bss);
 
-    mm_init(0x750000, MAX_MEM_SIZE);
+    mm_init(0x60000, MAX_MEM_SIZE);
 
 	return getStackBase();
 }
