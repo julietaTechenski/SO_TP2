@@ -247,7 +247,7 @@ static void printProcess(PCB * process){
     writeString(1, buffer, aux);
     writeString(1, "  ", 2);
 
-    aux = intToString((uint64_t *)((char *)process->rsb + MAX_STACK - 1), buffer);
+    aux = intToString((uint64_t)((char *)process->rsb + MAX_STACK - 1), buffer);
     writeString(1, buffer, aux);
     writeString(1, "  ", 2);
 
