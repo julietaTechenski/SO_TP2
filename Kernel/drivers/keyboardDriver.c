@@ -68,6 +68,7 @@ void keyboard_handler(uint64_t infoRegs){
     }else if(key=='d' && ctrlFlag) {
         char eofile = EOFILE;
         //writeString(1, &eofile, 1);
+        blocked->count--;
         addEntry(eofile);
         return;
     }else if(key >= 'a' && key <= 'z')
