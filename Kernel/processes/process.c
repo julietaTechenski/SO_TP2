@@ -206,7 +206,7 @@ static int64_t changeStatePID(PCB * process, State newState){
 
 
 void killForeground(){
-    if(!my_strcmp(foreground->name, "shell")){
+    if(!my_strcmp(foreground->name, "sh")){
         kill(foreground->pid);
         exit();
     }
