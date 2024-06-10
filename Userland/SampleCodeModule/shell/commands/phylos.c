@@ -1,6 +1,14 @@
 #include "../include/phylos.h"
 #define MAX_PHYLOS 10
 #define MIN_PHYLOS 3
+
+void phylo(int i);
+void think(int phy);
+void eat(int phy);
+void add();
+void remove();
+void reprint();
+
 static int thinkers = 5;
 
 static char * palillos[MAX_PHYLOS-1];  // semaphore array
@@ -8,6 +16,7 @@ static char * palillos[MAX_PHYLOS-1];  // semaphore array
 static int state[MAX_PHYLOS-1]; // print phylos array
 
 static char*  mutex = "access_array";
+
 
 void phylos(){
     // initializing

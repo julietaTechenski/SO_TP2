@@ -170,7 +170,7 @@ int write(unsigned int fd, char * string, int count){
                 p->fd[fd][i] = string[i];
             }
             if(i==128){
-                i=0; //restart buffer pos counter
+                i=0; //restart buffer pos counters
                 my_sem_post(wReady);
                 my_sem_wait(rReady);  // waiting buffer to be read
             }
@@ -183,5 +183,6 @@ int write(unsigned int fd, char * string, int count){
     } else{ // STDOUT
         writeString(STDOUT, string, count);
     }
+    return count;
 }
 
