@@ -18,6 +18,7 @@ void intro();
 static char * buffer;
 static char username[USERNAME_MAX_SIZE];
 
+
 tcommand commands[] = {
         {"size", &size},
         {"help", &help},
@@ -45,6 +46,7 @@ tcommand commands[] = {
         {"phylo", &phylos} //wrapper?
 
 };
+
 
 
 
@@ -147,12 +149,12 @@ void getCommand(char* buffer) {
     }
     if(cfound && strcmp(args[0],"|") > 0){
         char *pArgs[2];
-        pArgs[0] = commands[n].fn;
+        pArgs[0] = commands[n-1].name;
         int i = 0;
         int pfound = 0;
         for(;!pfound && i < AMOUNT_COMMANDS; i++){
             if (strcmp(args[1], commands[i].name) > 0) {
-                pArgs[1] = commands[i].fn;
+                pArgs[1] = commands[i].name;
                 pfound = 1;
             }
         }
