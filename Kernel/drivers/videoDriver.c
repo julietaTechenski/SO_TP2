@@ -189,6 +189,7 @@ int writeString(unsigned int fd, char * string, int count) {
     return count;
 }
 
+
 //system call 5
 void clearScreen() {
     currentX = 0;

@@ -346,12 +346,7 @@ int64_t yield(){
 }
 
 int64_t nice(uint64_t pid, uint64_t newPrio){
-    if(newPrio < 10){
-        return system_nice(pid, newPrio);
-    }
-    setColor(255, 51, 51);
-    printf("Invalid arguments\nnice: usage: nice <PID> <newPriority>\nTry 'help nice' for more information\n");
-    return -1;
+    return system_nice(pid, newPrio);
 }
 
 int64_t sem_init(char *sem_id, uint64_t initialValue){

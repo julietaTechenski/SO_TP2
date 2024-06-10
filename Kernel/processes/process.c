@@ -106,6 +106,10 @@ static PCB * findNextProcess(){
 
 
 static int64_t changePriority(PCB * process, uint64_t newPrio) {
+    if(newPrio > 10){
+        writeString(2,"Error: changePriority receives 0 <= priority < 10", 49);
+        return -1;
+    }
     removeProcessFromList(process, process->priority);
     process->priority = newPrio;
     addProcessToList(process, newPrio);
@@ -168,9 +172,9 @@ void * scheduler(void * prevRsp){
 static void schedulingWrapper(FunctionType function, uint64_t argc, char *argv[]){
     uint64_t res = function(argc, argv);
     if(res != 0) {
-        writeString(1, "Error during process execution: ", 32);
-        writeString(1, current->name, my_strlen(current->name));
-        writeString(1, "\n", 1);
+        writeString(2, "Error during process execution: ", 32);
+        writeString(2, current->name, my_strlen(current->name));
+        writeString(2, "\n", 1);
     }
 
     exit();
@@ -235,7 +239,7 @@ static int64_t changeStatePID(uint64_t pid, State newState){
 
 //-----------------------------------------KILL PROC------------------------------------------------------------
 
-static void killProcess(PCB *process){ //USE ONLY IN SCHEDULER
+static void killProcess(PCB *process){
     for(int i = 0 ; i < process->waitingAmount ; i++)
         unblock(process->waitingPID[i]);
     removeProcessFromList(process, process->priority);
@@ -244,9 +248,14 @@ static void killProcess(PCB *process){ //USE ONLY IN SCHEDULER
 }
 
 int64_t kill(int64_t pid) {
+    if(pid == current->pid)
+        exit();
     PCB * process = findProcess(pid);
-    if(process==NULL)
+    if(process==NULL){
+        writeString(2, "Kill: process does not exist\n", 30);
         return -1;
+    }
+
     killProcess(process);
     return 0;
 }
@@ -256,7 +265,7 @@ void killForeground(){
         kill(foreground->pid);
 }
 
-void exit(){
+void exit(){ //DO NOT KILL YOURSELF, LET SCHEDULER DO IT
     current->state=EXITED;
     int20();
 }
@@ -316,11 +325,23 @@ void printProcesses() {
 
 
 int64_t nice(uint64_t pid, uint64_t newPrio){
-    return changePriority(findProcess(pid), newPrio);
+    PCB * aux = findProcess(pid);
+    if(aux==NULL) {
+        writeString(2, "Process does not exist\n", 24);
+        return -1;
+    }
+    int64_t ans = changePriority(findProcess(pid), newPrio);
+    if(ans != 0)
+        writeString(2, "Invalid arguments\nnice: usage: nice <PID> <newPriority>\nTry 'help nice' for more information\n", 96);
+    return ans;
 }
 
 int64_t block(uint64_t pid){
     int64_t ans = changeStatePID(pid, BLOCKED);
+    if(ans != 0) {
+        writeString(2, "Block: Invalid change of state\n", 32);
+        return -1;
+    }
     int20();
     return ans;
 }

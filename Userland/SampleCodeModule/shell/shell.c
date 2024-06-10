@@ -24,22 +24,22 @@ tcommand commands[] = {
         {"help", &help},
         {"time", &printTime},
         {"snake", &play},
-        {"clear", &clear_screen}, //wrapper?
-        {"mem", &mem_state}, //wrapper?
+        {"clear", &clearScreen},
+        {"mem", &mem_state},
         {"exit", &exitProgram},
-        {"cat", &cat}, //wrapper?
+        {"cat", &cat},
         {"zeroexception", &zeroexception},
         {"ioexception", &ioexception},
-        {"regs", &getRegs},  //wrapper?
+        {"regs", &getRegs},
         {"test_mm", &test_mm},
         {"test_processes", &test_processes},
         {"test_prio", &test_prio},
         {"test_sync", &test_sync},
         {"ps", &print_processes},
         {"loop", &loop},
-        {"nice", &nice},
+        {"nice", &niceProcess},
         {"kill",&killProcess},
-        {"block", &block},
+        {"block", &blockProcess},
         {"cat", &cat}, //wrapper?
         {"wc", &wc},  //wrapper?
         {"filter", &filter}, //wrapper?

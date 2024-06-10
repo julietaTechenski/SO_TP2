@@ -9,5 +9,7 @@
 #include "test_util.h"
 
 int64_t killProcess(uint64_t argc, char * argv[]);
+int64_t niceProcess(uint64_t argc, char * argv[]);
+int64_t blockProcess(uint64_t argc, char * argv[]);
 
 #endif //SO1_WRAPPER_H
