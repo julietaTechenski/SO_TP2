@@ -1,5 +1,3 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/kernel.h"
 
 #define PAGE_SIZE 4096
@@ -23,31 +21,31 @@ typedef int (*EntryPoint)();
 
 
 void clearBSS(void * bssAddress, uint64_t bssSize){
-	memset(bssAddress, 0, bssSize);
+    memset(bssAddress, 0, bssSize);
 }
 
 void * getStackBase(){
-	return (void*)(
-		(uint64_t)&endOfKernel
-		+ PageSize * 8				//The size of the stack itself, 32KiB
-		- sizeof(uint64_t)			//Begin at the top of the stack
-	);
+    return (void*)(
+            (uint64_t)&endOfKernel
+                       + PageSize * 8				//The size of the stack itself, 32KiB
+                       - sizeof(uint64_t)			//Begin at the top of the stack
+    );
 }
 
 void * initializeKernelBinary(){
-	void * moduleAddresses[] = {
-		sampleCodeModuleAddress,
-		sampleDataModuleAddress
-	};
+    void * moduleAddresses[] = {
+            sampleCodeModuleAddress,
+            sampleDataModuleAddress
+    };
 
 
 
-	loadModules(&endOfKernelBinary, moduleAddresses);
+    loadModules(&endOfKernelBinary, moduleAddresses);
     clearBSS(&bss, &endOfKernel - &bss);
 
-    mm_init(0x60000, MAX_MEM_SIZE);
+    mm_init(0x600000, MAX_MEM_SIZE);
 
-	return getStackBase();
+    return getStackBase();
 }
 
 
