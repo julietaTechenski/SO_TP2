@@ -22,6 +22,13 @@
 #define EXCP_0          "zeroexception"
 
 
+// test commands
+#define TMM "test_mm"
+#define TPRIO "test_prio"
+#define TSYNC "test_sync"
+#define TPROC "test_proc"
+
+
 // Command functionalities messages
 #define BLOCK_MSG		"Modifies process's state between BLOCKED and READY.\n"
 #define CAT_MSG		    "Prints on the standard output what it receives from standard input.\n"
@@ -43,6 +50,11 @@
 #define EXCP_6_MSG		"Command to check the undefined instruction exception routine.\n"
 #define EXCP_0_MSG		"Command to check the division by zero exception routine.\n"
 
+// test messages
+#define TMM_MSG "Use 'test_mm <size in mb>' to test the MMU\n"
+#define TPRIO_MSG "Command to display priority scheduling funtionality\n"
+#define TSYNC_MSG "Use 'test_sync <inc> <use_sem>', with use_sem a boolean to indicate whether to use semaphores and inc to indicate the desired increments\n"
+#define TPROC_MSG "Use 'test_proc <process amount>' to display the create, block, unblock, kill, nice and yield functionalities\n "
 
 #define COM_SIZE 19
 
@@ -52,6 +64,12 @@ char * comm[] = {BLOCK, CAT, CLEAR, EXIT, FILTER, HELP, KILL, LOOP,
 char * msg[] = {BLOCK_MSG, CAT_MSG, CLEAR_MSG, EXIT_MSG, FILTER_MSG, HELP_MSG, KILL_MSG, LOOP_MSG,
                 MEM_MSG,NICE_MSG, PHYLO_MSG, PS_MSG, REGS_MSG, SIZE_MSG, SNAKE_MSG, TIME_MSG,
                 WC_MSG, EXCP_6_MSG, EXCP_0_MSG};
+
+#define tcm_size 4
+
+
+char* tcm[] = {TMM, TPRIO, TSYNC, TPROC};
+char* tmsg[] = {TMM_MSG, TPRIO_MSG, TSYNC_MSG, TPROC_MSG};
 
 //================================ Function declarations ================================
 
@@ -102,6 +120,14 @@ void helpWithoutParams(){
 
     for(int i=0; i < COM_SIZE;i++) {
         printCOMMAND(comm[i], msg[i]);
+    }
+    printf("\n_______________________________________________________________\n\n");
+
+    printf("Commands for testing.\n");
+    printf("\n_______________________________________________________________\n\n");
+
+    for(int i=0; i < tcm_size;i++) {
+        printCOMMAND(tcm[i], tmsg[i]);
     }
 
     printf("_______________________________________________________________\n\n");

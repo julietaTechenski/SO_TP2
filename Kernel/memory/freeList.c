@@ -12,7 +12,13 @@ static int freeMem;
 static int total;
 
 void mm_init(void * ptr, size_t max_size) {
-    first = (Node *) ptr;
+
+    Node* align_start = (Node*)ptr;
+    if(((unsigned long long)align_start) % 8){
+        align_start = (Node*)(((unsigned long long)align_start + 7) & ~7);
+    }
+
+    first = (Node *) align_start;
     total = freeMem = max_size;
     first->next = first->prev = NULL;
     first->size = max_size/sizeof(Node); //esto serviria de align dejando N nodes para manejar

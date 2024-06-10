@@ -61,15 +61,16 @@ typedef struct ListNode {
     char name[MAX_LENGTH_NAME];
     int count;
     int32_t mutex;
+    uint32_t amount;
     Queue * processWaitingQueue;
     struct ListNode *next;
 } ListNode;
 
-void insertSem(ListNode **head, char * name, int initialValue) {
+ListNode * insertSem(ListNode **head, char * name, int initialValue) {
     ListNode * newNode = (ListNode *) mm_alloc(sizeof(ListNode));
     my_strcpy(newNode->name, name);
     newNode->count=initialValue;
-    newNode->mutex = 1;
+    newNode->mutex = 0;
     newNode->processWaitingQueue = initQueue();
 
     if (*head == NULL) {
@@ -81,6 +82,8 @@ void insertSem(ListNode **head, char * name, int initialValue) {
         }
         temp->next = newNode;
     }
+
+    return newNode;
 }
 
 void deleteSem(ListNode **head, char * name){
@@ -127,8 +130,12 @@ ListNode* find_sem(char * sem_id){
 }
 
 int64_t my_sem_open(char *sem_id, uint64_t initialValue){
-    if(find_sem(sem_id) == NULL)
-        insertSem(&semaphoresHead, sem_id, initialValue);
+    if(find_sem(sem_id) == NULL) {
+        ListNode *aux = insertSem(&semaphoresHead, sem_id, initialValue);
+        acquireLock(&(aux->mutex));
+        aux->amount++;
+        releaseLock(&(aux->mutex));
+    }
     return 0;
 }
 
@@ -137,9 +144,7 @@ int64_t my_sem_wait(char *sem_id){
     if((node = find_sem(sem_id)) == NULL)
         return 1;
 
-    writeString(1,"lock get", 8);
     acquireLock(&(node->mutex));
-    writeString(1,"lock acq", 8);
     if(node->count == 0) {
         releaseLock(&(node->mutex));
         int pid = getPID();
@@ -159,18 +164,27 @@ int64_t my_sem_post(char *sem_id){
         return 1;
 
     acquireLock(&(node->mutex));
-    if(isEmpty(node->processWaitingQueue))
+    if(isEmpty(node->processWaitingQueue)) {
         node->count++;
-    else {
+        releaseLock(&(node->mutex));
+    } else {
+        releaseLock(&(node->mutex));
         int pid = dequeue(node->processWaitingQueue);
         unblock(pid);
     }
-    releaseLock(&(node->mutex));
     return 0;
 }
 
 int64_t my_sem_close(char * sem_id){
-    deleteSem(&semaphoresHead, sem_id);
+    ListNode * aux = find_sem(sem_id);
+    if(aux != NULL) {
+        acquireLock(&(aux->mutex));
+        if(aux->amount > 0)
+            aux->amount--;
+        else
+            deleteSem(&semaphoresHead, sem_id);
+        releaseLock(&(aux->mutex));
+    }
     return 0;
 }
 
