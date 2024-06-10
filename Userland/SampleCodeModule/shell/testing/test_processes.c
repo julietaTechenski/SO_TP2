@@ -1,15 +1,16 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "../include/test_processes.h"
+#include "test_util.h"
+#include <stdint.h>
 
-enum State { READY,
-             RUNNING,
-             BLOCKED,
-             KILLED };
+enum State { RUNNING,
+    BLOCKED,
+    KILLED };
 
 typedef struct P_rq {
-  int32_t pid;
-  enum State state;
+    int32_t pid;
+    enum State state;
 } p_rq;
 
 int64_t test_processes(uint64_t argc, char *argv[]) {
@@ -31,13 +32,12 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
         // Create max_processes processes
         for (rq = 0; rq < max_processes; rq++) {
-            p_rqs[rq].pid = my_createProcess(&endless_loop, "endless_loop", 0, argvAux, 0);
+            p_rqs[rq].pid = my_createProcess(&endless_loop, "loop", 0, argvAux, 0);
 
             if (p_rqs[rq].pid == -1) {
                 printf("test_processes: ERROR creating process\n");
                 return -1;
             } else {
-                printf("created %d - PID: %d\n", rq, p_rqs[rq].pid);
                 p_rqs[rq].state = RUNNING;
                 alive++;
             }
@@ -56,7 +56,6 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
                                 printf("test_processes: ERROR killing process\n");
                                 return -1;
                             }
-                            printf("killed %d\n", rq);
                             p_rqs[rq].state = KILLED;
                             alive--;
                         }
@@ -68,7 +67,6 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
                                 printf("test_processes: ERROR blocking process\n");
                                 return -1;
                             }
-                            printf("blocked %d\n", rq);
                             p_rqs[rq].state = BLOCKED;
                         }
                         break;
@@ -82,7 +80,6 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
                         printf("test_processes: ERROR unblocking process\n");
                         return -1;
                     }
-                    printf("unblocked %d\n", rq);
                     p_rqs[rq].state = RUNNING;
                 }
         }

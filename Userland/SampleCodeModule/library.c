@@ -336,17 +336,6 @@ int64_t kill(uint64_t pid){
 
 int64_t block(uint64_t pid){
     int64_t ans = system_block(pid);
-    switch (ans) {
-        case 0:
-            printf("Process state modified\n");
-            break;
-        case -1:
-            printf("Process is already blocked\n");
-            break;
-        case -2:
-            printf("Process not running\n");
-            break;
-    }
     return ans;
 }
 
