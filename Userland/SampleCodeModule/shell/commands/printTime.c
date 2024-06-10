@@ -21,7 +21,7 @@ void printTime(uint64_t argc,char * args[]){
         time.hours += 21;
     }
     // Prints the time on the screen
-    printf("\n%d:%d:%d\n\n",time.hours,time.mins,time.segs);
+    printf("\n%d:%d:%d\n\n",(int)time.hours, (int)time.mins, (int)time.segs);
 
     return;
 }

@@ -412,7 +412,7 @@ void printMenu() {
         putStringXY("Score: ", 7, 0, SQUARE_SIZE*2);
         intToString(score1, stringScore1);
         putStringXY(stringScore1, digits(score1), 110, SQUARE_SIZE*2);
-    } if (players == 2){
+    } else if (players == 2){
         putStringXY("PLAYER 1:\n", 10, 0, SQUARE_SIZE*2);
         putStringXY("Score: ", 7, 0, SQUARE_SIZE*3);
         intToString(score1, stringScore1);

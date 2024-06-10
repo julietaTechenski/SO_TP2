@@ -87,9 +87,10 @@ void help(uint64_t argc,char * args[]){
     if(argc != 0){
         // Checks the user inserted a valid argument
         for(int i=0; i < COM_SIZE;i++){
-            if(strcmp(args[0], comm[i])){
+            if(strcmp(args[0], comm[i]) > 0){
                 flag = 1;
                 helpWithParams(args[0]);
+                return;
             }
         }
         if(!flag){
@@ -109,7 +110,7 @@ void printCOMMAND(char * com, char * msg) {
     setColor(0, 128, 128);
     printf("\n%s: ", com);
     setColor(192, 192, 192);
-    printf(msg);
+    printf("%s", msg);
     printf("\n");
 }
 
@@ -136,43 +137,45 @@ void helpWithoutParams(){
 }
 
 void helpWithParams(char * command){
-    if(strcmp(command, BLOCK)){
+    if(strcmp(command, BLOCK) > 0){
         printCOMMAND(BLOCK, BLOCK_MSG);
-    } else if(strcmp(command, CAT)){
+    } else if(strcmp(command, CAT) > 0){
         printCOMMAND(CAT, CAT_MSG);
-    } else if(strcmp(command, CLEAR)){
+    } else if(strcmp(command, CLEAR) > 0){
         printCOMMAND(CLEAR, CLEAR_MSG);
-    } else if(strcmp(command, EXIT)){
+    } else if(strcmp(command, EXIT) > 0){
         printCOMMAND(EXIT, EXIT_MSG);
-    } else if(strcmp(command, FILTER)){
+    } else if(strcmp(command, FILTER) > 0){
         printCOMMAND(FILTER, FILTER_MSG);
-    } else if(strcmp(command, HELP)){
+    } else if(strcmp(command, HELP) > 0){
         printCOMMAND(HELP, HELP_MSG);
-    } else if(strcmp(command, KILL)){
+    } else if(strcmp(command, KILL) > 0){
         printCOMMAND(KILL, KILL_MSG);
-    } else if(strcmp(command, LOOP)){
+    } else if(strcmp(command, LOOP) > 0){
         printCOMMAND(LOOP, LOOP_MSG);
-    } else if(strcmp(command, MEM)){
+    } else if(strcmp(command, MEM) > 0){
         printCOMMAND(MEM, MEM_MSG);
-    } else if(strcmp(command, NICE)){
+    } else if(strcmp(command, NICE) > 0){
         printCOMMAND(NICE, NICE_MSG);
-    } else if(strcmp(command, PHYLO)){
+    } else if(strcmp(command, PHYLO) > 0){
         printCOMMAND(PHYLO, PHYLO_MSG);
-    } else if(strcmp(command, PS)){
+    } else if(strcmp(command, PS) > 0){
         printCOMMAND(PS, PS_MSG);
-    } else if(strcmp(command, REGS)){
+    } else if(strcmp(command, REGS) > 0){
         printCOMMAND(REGS, REGS_MSG);
-    } else if(strcmp(command, SIZE)){
+    } else if(strcmp(command, SIZE) > 0){
         printCOMMAND(SIZE, SIZE_MSG);
-    } else if(strcmp(command, SNAKE)){
+    } else if(strcmp(command, SNAKE) > 0){
         printCOMMAND(SNAKE, SNAKE_MSG);
-    } else if(strcmp(command, TIME)){
+    } else if(strcmp(command, TIME) > 0){
         printCOMMAND(TIME, TIME_MSG);
-    } else if(strcmp(command, WC)){
+    } else if(strcmp(command, WC) > 0){
         printCOMMAND(WC, WC_MSG);
-    } else if(strcmp(command, EXCP_6)){
+    } else if(strcmp(command, EXCP_6) > 0){
         printCOMMAND(EXCP_6, EXCP_6_MSG);
-    } else if(strcmp(command, EXCP_0)){
+    } else if(strcmp(command, EXCP_0) > 0){
         printCOMMAND(EXCP_0, EXCP_0_MSG);
+    } else {
+        printf("%s: command not found\n", command);
     }
 }
