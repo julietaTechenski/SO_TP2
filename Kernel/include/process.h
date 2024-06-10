@@ -31,7 +31,7 @@ typedef enum State{
 typedef struct PCB {
     char name[MAX_NAME_LENGTH];
     uint64_t pid;
-    void * rsp;   //stack pinter
+    void * rsp;   //stack pointer
     void * rsb;   //stack base
     char * argv[MAX_ARGC];
     int priority;
