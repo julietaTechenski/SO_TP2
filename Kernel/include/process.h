@@ -17,7 +17,7 @@
 #define PRIORITY_AMOUNT 10
 #define MAX_STACK 1024*8
 #define MAX_PARENT_AMOUNT 5
-#define MAX_ARGC 5
+#define MAX_ARGC 20
 #define MAX_ARG_LENGTH 16
 
 typedef enum State{
