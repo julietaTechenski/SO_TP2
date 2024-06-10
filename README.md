@@ -28,9 +28,18 @@ On the project directory, start the container:
 
 ### Project compilation
 
+In compilation time, user can set the memory of choice :
+- Buddy
+- Free List
+The default memory is Buddy.
+
 Execute the following commands on the project directory (outside Docker):
 
-    sudo ./compile.sh
+    ./compile.sh
+
+To run Free List execute the following commands on the project directory (outside Docker):
+
+    ./compile.sh LIST
 
 ### Project execution
 
@@ -45,6 +54,8 @@ Within the system, a window will pop up. The functionality of the command interp
 ### Special keys
     F2 - displays the registers current values.
     F3 - undoes F2 function.
+    Ctrl + C - kills process in foreground
+    Ctrl + D - sends EOFILE
 
 ## Authors:
               Campoli, Lucas - 63295
