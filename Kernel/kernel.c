@@ -40,11 +40,10 @@ void * initializeKernelBinary(){
 
 
 
-	void * addr = loadModules(&endOfKernelBinary, moduleAddresses);
+	loadModules(&endOfKernelBinary, moduleAddresses);
     clearBSS(&bss, &endOfKernel - &bss);
 
-    addr = (void *)(((uintptr_t)addr + 0xFFF) & ~0xFFF);
-    mm_init(addr, MAX_MEM_SIZE);
+    mm_init(0x750000, MAX_MEM_SIZE);
 
 	return getStackBase();
 }
