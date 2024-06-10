@@ -289,13 +289,21 @@ int64_t nice(uint64_t pid, uint64_t newPrio){
 }
 
 int64_t block(uint64_t pid){
-    int ans = changeStatePID(findProcess(pid), BLOCKED);
+    PCB * process = findProcess(pid);
+    if(process == NULL || process->state == EXITED){
+        return -2;
+    }
+    int ans = changeStatePID(process, BLOCKED);
     int20();
     return ans;
 }
 
 int64_t unblock(uint64_t pid){
-    int ans = changeStatePID(findProcess(pid), READY);
+    PCB * process = findProcess(pid);
+    if(process == NULL || process->state == EXITED){
+        return -2;
+    }
+    int ans = changeStatePID(process, READY);
     int20();
     return ans;
 }

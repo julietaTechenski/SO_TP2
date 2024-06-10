@@ -105,7 +105,7 @@ int64_t nice(uint64_t pid, uint64_t newPrio);
 /**
  * @def blocks process with matching pid if possible
  * @param pid process to block pid
- * @return 0 if change was successful, -1 if not
+ * @return 0 if change was successful, -1 if state not changed, -2 if process non existent or EXITED
  */
 int64_t block(uint64_t pid);
 
