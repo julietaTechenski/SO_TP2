@@ -122,7 +122,6 @@ void* mm_alloc(size_t size) {
 }
 
 void mm_free(void * ptr) {
-
     free_recursion_counter++;
      if(firstFreeRun){
         freeMem += ((block_t*)(ptr-sizeof(block_t)))->size;
@@ -142,7 +141,7 @@ void mm_free(void * ptr) {
         }
         return;
     }
-    block = (block_t*)((uintptr_t)block - (uintptr_t)base_memory);
+    block = (block_t*)((uintptr_t)block - (uintptr_t)base_memory); // relativo
     block_t* buddy = BUDDYOF(block, i);
     block = (block_t*)((uintptr_t)block + (uintptr_t)base_memory);
     buddy = (block_t*)((uintptr_t)buddy + (uintptr_t)base_memory);

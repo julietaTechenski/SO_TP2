@@ -167,7 +167,6 @@ static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv
 
 
     for(int i = 0; i < argc; i++) {
-        writeString(1, argv[i], my_strlen(argv[i]));
         result->argv[i] = mm_alloc(MAX_ARG_LENGTH);
         my_strcpy((result->argv)[i], argv[i]);
     }
@@ -176,6 +175,8 @@ static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv
     result->priority = 0;
     result->isForeground = isForeground;
     result->state = READY;
+    result->fd[0] = NULL;
+    result->fd[1] = NULL;
     result->waitingAmount = 0;
     result->prev = NULL;
     result->next = NULL;
