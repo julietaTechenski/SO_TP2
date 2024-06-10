@@ -167,7 +167,6 @@ static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv
 
 
     for(int i = 0; i < argc; i++) {
-        writeString(1, argv[i], my_strlen(argv[i]));
         result->argv[i] = mm_alloc(MAX_ARG_LENGTH);
         my_strcpy((result->argv)[i], argv[i]);
     }
@@ -305,6 +304,9 @@ int64_t yield(){
 
 void waitPID(uint64_t pid){
     PCB * aux = findProcess(pid);
+    if(aux == NULL)
+        return;
+
     uint64_t myPID = getPID();
     aux->waitingPID[aux->waitingAmount++] = myPID;
     block(myPID);
