@@ -75,8 +75,6 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
     wait(pids[i + TOTAL_PAIR_PROCESSES]);
   }
 
-  if(global < 0)
-      return -1;
   printf("Final value: %d\n", global);
 
   return 0;

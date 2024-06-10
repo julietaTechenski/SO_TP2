@@ -176,8 +176,10 @@ void intToString(int n, char* s) {
     int i  = 0;
     char flag = 0;
 
-    if(n < 0)
+    if(n < 0){
         flag = 1;
+        n *= -1;
+    }
 
     do{
         s[i++] = n % 10 + '0';  //adds ASCII value
