@@ -132,12 +132,12 @@ ListNode* find_sem(char * sem_id){
 }
 
 int64_t my_sem_open(char *sem_id, uint64_t initialValue){
-    if(find_sem(sem_id) == NULL) {
-        ListNode *aux = insertSem(&semaphoresHead, sem_id, initialValue);
-        acquireLock(&(aux->mutex));
-        aux->amount++;
-        releaseLock(&(aux->mutex));
-    }
+    ListNode * aux = find_sem(sem_id);
+    if(aux == NULL)
+        aux = insertSem(&semaphoresHead, sem_id, initialValue);
+    acquireLock(&(aux->mutex));
+    aux->amount++;
+    releaseLock(&(aux->mutex));
     return 0;
 }
 
