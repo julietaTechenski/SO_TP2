@@ -331,12 +331,18 @@ int64_t kill(uint64_t pid){
 }
 
 int64_t block(uint64_t pid){
-    if(pid > 0){
+    if(pid >= 0){
         int64_t ans = system_block(pid);
-        if(ans == 0){
-            printf("Process %d state modified\n", pid);
-        } else {
-            printf("Process %d is already blocked\n", pid);
+        switch (ans) {
+            case 0:
+                printf("Process state modified\n");
+                break;
+            case -1:
+                printf("Process is already blocked\n");
+                break;
+            case -2:
+                printf("Process not running\n");
+                break;
         }
         return ans;
     }
@@ -394,33 +400,35 @@ int64_t change_process_state(uint64_t pid, int state){
     return system_change_process_state(pid, state);
 }
 
-void print_processes(){
+int64_t print_processes(){
     setColor(20, 205, 197);
     system_print_processes();
+    return 0;
 }
 
 //================================= command functions ==================================
 
-void mem_state(){
+int64_t mem_state(){
     sys_mem_state();
 }
 
-void loop(){
+int64_t loop(){
     while(1){
         sleep(FIVE_SEGS);
         printf("Hi! I'm process %d!\n", getpid());
     }
+    return 0;
 }
 
-void cat(){
+int64_t cat(){
     char buffer[MAX_SIZE];
     while(read(0,buffer, MAX_SIZE) != 0) {
         printf("%s\n\n", buffer);
     }
-    return;
+    return 0;
 }
 
-void wc(){
+int64_t wc(){
     int count = 0;
     char read;
     do {
@@ -434,13 +442,17 @@ void wc(){
     }
     while(read != EOFILE);
     printf("\nAmount of lines: %d\n", count);
+    return 0;
 }
 
-void filter(){
+int64_t filter(){
     char read;
-    while((read = getChar()) != EOFILE){
+    do {
+        read = getChar();
         if(isVowel(read) == 0){
             putChar(read);
         }
     }
+    while(read != EOFILE);
+    return 0;
 }

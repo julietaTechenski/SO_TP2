@@ -350,34 +350,34 @@ int dup(void * p, int oldfd, void * pipedir);
 /**
  * @def prints processes information
  */
-void print_processes();
+int64_t print_processes();
 
 /**
  *
  * @param
  * @return
  */
-void mem_state();
+int64_t mem_state();
 
 /**
  * @def prints ID with a greeting every n seconds
  */
-void loop();
+int64_t loop();
 
 /**
  * @def prints standard input
  */
-void cat();
+int64_t cat();
 
 /**
  * @def prints amount of lines in file
  */
-void wc();
+int64_t wc();
 
 /**
  * @def filter vowels from standard input
  */
-void filter();
+int64_t filter();
 
 /**
  * @def creates a pipe
