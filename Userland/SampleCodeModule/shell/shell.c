@@ -14,7 +14,7 @@ void intro();
 //================================= Variables  =================================
 
 char * buffer;
-
+char* args[MAX_ARGS];
 static char username[USERNAME_MAX_SIZE];
 
 tcommand commands[] = {
@@ -47,6 +47,9 @@ tcommand commands[] = {
 
 
 void shell() {
+    for (int i = 0; i < MAX_ARGS; ++i)
+        args[i] = malloc(MAX_ARG_LENGTH);
+
     //Into
     intro();
     //Username
@@ -82,7 +85,7 @@ void getCommand(char* buffer) {
 
     //turns possible command to string
     char command[20];
-    char args[MAX_ARGS][MAX_ARG_LENGTH];
+
     int argsAmount = 0;
     int isForeground = 1;
     int index = 0;
