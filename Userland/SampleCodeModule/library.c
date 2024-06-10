@@ -220,7 +220,7 @@ char toLower(char letter){
 }
 
 int isVowel(char letter){
-    int lett = toLower(letter);
+    char lett = toLower(letter);
     if(lett == 'a' || lett == 'e' || lett == 'i' || lett == 'o' || lett == 'u'){
         return 1;
     }
