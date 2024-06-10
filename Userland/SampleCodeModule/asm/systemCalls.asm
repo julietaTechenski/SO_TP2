@@ -38,10 +38,9 @@ GLOBAL system_sem_wait                  ; system call 24
 GLOBAL system_sem_post                  ; system call 25
 GLOBAL system_sem_close                 ; system call 26
 GLOBAL sys_mem_state                    ; system call 27
-GLOBAL system_pipe                      ; system call UNDEFINED
 GLOBAL system_dup                       ; system call 28
-GLOBAL system_change_process_state      ; system call 29
-GLOBAL system_print_processes           ; system call 30
+GLOBAL system_print_processes           ; system call 29
+GLOBAL system_pipe                      ; system call 30
 
 
 
@@ -151,16 +150,13 @@ sys_mem_state:
     sysCall 27
 
 system_pipe:
-    sysCall 31
+    sysCall 30
 
 system_dup:
     sysCall 28
 
-system_change_process_state:
-    sysCall 29
-
 system_print_processes:
-    sysCall 30
+    sysCall 29
 ;-------------------------------------------------------
 ;   Recibe un  puntero a un struct typedef struct{
      ;                                  unsigned int segs;

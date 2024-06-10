@@ -102,14 +102,12 @@ uint64_t sysCallHandler(Registers registers){
                 mm_state();
                 return 0;
             case 28:
-                return 0/*dup((void *)registers->rdi, registers->rsi, (void*)registers->rdx)*/;
+                return dup(registers->rdi, registers->rsi, (void*)registers->rdx);
             case 29:
-                return 0; //changeStatePID(registers->rdi, registers->rsi)
-            case 30:
                 printProcesses();
                 return 0;
-            case 31:
-                return 0/*pipe((void**)registers->rdi)*/;
+            case 30:
+                return pipe((void**)registers->rdi);
         }
         return 0;
     }

@@ -394,13 +394,10 @@ int pipe(void * pipefd[2]){
     return system_pipe(pipefd);
 }
 
-int dup(void * p, int oldfd, void * pipedir){
-    return system_dup(p, oldfd, pipedir);
+int dup(uint64_t pid,int oldfd, void* pipedir){
+    return system_dup(pid, oldfd, pipedir);
 }
 
-int64_t change_process_state(uint64_t pid, int state){
-    return system_change_process_state(pid, state);
-}
 
 int64_t print_processes(){
     setColor(20, 205, 197);

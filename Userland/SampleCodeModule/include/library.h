@@ -11,7 +11,6 @@
 
 extern int system_read(unsigned int fd, char * buffer, int count);
 extern void system_write(unsigned int fd, char * buffer, int count);
-extern void change_color(char r,  char g,  char b);
 extern void inc_size();
 extern void dec_size();
 extern void clear_screen();
@@ -37,11 +36,9 @@ extern int64_t system_sem_post(char *sem_id);
 extern int64_t system_sem_close(char *sem_id);
 extern void sys_mem_state();
 extern int system_pipe(void * pipefd[2]);
-extern int system_dup(void * p, int oldfd, void *pipedir);
-extern int64_t system_change_process_state(uint64_t pid, int state);
+extern int system_dup(uint64_t pid, int oldfd, void *pipedir);
 extern void system_print_processes();
 extern int system_pipe(void * pipefd[2]);
-extern int system_dup(void * p, int oldfd, void *pipedir);
 
 
 //FUNCTIONS -------------------------------------------------------------------------------
@@ -322,13 +319,6 @@ int64_t sem_post(char *sem_id);
  */
 int64_t sem_close(char *sem_id);
 
-/**
- *
- * @param pid
- * @param state
- * @return -1 if error 0 if not
- */
-int64_t change_process_state(uint64_t pid, int state);
 
 
 /**
@@ -345,7 +335,7 @@ int pipe(void * pipefd[2]);
  * @param pipedir
  * @return -1 if error
  */
-int dup(void * p, int oldfd, void * pipedir);
+int dup(uint64_t p, int oldfd, void * pipedir);
 
 /**
  * @def prints processes information
@@ -385,15 +375,6 @@ int64_t filter();
  */
 int pipe(void * pipefd[2]);
 
-
-/**
- *
- * @param p
- * @param oldfd
- * @param pipedir
- * @return -1 if error
- */
-int dup(void * p, int oldfd, void * pipedir);
 #endif //LIBRARY_H
 
 

@@ -151,7 +151,8 @@ void getCommand(char* buffer) {
             }
         }
         if(pfound){
-            my_createProcess(&pipe_command, "pipe",2, pArgs, isForeground2);   // revisar isforeground
+            int64_t pid = my_createProcess(&pipe_command, "pipe",2, pArgs, isForeground2);
+            wait(pid);
         }else {
             setColor(255, 51, 51);
             printf("%s: not a command. Valid pipe entry: 'p1 | p2' \n",args[1]);

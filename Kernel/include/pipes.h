@@ -11,6 +11,7 @@ typedef struct fd {
 } fd;
 
 int pipe(void * pipesfd[2]);
-int dup(int oldfd, void* pipedir);
+int dup(int pid,int oldfd, void* pipedir);
+
 
 #endif //SO_TP2_PIPES_H
