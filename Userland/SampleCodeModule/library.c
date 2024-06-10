@@ -325,18 +325,12 @@ int64_t getpid(){
     return system_getpid();
 }
 
-int64_t kill(uint64_t pid){
-    if(pid > 0){
-        return system_kill(pid);
-    }
-    setColor(255, 51, 51);
-    printf("Invalid arguments\nTry 'help kill' for more information\n");
-    return -1;
+int64_t kill(int64_t pid){
+    return system_kill(pid);
 }
 
 int64_t block(uint64_t pid){
-    int64_t ans = system_block(pid);
-    return ans;
+    return system_block(pid);
 }
 
 int64_t unblock(uint64_t pid){

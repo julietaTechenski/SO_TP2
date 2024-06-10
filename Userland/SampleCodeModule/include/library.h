@@ -24,7 +24,7 @@ extern void * system_malloc(unsigned int size);
 extern void system_free(void * ptr);
 extern int64_t system_getpid(void);
 extern int64_t system_create_process(void * process, char * name, uint64_t argc, char *argv[], uint64_t isForeground);
-extern int64_t system_kill(uint64_t pid);
+extern int64_t system_kill(int64_t pid);
 extern int64_t system_block(uint64_t pid);
 extern int64_t system_unblock(uint64_t pid);
 extern int64_t system_wait(uint64_t pid);
@@ -253,7 +253,7 @@ int64_t getpid(void);
  * @param pid
  * @return 0 on success, else -1
  */
-int64_t kill(uint64_t pid);
+int64_t kill(int64_t pid);
 
 /**
  *

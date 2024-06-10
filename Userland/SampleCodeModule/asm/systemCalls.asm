@@ -1,48 +1,36 @@
-GLOBAL _getRegs                         ; system call 1
-GLOBAL put_pixel                        ; system call 2
-GLOBAL system_read                      ; system call 3
-GLOBAL system_write                     ; system call 4
-GLOBAL clear_screen                     ; system call 5
-GLOBAL change_color                     ; system call 6
-GLOBAL inc_size                         ; system call 7
-GLOBAL dec_size                         ; system call 8
-GLOBAL get_seconds_elapsed              ; system call 9
-GLOBAL _sleep                           ; system call 10
-GLOBAL _playSound                       ; system call 11
-GLOBAL sys_writeXY                      ; system call 12
+GLOBAL _getRegs        ; syscall 1
+GLOBAL put_pixel       ; syscall 2
+GLOBAL system_read     ; syscall 3
+GLOBAL system_write    ; syscall 4
+GLOBAL clear_screen    ; syscall 5
+GLOBAL change_color    ; syscall 6
+GLOBAL inc_size        ; syscall 7
+GLOBAL dec_size        ; syscall 8
+GLOBAL get_seconds_elapsed ; syscall 9
+GLOBAL _sleep          ; syscall 10
+GLOBAL _playSound      ; syscall 11
+GLOBAL sys_writeXY     ; syscall 12
+GLOBAL system_malloc   ; syscall 13
+GLOBAL system_free     ; syscall 14
+GLOBAL system_create_process ; syscall 15
+GLOBAL system_getpid   ; syscall 16
+GLOBAL system_kill     ; syscall 17
+GLOBAL system_block    ; syscall 18
+GLOBAL system_unblock  ; syscall 19
+GLOBAL system_wait     ; syscall 20
+GLOBAL system_yield    ; syscall 21
+GLOBAL system_nice     ; syscall 22
+GLOBAL system_sem_init ; syscall 23
+GLOBAL system_sem_wait ; syscall 24
+GLOBAL system_sem_post ; syscall 25
+GLOBAL system_sem_close ; syscall 26
+GLOBAL sys_mem_state   ; syscall 27
+GLOBAL system_dup      ; syscall 28
+GLOBAL system_print_processes ; syscall 29
+GLOBAL system_pipe     ; syscall 30
+
+
 GLOBAL getTimeRTC
-GLOBAL system_malloc                    ; system call 13
-GLOBAL system_free                      ; system call 14
-GLOBAL system_create_process            ; system call 15
-GLOBAL system_getpid                    ; system call 16
-GLOBAL system_kill                      ; system call 17
-GLOBAL system_block                     ; system call 18
-GLOBAL system_unblock                   ; system call 19
-GLOBAL system_wait                      ; system call 20
-GLOBAL system_yield                     ; system call 21
-GLOBAL system_nice                      ; system call 22
-GLOBAL system_sem_init                  ; system call 23
-GLOBAL system_sem_wait                  ; system call 24
-GLOBAL system_sem_post                  ; system call 25
-GLOBAL system_free                      ; system call 14
-GLOBAL system_create_process            ; system call 15
-GLOBAL system_getpid                    ; system call 16
-GLOBAL system_kill                      ; system call 17
-GLOBAL system_block                     ; system call 18
-GLOBAL system_unblock                   ; system call 19
-GLOBAL system_wait                      ; system call 20
-GLOBAL system_yield                     ; system call 21
-GLOBAL system_nice                      ; system call 22
-GLOBAL system_sem_init                  ; system call 23
-GLOBAL system_sem_wait                  ; system call 24
-GLOBAL system_sem_post                  ; system call 25
-GLOBAL system_sem_close                 ; system call 26
-GLOBAL sys_mem_state                    ; system call 27
-GLOBAL system_dup                       ; system call 28
-GLOBAL system_print_processes           ; system call 29
-GLOBAL system_pipe                      ; system call 30
-
-
 
 section .text
 
@@ -149,14 +137,15 @@ system_sem_close:
 sys_mem_state:
     sysCall 27
 
-system_pipe:
-    sysCall 30
-
 system_dup:
     sysCall 28
 
 system_print_processes:
     sysCall 29
+
+system_pipe:
+    sysCall 30
+
 ;-------------------------------------------------------
 ;   Recibe un  puntero a un struct typedef struct{
      ;                                  unsigned int segs;
