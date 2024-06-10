@@ -138,10 +138,6 @@ void * scheduler(void * prevRsp){
         } else if (current->state == RUNNING) {
             if (current->priority < PRIORITY_AMOUNT-1)
                 changePriority(current, current->priority + 1);
-            else{
-                removeProcessFromList(current, current->priority);
-                addProcessToEndOfList(current, current->priority);
-            }
             changeStatePID(current, READY);
         } else if (current->state == BLOCKED) {
             if (current->priority > 0)

@@ -49,7 +49,6 @@ tcommand commands[] = {
 
 
 void shell() {
-
     //Into
     intro();
     //Username
@@ -64,7 +63,7 @@ void shell() {
     setColor(255, 153, 102);
     printf("\n\nWelcome %s!\n\nThe 'help' command to display a menu with all the functionalities.\n\n", username);
 
-    buffer = (char*)malloc(sizeof(char)*128);
+    buffer = (char*) malloc(sizeof(char)*128);
     //terminal
     while(1) {
         setColor(255,255,255);
@@ -85,7 +84,7 @@ void getCommand(char* buffer) {
     char * args[MAX_ARGS];
 
     for (int i = 0; i < MAX_ARGS; ++i)
-        args[i] = (char*)malloc(MAX_ARG_LENGTH);
+        args[i] = (char*) malloc(MAX_ARG_LENGTH);
 
     int argsAmount = 0;
     int isForeground1 = 1;
