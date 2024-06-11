@@ -3,137 +3,139 @@
 #include "../include/memory_manager.h"
 #ifdef LIST
 
-#include "stddef.h"
 
-static unsigned mm_iner_free(void * ap);
+typedef struct Node {
+    size_t size;
+    struct Node * next;
+} Node;
 
-// Estructura del bloque de memoria
-typedef long Align;  // Para forzar la alineación en el límite de tipo long
+static Node * resize(Node * ptr, size_t size);
 
-union header {
-    struct {
-        union header *ptr;  // Puntero al siguiente bloque libre
-        unsigned size;      // Tamaño del bloque
-    } s;
-    Align x;  // Para asegurar que el bloque esté correctamente alineado
-};
+static Node * first = NULL;
 
-typedef union header Header;
-
-static Header base;             // Bloque base para inicialización
-static Header *freep = NULL;    // Puntero a la lista libre
-
-#define NALLOC 1024  // Número mínimo de unidades a solicitar
-
-static void * ptrStart;
-static size_t totalMem;
-static size_t ocMem;
+static size_t total, freeMem;
 
 void mm_init(void * ptr, size_t max_size) {
-    ptrStart = ptr;
-    totalMem = max_size;
-    ocMem = 0;
+    first = (Node *) ptr;
+    first->next = NULL;
+    first->size = total = freeMem = max_size;
 }
 
-static Header *morecore(unsigned nu) {
-    char *cp;
-    Header *up;
+void * mm_alloc(size_t size) {
+    if (first == NULL)
+        return NULL;
 
-    if (nu < NALLOC)
-        nu = NALLOC;
-
-    cp = ptrStart;
-    ptrStart += (nu * (sizeof(Header)) + 8);
-
-    up = (Header *) cp;
-    up->s.size = nu;
-    mm_iner_free((void *)(up + 1));
-    return freep;
-}
-
-void * mm_alloc(size_t nbytes) {
-    Header *p, *prevp;
-    unsigned nunits;
-
-    nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-    if ((prevp = freep) == NULL) {  // No hay lista libre inicial
-        base.s.ptr = freep = prevp = &base;
-        base.s.size = 0;
-    }
-
-    for (p = prevp->s.ptr; ; prevp = p, p = p->s.ptr) {
-        if (p->s.size >= nunits) {  // Bloque suficientemente grande
-            if (p->s.size == nunits)  // Exactamente
-                prevp->s.ptr = p->s.ptr;
-            else {  // Fragmentar
-                p->s.size -= nunits;
-                p += p->s.size;
-                p->s.size = nunits;
-            }
-            freep = prevp;
-            ocMem += (nunits * sizeof(Header));
-            return (void *)(p + 1);
+    if (first->size >= size) {
+        freeMem-=size;
+        if (first->size == size) {
+            Node * aux = first + 1;
+            first = first->next;
+            return aux;
+        } else {
+            return resize(first, size);
         }
-        if (p == freep)  // Ha dado la vuelta completa
-            if ((p = morecore(nunits)) == NULL)
-                return NULL;  // No hay suficiente memoria
+    }
+
+    Node * ptr = first;
+    while (ptr->next != NULL) {
+        if (ptr->next->size >= size) {
+            freeMem -= size;
+            Node * aux = ptr->next;
+            if (ptr->next->size == size) {
+                ptr->next = ptr->next->next;
+                return aux + 1;
+            } else
+                return resize(aux, size);
+        } else {
+            ptr = ptr->next;
+        }
+    }
+    return NULL;
+}
+
+static Node * resize(Node * ptr, size_t size) {
+    ptr->size -= (size + sizeof(Node));
+    Node * newHeader = (Node *) ( (size_t)ptr + ptr->size + sizeof(Node) );
+    newHeader->next = NULL;
+    newHeader->size = size;
+    return newHeader + 1;
+}
+
+
+void mm_free(void *ptr) {
+    Node *nodePtr = (Node *) ptr - 1;
+    total += nodePtr->size;
+
+    if (nodePtr <= first) {
+        nodePtr->next = first;
+        first = nodePtr;
+        return;
+    }
+
+    Node *iterPtr = first;
+    while (iterPtr != NULL) {
+        size_t endOfIter = (size_t) iterPtr + iterPtr->size + sizeof(Node);
+        size_t endOfNode = (size_t) nodePtr + nodePtr->size + sizeof(Node);
+
+        if (iterPtr->next == NULL) {
+            if (endOfIter == nodePtr) {
+                iterPtr->size += nodePtr->size + sizeof(Node);
+            } else {
+                iterPtr->next = nodePtr;
+                nodePtr->next = NULL;
+            }
+            return;
+        }
+
+        if (iterPtr->next >= nodePtr) {
+
+            if (endOfIter == nodePtr) {
+                iterPtr->size += nodePtr->size + sizeof(Node);
+
+                if (endOfIter == iterPtr->next) {
+                    iterPtr->size += iterPtr->next->size + sizeof(Node);
+                    iterPtr->next = iterPtr->next->next;
+                }
+                return;
+            }
+
+            if (endOfNode == iterPtr->next) {
+                nodePtr->size += iterPtr->next->size + sizeof(Node);
+                nodePtr->next = iterPtr->next->next;
+                iterPtr->next = nodePtr;
+                return;
+            }
+
+            nodePtr->next = iterPtr->next;
+            iterPtr->next = nodePtr;
+            return;
+        }
+
+        iterPtr = iterPtr->next;
     }
 }
 
-
-
-static unsigned mm_iner_free(void * ap) {
-    Header *bp, *p;
-
-    bp = (Header *)ap - 1;  // Obtener puntero al bloque de cabecera
-    unsigned aux = bp->s.size * sizeof(Header);
-    for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-        if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-            break;  // Liberar al final o inicio
-
-    if (bp + bp->s.size == p->s.ptr) {  // Unir hacia adelante
-        bp->s.size += p->s.ptr->s.size;
-        bp->s.ptr = p->s.ptr->s.ptr;
-    } else
-        bp->s.ptr = p->s.ptr;
-
-    if (p + p->s.size == bp) {  // Unir hacia atrás
-        p->s.size += bp->s.size;
-        p->s.ptr = bp->s.ptr;
-    } else
-        p->s.ptr = bp;
-
-    freep = p;
-    return aux;
-}
-
-void mm_free(void * ptr){
-    unsigned aux = mm_iner_free(ptr);
-    ocMem -= aux;
-}
 
 void mm_state() {
     char s[20];
     int longitud;
 
-    longitud = intToString(totalMem, s);
+    longitud = intToString(total, s);
     writeString(1, "Memoria total: ", 15);
     writeString(1, s, longitud);
     writeString(1, "\n", 1);
 
 
-    longitud = intToString(totalMem - ocMem, s);
+    longitud = intToString(freeMem, s);
     writeString(1, "Memoria libre: ", 15);
     writeString(1, s, longitud);
     writeString(1, "\n", 1);
 
-    longitud = intToString(ocMem, s);
+    longitud = intToString(total - freeMem, s);
     writeString(1, "Memoria ocupada: ", 17);
     writeString(1, s, longitud);
     writeString(1, "\n", 1);
 
 }
-
-
 
 #endif
