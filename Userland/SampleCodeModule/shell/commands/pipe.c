@@ -64,15 +64,16 @@ void pipe_command(uint64_t argc, char* argv[]){
 
     void* fd1[2];
     fd1[0] = NULL;
-    fd1[1] = pipefd[1];
 
     void* fd2[2];
-    fd2[0] = pipefd[0];;
     fd2[1] = NULL;
 
     if(pipe(pipefd) == -1){
         printf("Error creating pipe\n");
-    } else{
+    } else {
+        fd1[1] = pipefd[1];
+        fd2[0] = pipefd[0];
+
         for(int i =0; i < AMOUNT_COMMANDS; i++){
             if(strcmp(pipe_commands[i].name, aux_args[0])>0 && !p1_found){
                 pid1 = my_createProcess(pipe_commands[i].fn, "p1", 0, NULL, 1, fd1);
