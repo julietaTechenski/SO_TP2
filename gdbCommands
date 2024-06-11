@@ -1,0 +1,18 @@
+define printBuddyBlock
+  set var $n = $arg0
+  while $n
+    p $n
+    p *($n)
+    set var $n = $n->next
+  end
+end
+
+define printBuddy
+  set var $i = 13
+  while $i >= 0
+    print $i
+    printBuddyBlock free_blocks[$i]
+    set var $i = $i - 1
+  end
+end
+
