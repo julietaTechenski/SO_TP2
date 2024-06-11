@@ -142,7 +142,7 @@ void getCommand(char* buffer) {
                 char * fd[2];
                 fd[0] = NULL;
                 fd[1] = NULL;
-                int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount, args, isForeground1, fd);
+                int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount, args, isForeground1, (void**)fd);
                 if(isForeground1)
                     wait(pid);
             }
@@ -171,7 +171,7 @@ void getCommand(char* buffer) {
             char *fdp[2];
             fdp[0] = NULL;
             fdp[1] = NULL;
-            int64_t pid = my_createProcess(&pipe_command, "pipe",2, pArgs, isForeground2,fdp);
+            int64_t pid = my_createProcess(&pipe_command, "pipe",2, pArgs, isForeground2,(void**)fdp);
             wait(pid);
         }else {
             setColor(255, 51, 51);

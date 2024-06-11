@@ -348,7 +348,7 @@ void free(void * ptr){
     system_free(ptr);
 }
 
-int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, char * fd[]){
+int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void ** fd){
     return system_create_process(process, name, argc, argv, isForeground, fd);
 }
 

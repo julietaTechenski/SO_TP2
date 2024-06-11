@@ -139,7 +139,7 @@ static void remove_philosopher() {
         // Terminate the last philosopher
         thinkers--;
         // Kill the philosopher process
-        killProcess(pids[thinkers]);
+        kill(pids[thinkers]);
         // Free the semaphore memory
         sem_close(palillos[thinkers]);
         free(palillos[thinkers]);
