@@ -19,14 +19,14 @@ static char *palillos[MAX_PHYLOS];  // Semaphore array for forks
 static int state[MAX_PHYLOS]; // State array for philosophers
 static int pids[MAX_PHYLOS]; // Store PIDs of philosophers
 
-static char *mutex = "access_array";
-static char *char_mutex = "char_mutex";
+#define MUTEX_ARRAY "access_array"
+#define MUTEX_CHAR "char_mutex"
 static char command = 0;  // Shared command variable
 
 void phylos() {
     // Initializing semaphores
-    sem_init(mutex, 1);
-    sem_init(char_mutex, 1);
+    sem_init(MUTEX_ARRAY, 1);
+    sem_init(MUTEX_CHAR, 1);
     void *fd[2];
     fd[0] = NULL;
     fd[1] = NULL;
@@ -46,33 +46,32 @@ void phylos() {
     }
 
     while (1) {
-        sem_wait(char_mutex);
+        sem_wait(MUTEX_CHAR);
         if (command != 0) {
             switch (command) {
                 case 'a':
                     command = 0;
-                    printf("hola");
-                    sem_post(char_mutex);
+                    sem_post(MUTEX_CHAR);
                     add_philosopher();
-                    sem_wait(mutex);
+                    sem_wait(MUTEX_ARRAY);
                     reprint();
-                    sem_post(mutex);
+                    sem_post(MUTEX_ARRAY);
                     break;
                 case 'r':
                     command = 0;
-                    sem_post(char_mutex);
+                    sem_post(MUTEX_CHAR);
                     remove_philosopher();
-                    sem_wait(mutex);
+                    sem_wait(MUTEX_ARRAY);
                     reprint();
-                    sem_post(mutex);
+                    sem_post(MUTEX_ARRAY);
                     break;
                 default:
                     command = 0;
-                    sem_post(char_mutex);
+                    sem_post(MUTEX_CHAR);
                     break;
             }
         } else {
-            sem_post(char_mutex);
+            sem_post(MUTEX_CHAR);
         }
         sleep(1);
     }
@@ -102,18 +101,18 @@ static void phylo(int argc, char *argv[]) {
 }
 
 static void think(int phy) {
-    sem_wait(mutex);
+    sem_wait(MUTEX_ARRAY);
     state[phy] = 0;
     reprint();
-    sem_post(mutex);
+    sem_post(MUTEX_ARRAY);
     sleep(2); // Simulate thinking
 }
 
 static void eat(int phy) {
-    sem_wait(mutex);
+    sem_wait(MUTEX_ARRAY);
     state[phy] = 1;
     reprint();
-    sem_post(mutex);
+    sem_post(MUTEX_ARRAY);
     sleep(2); // Simulate eating
 }
 
@@ -149,9 +148,9 @@ static void remove_philosopher() {
 static void controllers_handler() {
     while (1) {
         char aux = getChar();
-        sem_wait(char_mutex);
+        sem_wait(MUTEX_CHAR);
         command = aux;
-        sem_post(char_mutex);
+        sem_post(MUTEX_CHAR);
     }
 }
 
