@@ -23,7 +23,7 @@ extern int sys_writeXY(unsigned int fd, char * string, int count, int x, int y);
 extern void * system_malloc(unsigned int size);
 extern void system_free(void * ptr);
 extern int64_t system_getpid(void);
-extern int64_t system_create_process(void * process, char * name, uint64_t argc, char *argv[], uint64_t isForeground);
+extern int64_t system_create_process(void * process, char * name, uint64_t argc, char *argv[], uint64_t isForeground, void* *fd);
 extern int64_t system_kill(int64_t pid);
 extern int64_t system_block(uint64_t pid);
 extern int64_t system_unblock(uint64_t pid);
@@ -239,7 +239,7 @@ void free(void * ptr);
  * @def creates a process
  * @return
  */
-int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground);
+int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void **fd);
 
 /**
  *
@@ -374,6 +374,10 @@ int64_t filter();
  * @param pipefd array read fd (0) and write fd(1)
  */
 int pipe(void * pipefd[2]);
+
+
+void strcpy(char *dest, const char *src);
+
 
 #endif //LIBRARY_H
 

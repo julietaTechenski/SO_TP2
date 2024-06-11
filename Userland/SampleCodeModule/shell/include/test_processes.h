@@ -5,6 +5,7 @@
 
 #include "../include/test_util.h"
 #include "../../include/library.h"
+#define NULL ((void*)0)
 
 
 int64_t test_processes(uint64_t argc, char *argv[]);

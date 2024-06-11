@@ -73,7 +73,7 @@ uint64_t sysCallHandler(Registers registers){
                 mm_free((void*)registers->rdi);
                 break;
             case 15:
-                return createProcess((void*)registers->rdi, (char *)registers->rsi, registers->rdx, (char **)registers->rcx, registers->r8);
+                return createProcess((void*)registers->rdi, (char *)registers->rsi, registers->rdx, (char **)registers->rcx, registers->r8, (void**)registers->r9);
             case 16:
                 return getPID();
             case 17:

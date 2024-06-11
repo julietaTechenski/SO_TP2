@@ -52,7 +52,10 @@ void * initializeKernelBinary(){
 
 int main() {
     load_idt();
-    createProcess((EntryPoint)sampleCodeModuleAddress, "init", 0, 0, 1);
+    void* fd[2];
+    fd[0] = NULL;
+    fd[1] = NULL;
+    createProcess((EntryPoint)sampleCodeModuleAddress, "init", 0, 0, 1,  fd);
     initScheduler();
     return 0;
 }

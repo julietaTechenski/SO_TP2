@@ -2,6 +2,7 @@
 
 #ifndef SO_TP2_TEST_PRIO_H
 #define SO_TP2_TEST_PRIO_H
+#define NULL ((void*)0)
 
 #include <stdint.h>
 #include "../../include/library.h"

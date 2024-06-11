@@ -5,6 +5,10 @@
 
 int main() {
     char *argvAux[] = {0};
-    my_createProcess(&shell, "sh", 0, argvAux, 1);
+    void * pipe = (void*)malloc(sizeof(char)*20);
+    void* fd[2];
+    fd[0] = NULL;
+    fd[1] = NULL;
+    my_createProcess(&shell, "sh", 0, argvAux, 1, fd);
     return 0;
 }

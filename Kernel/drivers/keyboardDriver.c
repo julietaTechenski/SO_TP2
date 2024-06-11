@@ -120,7 +120,7 @@ int read(unsigned int fd, char * buffer, int count){
     }
     if( p != NULL){
         int i = 0;
-        if(p->fd[fd] != NULL){ //pipe read
+        if(p->fd[fd] != 0){ //pipe read
             int c = count;
             char *rReady = "rReady";
             my_sem_open(rReady, 0); // read => rReady = 1
@@ -161,7 +161,7 @@ int read(unsigned int fd, char * buffer, int count){
 int write(unsigned int fd, char * string, int count){
     uint64_t ppid = getPID();
     PCB *p = findProcess(ppid);
-    if(p->fd[fd] != NULL){  //pipe write
+    if(p->fd[fd] != 0){  //pipe write
         char *rReady = "rReady";
         my_sem_open(rReady, 0);
 
