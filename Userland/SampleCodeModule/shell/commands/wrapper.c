@@ -28,3 +28,10 @@ int64_t blockProcess(uint64_t argc, char * argv[]){
     return block(pid);
 }
 
+int64_t unblockProcess(uint64_t argc, char * argv[]){
+    if(argc != 1)
+        return -1;
+    int64_t pid = satoi(argv[0]);
+    return unblock(pid);
+}
+

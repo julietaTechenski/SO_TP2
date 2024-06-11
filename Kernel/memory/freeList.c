@@ -63,22 +63,25 @@ static Node * resize(Node * ptr, size_t size) {
 
 
 void mm_free(void *ptr) {
-    Node *nodePtr = (Node *) ptr - 1;
-    total += nodePtr->size;
+    Node *nodePtr = (Node *) ptr - 1;  // Limite inferior
+    Node *endOfNode = (Node *) ((size_t) nodePtr + nodePtr->size + sizeof(Node));  // Limite superior
 
-    if (nodePtr <= first) {
-        nodePtr->next = first;
-        first = nodePtr;
+    if (endOfNode <= first) {  // Va al principio
+        if (endOfNode == first) {
+            nodePtr->next = first->next;
+            nodePtr->size += first->size + sizeof(Node);
+            first = nodePtr;
+        } else {
+            nodePtr->next = first;
+            first = nodePtr;
+        }
         return;
     }
 
     Node *iterPtr = first;
     while (iterPtr != NULL) {
-        Node * endOfIter = (Node *)((size_t) iterPtr + iterPtr->size + sizeof(Node));
-        Node * endOfNode = (Node *)((size_t) nodePtr + nodePtr->size + sizeof(Node));
-
-        if (iterPtr->next == NULL) {
-            if (endOfIter == nodePtr) {
+        if (iterPtr->next == NULL) {  // Va al final
+            if (((size_t) iterPtr) + iterPtr->size + sizeof(Node) == (size_t) nodePtr) {
                 iterPtr->size += nodePtr->size + sizeof(Node);
             } else {
                 iterPtr->next = nodePtr;
@@ -87,25 +90,25 @@ void mm_free(void *ptr) {
             return;
         }
 
-        if (iterPtr->next >= nodePtr) {
+        if (iterPtr->next >= nodePtr) {  // Va antes del siguiente bloque
 
-            if (endOfIter == nodePtr) {
+            if (((size_t) iterPtr) + iterPtr->size + sizeof(Node) == (size_t) nodePtr) {  // Junto bloque inferior
                 iterPtr->size += nodePtr->size + sizeof(Node);
-
-                if (endOfIter == iterPtr->next) {
+                if (((size_t) iterPtr) + iterPtr->size + sizeof(Node) == (size_t) iterPtr->next) {  // Check bloque superior también
                     iterPtr->size += iterPtr->next->size + sizeof(Node);
                     iterPtr->next = iterPtr->next->next;
                 }
                 return;
             }
 
-            if (endOfNode == iterPtr->next) {
+            if ((Node *) (((size_t) nodePtr) + nodePtr->size + sizeof(Node)) == iterPtr->next) {  // Junto SOLO con bloque superior
                 nodePtr->size += iterPtr->next->size + sizeof(Node);
                 nodePtr->next = iterPtr->next->next;
                 iterPtr->next = nodePtr;
                 return;
             }
 
+            // No junto con nada
             nodePtr->next = iterPtr->next;
             iterPtr->next = nodePtr;
             return;
@@ -113,8 +116,9 @@ void mm_free(void *ptr) {
 
         iterPtr = iterPtr->next;
     }
-}
 
+    // ERROR
+}
 
 void mm_state() {
     char s[20];
