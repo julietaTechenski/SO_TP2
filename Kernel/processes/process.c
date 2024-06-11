@@ -106,14 +106,14 @@ static PCB * findNextProcess(){
 
 
 static int64_t changePriority(PCB * process, uint64_t newPrio) {
-    if(newPrio > 10){
-        writeString(2,"Error: changePriority receives 0 <= priority < 10", 49);
+    if(newPrio >= 10){
+        writeString(2,"Error: changePriority receives 0 <= priority < 10\n", 50);
         return -1;
     }
     removeProcessFromList(process, process->priority);
     process->priority = newPrio;
     addProcessToList(process, newPrio);
-    return newPrio;
+    return 0;
 }
 
 //=====================================================================================================================
@@ -333,10 +333,7 @@ int64_t nice(uint64_t pid, uint64_t newPrio){
         writeString(2, "Process does not exist\n", 24);
         return -1;
     }
-    int64_t ans = changePriority(findProcess(pid), newPrio);
-    if(ans != 0)
-        writeString(2, "Invalid arguments\nnice: usage: nice <PID> <newPriority>\nTry 'help nice' for more information\n", 96);
-    return ans;
+    return changePriority(aux, newPrio);
 }
 
 int64_t block(uint64_t pid){
