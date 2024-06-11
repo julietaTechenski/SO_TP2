@@ -54,19 +54,6 @@ static void addProcessToList(PCB *newProcess, int priority){
     priorityArray[priority] = newProcess;
 }
 
-static void addProcessToEndOfList(PCB *newProcess, int priority){
-    newProcess->next = newProcess->prev = NULL;
-    first = priorityArray[priority];
-    if(first == NULL) {
-        priorityArray[priority] = newProcess;
-    } else {
-        while (first->next != NULL)
-            first = first->next;
-        newProcess->prev = first;
-        first->next = newProcess;
-    }
-}
-
 static void removeProcessFromList(PCB *process, int priority){
     if(process->prev != NULL)  //arrange prev process
         (process->prev)->next = process->next;

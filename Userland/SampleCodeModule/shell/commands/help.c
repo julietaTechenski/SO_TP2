@@ -88,8 +88,8 @@ void help(uint64_t argc,char * args[]){
         // Checks the user inserted a valid argument
         for(int i=0; i < COM_SIZE;i++){
             if(strcmp(args[0], comm[i]) > 0){
-                helpWithParams(args[0]);
                 incSize();
+                helpWithParams(args[0]);
                 return;
             }
         }
