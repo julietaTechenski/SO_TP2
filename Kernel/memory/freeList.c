@@ -74,8 +74,8 @@ void mm_free(void *ptr) {
 
     Node *iterPtr = first;
     while (iterPtr != NULL) {
-        size_t endOfIter = (size_t) iterPtr + iterPtr->size + sizeof(Node);
-        size_t endOfNode = (size_t) nodePtr + nodePtr->size + sizeof(Node);
+        Node * endOfIter = (Node *)((size_t) iterPtr + iterPtr->size + sizeof(Node));
+        Node * endOfNode = (Node *)((size_t) nodePtr + nodePtr->size + sizeof(Node));
 
         if (iterPtr->next == NULL) {
             if (endOfIter == nodePtr) {
