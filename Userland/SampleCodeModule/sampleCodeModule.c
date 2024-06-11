@@ -8,6 +8,6 @@ int main() {
     void* fd[2];
     fd[0] = NULL;
     fd[1] = NULL;
-    my_createProcess(&shell, "sh", 0, argvAux, 1, fd);
+    my_createProcess(&shell, "sh", 0, argvAux, 1, (void**)fd);
     return 0;
 }

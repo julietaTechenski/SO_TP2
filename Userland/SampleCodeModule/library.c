@@ -57,7 +57,7 @@ void printf(char * string, ...) {
             switch (string[i+1]) {
                 case 'd':    // format tag for int found
                     intToString(va_arg(argptr, int), auxInt);  // next argument passed w type int obtained with va_arg(argptr, int)
-                    printf(auxInt);   // recursive call to the function
+                    printf("%s", auxInt);   // recursive call to the function
                     break;
                 case 's':  // format tag for char * found
                     auxStr = va_arg(argptr, char*); // next argument passed w type char * obtained with va_arg(argptr, char *)
@@ -348,7 +348,7 @@ void free(void * ptr){
     system_free(ptr);
 }
 
-int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, char * fd[]){
+int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void ** fd){
     return system_create_process(process, name, argc, argv, isForeground, fd);
 }
 

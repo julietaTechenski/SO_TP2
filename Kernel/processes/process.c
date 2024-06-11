@@ -170,7 +170,7 @@ static void schedulingWrapper(FunctionType function, uint64_t argc, char *argv[]
     exit();
 }
 
-static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void* *fd){
+static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void ** fd){
     PCB * result = (PCB *) mm_alloc(sizeof(PCB));
     my_strcpy(result->name, name);
     result->pid = currentPID++;
@@ -195,7 +195,7 @@ static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv
     return result;
 }
 
-int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, char *fd[]){
+int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void **fd){
     PCB *newProcess = newPcbProcess(process, name, argc, argv, isForeground, fd);
     addProcessToList(newProcess, newProcess->priority);
     return (newProcess->pid);

@@ -88,11 +88,11 @@ void pipe_command(uint64_t argc, char* argv[]){
         for(int i =0; i < AMOUNT_COMMANDS; i++){
 
             if(aux_args[0] != NULL && strcmp(pipe_commands[i].name, aux_args[0]) > 0 && !p1_found){
-                pid1 = my_createProcess(pipe_commands[i].fn, "p1", 0, NULL, 1, fd1);
+                pid1 = my_createProcess(pipe_commands[i].fn, "p1", 0, NULL, 1, (void**)fd1);
                 p1_found = 1;
             }
             if(aux_args[1] != NULL && strcmp(pipe_commands[i].name, aux_args[1])>0 && !p2_found){
-                pid2 = my_createProcess(pipe_commands[i].fn,"p2", 0, NULL,1, fd2);
+                pid2 = my_createProcess(pipe_commands[i].fn,"p2", 0, NULL,1, (void**)fd2);
                 p2_found = 1;
             }
         }
