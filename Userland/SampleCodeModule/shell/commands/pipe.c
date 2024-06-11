@@ -72,11 +72,12 @@ void pipe_command(uint64_t argc, char* argv[]){
     int64_t pid1 = 0;
     int64_t pid2 = 0;
 
-    void* fd1[2];
+    char* fd1[2];
     fd1[0] = NULL;
 
-    void* fd2[2];
+    char* fd2[2];
     fd2[1] = NULL;
+
 
     if(pipe(pipefd) == -1){
         printf("Error creating pipe\n");

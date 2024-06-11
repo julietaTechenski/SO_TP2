@@ -124,8 +124,9 @@ static ListNode* semaphoresHead = NULL;
 ListNode* find_sem(char * sem_id){
     ListNode * aux = semaphoresHead;
     while(aux != NULL){
-        if(my_strcmp(aux->name, sem_id) == 1)
+        if(my_strcmp(aux->name, sem_id) == 1) {
             return aux;
+        }
         aux = aux->next;
     }
     return NULL;
@@ -181,11 +182,13 @@ int64_t my_sem_close(char * sem_id){
     ListNode * aux = find_sem(sem_id);
     if(aux != NULL) {
         acquireLock(&(aux->mutex));
-        if(aux->amount > 0)
+        if(aux->amount > 0) {
+            releaseLock(&(aux->mutex));
             aux->amount--;
-        else
+        } else {
+            releaseLock(&(aux->mutex));
             deleteSem(&semaphoresHead, sem_id);
-        releaseLock(&(aux->mutex));
+        }
     }
     return 0;
 }

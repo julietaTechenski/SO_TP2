@@ -195,7 +195,7 @@ static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv
     return result;
 }
 
-int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void* *fd){
+int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, char *fd[]){
     PCB *newProcess = newPcbProcess(process, name, argc, argv, isForeground, fd);
     addProcessToList(newProcess, newProcess->priority);
     return (newProcess->pid);
