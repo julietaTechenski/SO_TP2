@@ -136,9 +136,9 @@ void getCommand(char* buffer) {
     int n = 0;
     //Finds command
     while (n < AMOUNT_COMMANDS && !cfound) {
-        if (strcmp(commands[n].name, command) == 1) {
+        if (strcmp(commands[n].name, command) > 0) {
             cfound = 1;
-            if(strcmp(args[0], "|") != 1){
+            if(strcmp(args[0], "|") == 0){
                 char * fd[2];
                 fd[0] = NULL;
                 fd[1] = NULL;
@@ -151,7 +151,7 @@ void getCommand(char* buffer) {
         }
     }
 
-    if(cfound && strcmp(args[0],"|") == 1){
+    if(cfound && strcmp(args[0],"|") > 0){
         char *pArgs[2];
 
         pArgs[0] = (char*)malloc(sizeof(char)*MAX_ARG_LENGTH);
@@ -162,7 +162,7 @@ void getCommand(char* buffer) {
         int i = 0;
         int pfound = 0;
         for(;!pfound && i < AMOUNT_COMMANDS; i++){
-            if (pArgs[1] != NULL && strcmp(args[1], commands[i].name) == 1) {
+            if (pArgs[1] != NULL && strcmp(args[1], commands[i].name) > 0) {
                 strcpy(pArgs[1], commands[i].name);
                 pfound = 1;
             }

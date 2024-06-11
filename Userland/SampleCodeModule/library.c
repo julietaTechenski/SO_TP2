@@ -428,8 +428,17 @@ int64_t loop(){
 
 int64_t cat(){
     char buffer[MAX_SIZE];
-    while(read(0,buffer, MAX_SIZE) != 0) {
-        printf("%s\n\n", buffer);
+    int c = 0;
+    int flag = 0;
+    while( (c = read(0,buffer, MAX_SIZE)) != '\0' && !flag) {
+        int i = 0;
+        while(i < c && buffer[i] != EOFILE){
+            putChar(buffer[i++]);
+        }
+        if(buffer[i] == EOFILE){
+            flag = 1;
+        }
+        putChar('\n');
     }
     return 0;
 }
