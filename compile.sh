@@ -1,7 +1,7 @@
-if [ "$1" == "LIST" ]; then
-  MEMORY_MANAGER="LIST"
-else
+if [ "$1" == "BUDDY" ]; then
   MEMORY_MANAGER="BUDDY"
+else
+  MEMORY_MANAGER="LIST"
 fi
 
 docker start TPEFINAL
