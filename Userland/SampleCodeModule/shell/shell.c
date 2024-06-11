@@ -135,37 +135,40 @@ void getCommand(char* buffer) {
     int cfound = 0;
     int n = 0;
     //Finds command
-    for (; n < AMOUNT_COMMANDS && !cfound; n++) {
-        if (strcmp(commands[n].name, command) > 0) {
+    while (n < AMOUNT_COMMANDS && !cfound) {
+        if (strcmp(commands[n].name, command) == 1) {
             cfound = 1;
-            if(strcmp(args[0], "|") == 0){
-                void *fd[2];
+            if(strcmp(args[0], "|") != 1){
+                char * fd[2];
                 fd[0] = NULL;
                 fd[1] = NULL;
                 int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount, args, isForeground1, fd);
                 if(isForeground1)
                     wait(pid);
             }
+        } else {
+            n++;
         }
     }
-    if(cfound && strcmp(args[0],"|") > 0){
+
+    if(cfound && strcmp(args[0],"|") == 1){
         char *pArgs[2];
 
         pArgs[0] = (char*)malloc(sizeof(char)*MAX_ARG_LENGTH);
         pArgs[1] = (char*)malloc(sizeof(char)*MAX_ARG_LENGTH);
         if(pArgs[0] != NULL){
-            strcpy(pArgs[0], commands[n-1].name);
+            strcpy(pArgs[0], commands[n].name);
         }
         int i = 0;
         int pfound = 0;
         for(;!pfound && i < AMOUNT_COMMANDS; i++){
-            if (pArgs[1] != NULL && strcmp(args[1], commands[i].name) > 0) {
+            if (pArgs[1] != NULL && strcmp(args[1], commands[i].name) == 1) {
                 strcpy(pArgs[1], commands[i].name);
                 pfound = 1;
             }
         }
         if(pfound){
-            void *fdp[2];
+            char *fdp[2];
             fdp[0] = NULL;
             fdp[1] = NULL;
             int64_t pid = my_createProcess(&pipe_command, "pipe",2, pArgs, isForeground2,fdp);
@@ -173,6 +176,10 @@ void getCommand(char* buffer) {
         }else {
             setColor(255, 51, 51);
             printf("%s: not a command. Valid pipe entry: 'p1 | p2' \n",args[1]);
+        }
+
+        for(int i = 0; i < 2; i++){
+            free(pArgs[i]);
         }
     }
     // reset values

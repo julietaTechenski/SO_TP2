@@ -43,7 +43,7 @@ static Header *morecore(unsigned nu) {
         nu = NALLOC;
 
     cp = ptrStart;
-    ptrStart += (nu * sizeof(Header));
+    ptrStart += (nu * (sizeof(Header)) + 8);
 
     up = (Header *) cp;
     up->s.size = nu;

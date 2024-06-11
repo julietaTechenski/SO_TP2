@@ -11,8 +11,6 @@ typedef struct MM_rq {
 } mm_rq;
 
 int64_t test_mm(uint64_t argc, char *argv[]) {
-
-
   mm_rq mm_rqs[MAX_BLOCKS];
   uint8_t rq;
   uint32_t total;

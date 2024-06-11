@@ -118,7 +118,7 @@ int read(unsigned int fd, char * buffer, int count){
     if(first == last){
         block(pid);
     }
-    if( p != NULL){
+    if(p != NULL){
         int i = 0;
         if(p->fd[fd] != 0){ //pipe read
             int c = count;

@@ -1,147 +1,164 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "../include/phylos.h"
+#include "../include/test_util.h"
 #define MAX_PHYLOS 10
 #define MIN_PHYLOS 3
 
-void phylo(int i);
-void think(int phy);
-void eat(int phy);
-void add();
-void remove();
-void reprint();
+static void phylo(int argc, char *argv[]);
+static void think(int phy);
+static void eat(int phy);
+static void add_philosopher();
+static void remove_philosopher();
+static void reprint();
+static void controllers_handler();
 
 static int thinkers = 5;
 
-static char * palillos[MAX_PHYLOS-1];  // semaphore array
+static char *palillos[MAX_PHYLOS];  // Semaphore array for forks
+static int state[MAX_PHYLOS]; // State array for philosophers
+static int pids[MAX_PHYLOS]; // Store PIDs of philosophers
 
-static int state[MAX_PHYLOS-1]; // print phylos array
+static char *mutex = "access_array";
+static char *char_mutex = "char_mutex";
+static char command = 0;  // Shared command variable
 
-static char*  mutex = "access_array";
-static char*  char_mutex = "char_mutex";
-static char*  controllers_mutex = "controllers_mutex";
-
-
-void phylos(){
-    // initializing
+void phylos() {
+    // Initializing semaphores
     sem_init(mutex, 1);
     sem_init(char_mutex, 1);
-
-    char * c = malloc(sizeof(char));
-    char* argv[1];
-    argv[0] = c;
-
-
-    void* fd[2];
+    void *fd[2];
     fd[0] = NULL;
     fd[1] = NULL;
-    my_createProcess(&controllers_handler, "controllers_handler", 1, argv, 1, fd);
+    my_createProcess(&controllers_handler, "controllers_handler", 0, NULL, 1, fd);
 
-    for(int i= 0; i < thinkers; i++){
-        char *sem = (char*)malloc(sizeof(char)*2); // me guardo la direccion de chars
+    // Initialize semaphores for forks and create philosopher processes
+    for (int i = 0; i < thinkers; i++) {
+        char *sem = malloc(sizeof(char) * 2);
         intToString(i, sem);
         sem_init(sem, 1);
         palillos[i] = sem;
+
+        char *index_str = malloc(sizeof(char) * 2);
+        intToString(i, index_str);
+        char *philo_argv[1] = { index_str };
+        pids[i] = my_createProcess(&phylo, "phylo", 1, philo_argv, 1, fd);
     }
 
-    while(1){
+    while (1) {
         sem_wait(char_mutex);
-        if(c == NULL){
-            return;
-        }
-        if(*c!=0) {
-            switch (*c) {
+        if (command != 0) {
+            switch (command) {
                 case 'a':
-                    *c = 0;
+                    command = 0;
+                    printf("hola");
                     sem_post(char_mutex);
-                    add();
-                    clear_screen();
+                    add_philosopher();
                     sem_wait(mutex);
                     reprint();
                     sem_post(mutex);
                     break;
                 case 'r':
-                    *c=0;
+                    command = 0;
                     sem_post(char_mutex);
-                    remove();
-                    clear_screen();
+                    remove_philosopher();
                     sem_wait(mutex);
                     reprint();
                     sem_post(mutex);
                     break;
                 default:
-                    *c =0;
+                    command = 0;
                     sem_post(char_mutex);
                     break;
             }
         } else {
             sem_post(char_mutex);
         }
-        phylo(customRandInRange(0, thinkers-1));
+        sleep(1);
     }
 }
 
+static void phylo(int argc, char *argv[]) {
+    int i = satoi(argv[0]);  // Get philosopher index
+    while (1) {
+        int left = i;
+        int right = (i + 1) % thinkers;
 
-void phylo(int i){
-    int left = i;
-    int right = (i + 1) % thinkers;
-    if(i % 2){ //odd philosopher
-        sem_wait(palillos[left]);
-        sem_wait(palillos[right]);
-    } else { //even philosopher
-        sem_wait(palillos[right]);
-        sem_wait(palillos[left]);
+        if (i % 2) { // odd philosopher
+            sem_wait(palillos[left]);
+            sem_wait(palillos[right]);
+        } else { // even philosopher
+            sem_wait(palillos[right]);
+            sem_wait(palillos[left]);
+        }
+
+        eat(i);
+
+        sem_post(palillos[left]);
+        sem_post(palillos[right]);
+
+        think(i);
     }
-    eat(i);
-    sem_post(palillos[left]);
-    sem_post(palillos[right]);
-    think(i);
 }
 
-void think(int phy){
+static void think(int phy) {
     sem_wait(mutex);
     state[phy] = 0;
     reprint();
     sem_post(mutex);
+    sleep(2); // Simulate thinking
 }
 
-void eat(int phy){
+static void eat(int phy) {
     sem_wait(mutex);
     state[phy] = 1;
     reprint();
     sem_post(mutex);
+    sleep(2); // Simulate eating
 }
 
-void add(){
-    if(thinkers+1<=MAX_PHYLOS){
+static void add_philosopher() {
+    if (thinkers + 1 <= MAX_PHYLOS) {
+        char *sem = malloc(sizeof(char) * 2);
+        intToString(thinkers, sem);
+        sem_init(sem, 1);
+        palillos[thinkers] = sem;
+
+        char *index_str = malloc(sizeof(char) * 2);
+        intToString(thinkers, index_str);
+        char *philo_argv[1] = { index_str };
+        void *fd[2] = { NULL, NULL };
+        pids[thinkers] = my_createProcess(&phylo, "phylo", 1, philo_argv, 1, fd);
+
         thinkers++;
-        char *s = (char*) malloc(sizeof(char)*1);
-        intToString(thinkers-1, s);
-        sem_init(s, 1);
-        palillos[thinkers-1] = s;
     }
 }
 
-void remove(){
-    if(thinkers-1>MIN_PHYLOS){
-        free(palillos[thinkers-1]);
+static void remove_philosopher() {
+    if (thinkers - 1 >= MIN_PHYLOS) {
+        // Terminate the last philosopher
         thinkers--;
+        // Kill the philosopher process
+        killProcess(pids[thinkers]);
+        // Free the semaphore memory
+        sem_close(palillos[thinkers]);
+        free(palillos[thinkers]);
     }
 }
 
-void controllers_handler(int argc, char * argv[]){
-    while(1){
+static void controllers_handler() {
+    while (1) {
         char aux = getChar();
         sem_wait(char_mutex);
-        *argv[0] = aux;
+        command = aux;
         sem_post(char_mutex);
     }
 }
 
-void reprint(){
-    printf("%d ->\t ",thinkers);
-    for(int i = 0; i< thinkers; i++){
-        printf("%s",state[i] == 1? "E   ": ".   ");
+static void reprint() {
+    printf("%d ->\t ", thinkers);
+    for (int i = 0; i < thinkers; i++) {
+        printf("%s", state[i] == 1 ? "E   " : ".   ");
     }
     printf("\n\n");
 }

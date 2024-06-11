@@ -70,7 +70,7 @@ void * scheduler(void * prevRsp);
  * @param isForeground flag: 0 if background, 1 if foreground
  * @return process pid
  */
-int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void **fd);
+int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, char * fd[2]);
 
 /**
  * @def finishes process execution
