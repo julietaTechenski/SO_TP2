@@ -153,6 +153,37 @@ int strlen(char * s) {
     return i-1;
 }
 
+void strcpy(char *dest, const char *src) {
+    while (*src != '\0') {
+        *dest = *src;
+        src++;
+        dest++;
+    }
+    *dest = '\0';
+}
+
+void strcpy_n(char *dest, const char *src, int n) {
+    while (n > 0 && *src != '\0') {
+        *dest = *src;
+        src++;
+        dest++;
+        n--;
+    }
+    *dest = '\0';
+}
+
+int strToNum(char *str) {
+    int num = 0;
+
+    for (int i = 0; str[i]; i++) {
+        num *= 10;
+        if (str[i] < '0' || str[i] > '9')//no es un numero valido
+            return -1;
+        num += str[i] - '0';
+    }
+    return num;
+}
+
 //================================= similar to <stdlib.h> ==================================
 
 int charToInt(char c) {
@@ -430,15 +461,4 @@ int64_t filter(){
     }
     while(read != EOFILE);
     return 0;
-}
-
-
-
-void strcpy(char *dest, const char *src) {
-    while (*src != '\0') {
-        *dest = *src;
-        src++;
-        dest++;
-    }
-    *dest = '\0';
 }

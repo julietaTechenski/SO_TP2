@@ -25,10 +25,10 @@
 
 
 // test commands
-#define TMM "test_mm"
-#define TPRIO "test_prio"
-#define TSYNC "test_sync"
-#define TPROC "test_proc"
+#define TMM             "test_mm"
+#define TPRIO           "test_prio"
+#define TSYNC           "test_sync"
+#define TPROC           "test_proc"
 
 
 // Command functionalities messages
@@ -53,10 +53,10 @@
 #define EXCP_0_MSG		"Command to check the division by zero exception routine.\n"
 
 // test messages
-#define TMM_MSG "Use 'test_mm <size in mb>' to test the MMU\n"
-#define TPRIO_MSG "Command to display priority scheduling funtionality\n"
-#define TSYNC_MSG "Use 'test_sync <inc> <use_sem>', with use_sem a boolean to indicate whether to use semaphores and inc to indicate the desired increments\n"
-#define TPROC_MSG "Use 'test_proc <process amount>' to display the create, block, unblock, kill, nice and yield functionalities\n "
+#define TMM_MSG         "Use 'test_mm <size in mb>' to test the MMU\n"
+#define TPRIO_MSG       "Command to display priority scheduling funtionality\n"
+#define TSYNC_MSG       "Use 'test_sync <inc> <use_sem>', with use_sem a boolean to indicate whether to use semaphores and inc to indicate the desired increments\n"
+#define TPROC_MSG       "Use 'test_proc <process amount>' to display the create, block, unblock, kill, nice and yield functionalities\n "
 
 #define COM_SIZE 19
 
@@ -70,8 +70,8 @@ char * msg[] = {BLOCK_MSG, CAT_MSG, CLEAR_MSG, EXIT_MSG, FILTER_MSG, HELP_MSG, K
 #define tcm_size 4
 
 
-char* tcm[] = {TMM, TPRIO, TSYNC, TPROC};
-char* tmsg[] = {TMM_MSG, TPRIO_MSG, TSYNC_MSG, TPROC_MSG};
+char* tcm[] = {TMM, TPRIO, TPROC, TSYNC};
+char* tmsg[] = {TMM_MSG, TPRIO_MSG, TPROC_MSG, TSYNC_MSG};
 
 //================================ Function declarations ================================
 
@@ -81,27 +81,27 @@ void helpWithoutParams();
 //================================ Command HELP function ================================
 
 void help(uint64_t argc,char * args[]){
-    int flag = 0;   // If its 1 then the argument was a command
+    decSize();
     setColor(192, 192, 192);
 
     if(argc != 0){
         // Checks the user inserted a valid argument
         for(int i=0; i < COM_SIZE;i++){
             if(strcmp(args[0], comm[i]) > 0){
-                flag = 1;
                 helpWithParams(args[0]);
+                incSize();
                 return;
             }
         }
-        if(!flag){
-            setColor(255, 51, 51);
-            printf("\nNo command found. Please try command 'help' for more info.\n\n");
-        }
+        setColor(255, 51, 51);
+        printf("\nNo command found. Please try command 'help' for more info.\n\n");
+
     } else {    // If the user just inserted 'help'
         helpWithoutParams();
     }
 
     setColor(255, 255, 255);
+    incSize();
 }
 
 //==================== Functions that print the command functionalities ====================
@@ -173,8 +173,16 @@ void helpWithParams(char * command){
         printCOMMAND(WC, WC_MSG);
     } else if(strcmp(command, EXCP_6) > 0){
         printCOMMAND(EXCP_6, EXCP_6_MSG);
-    } else if(strcmp(command, EXCP_0) > 0){
+    } else if(strcmp(command, EXCP_0) > 0) {
         printCOMMAND(EXCP_0, EXCP_0_MSG);
+    } else if(strcmp(command, TMM) > 0) {
+        printCOMMAND(TMM, TMM_MSG);
+    } else if(strcmp(command, TPRIO) > 0) {
+        printCOMMAND(TPRIO, TPRIO_MSG);
+    } else if(strcmp(command, TPROC) > 0) {
+        printCOMMAND(TPROC, TPROC_MSG);
+    } else if(strcmp(command, TSYNC) > 0) {
+        printCOMMAND(TSYNC, TSYNC_MSG);
     } else {
         printf("%s: command not found\n", command);
     }

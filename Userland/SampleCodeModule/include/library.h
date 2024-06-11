@@ -128,6 +128,27 @@ int strcmp(char* s1, char *s2);
  */
 int strlen(char * s);
 
+/**
+ * @def copies string in src to dest
+ * @param dest
+ * @param src
+ */
+void strcpy(char *dest, const char *src);
+
+/**
+ * @def copies n chars from string src to dest
+ * @param dest
+ * @param src
+ * @param n
+ */
+void strcpy_n(char *dest, const char *src, int n);
+
+/**
+ * @def turns string str to int
+ * @param str
+ * @return
+ */
+int strToNum(char *str);
 
 /**
  * @def turns a char into an integer
@@ -375,8 +396,6 @@ int64_t filter();
  */
 int pipe(void * pipefd[2]);
 
-
-void strcpy(char *dest, const char *src);
 
 
 #endif //LIBRARY_H

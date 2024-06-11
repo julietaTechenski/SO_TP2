@@ -46,12 +46,22 @@ tcommand pipe_commands[] = {
 
 
 void pipe_command(uint64_t argc, char* argv[]){
+    if (argv == NULL || argc == 0 || argv[0] == NULL) {
+        return;
+    }
+
     char * aux_args[2];
     aux_args[0] = (char*) malloc(sizeof(char)*20);
     aux_args[1] = (char*) malloc(sizeof(char)*20);
 
-    strcpy(aux_args[0], argv[0]);
-    strcpy(aux_args[1], argv[1]);
+    if(aux_args[0] != NULL && strlen(argv[0]) < 20){
+        strcpy_n(aux_args[0], argv[0], 19);
+        aux_args[0][19] = '\0';
+    }
+    if(aux_args[1] != NULL){
+        strcpy_n(aux_args[1], argv[1], 19);
+        aux_args[1][19] = '\0';
+    }
 
     void * pipefd[2];
 
@@ -75,11 +85,12 @@ void pipe_command(uint64_t argc, char* argv[]){
         fd2[0] = pipefd[0];
 
         for(int i =0; i < AMOUNT_COMMANDS; i++){
-            if(strcmp(pipe_commands[i].name, aux_args[0])>0 && !p1_found){
+
+            if(aux_args[0] != NULL && strcmp(pipe_commands[i].name, aux_args[0]) > 0 && !p1_found){
                 pid1 = my_createProcess(pipe_commands[i].fn, "p1", 0, NULL, 1, fd1);
                 p1_found = 1;
             }
-            if(strcmp(pipe_commands[i].name, aux_args[1])>0 && !p2_found){
+            if(aux_args[1] != NULL && strcmp(pipe_commands[i].name, aux_args[1])>0 && !p2_found){
                 pid2 = my_createProcess(pipe_commands[i].fn,"p2", 0, NULL,1, fd2);
                 p2_found = 1;
             }

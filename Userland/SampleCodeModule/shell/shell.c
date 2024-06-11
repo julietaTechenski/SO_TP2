@@ -152,12 +152,14 @@ void getCommand(char* buffer) {
         char *pArgs[2];
 
         pArgs[0] = (char*)malloc(sizeof(char)*MAX_ARG_LENGTH);
-        pArgs[1] = (char*)malloc(sizeof(char)*MAX_ARG_LENGTH);;
-        strcpy(pArgs[0], commands[n-1].name);
+        pArgs[1] = (char*)malloc(sizeof(char)*MAX_ARG_LENGTH);
+        if(pArgs[0] != NULL){
+            strcpy(pArgs[0], commands[n-1].name);
+        }
         int i = 0;
         int pfound = 0;
         for(;!pfound && i < AMOUNT_COMMANDS; i++){
-            if (strcmp(args[1], commands[i].name) > 0) {
+            if (pArgs[1] != NULL && strcmp(args[1], commands[i].name) > 0) {
                 strcpy(pArgs[1], commands[i].name);
                 pfound = 1;
             }

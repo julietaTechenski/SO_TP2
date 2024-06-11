@@ -5,7 +5,6 @@
 
 int main() {
     char *argvAux[] = {0};
-    void * pipe = (void*)malloc(sizeof(char)*20);
     void* fd[2];
     fd[0] = NULL;
     fd[1] = NULL;
