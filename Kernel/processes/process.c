@@ -14,7 +14,7 @@ static void removeProcessFromList(PCB *process, int priority);
 static PCB * findNextProcess();
 static void haltWrapper();
 static void schedulingWrapper(FunctionType function, uint64_t argc, char *argv[]);
-static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground);
+static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void**fd);
 static int64_t changePriority(PCB * process, uint64_t newPrio);
 static int64_t changeState(PCB * process, State newState);
 static int64_t changeStatePID(uint64_t pid, State newState);
@@ -127,7 +127,10 @@ static void haltWrapper(){
 }
 
 void initScheduler(){
-    halt = newPcbProcess(&haltWrapper, "halt", 0, NULL, 0);
+    void *fd[2];
+    fd[0] = NULL;
+    fd[1] = NULL;
+    halt = newPcbProcess(&haltWrapper, "halt", 0, NULL, 0, fd);
     current = halt;
     initHalt(halt->rsp);
 }
@@ -180,7 +183,7 @@ static void schedulingWrapper(FunctionType function, uint64_t argc, char *argv[]
     exit();
 }
 
-static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground){
+static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void* *fd){
     PCB * result = (PCB *) mm_alloc(sizeof(PCB));
     my_strcpy(result->name, name);
     result->pid = currentPID++;
@@ -196,8 +199,8 @@ static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv
     result->priority = 0;
     result->isForeground = isForeground;
     result->state = READY;
-    result->fd[0] = NULL;
-    result->fd[1] = NULL;
+    result->fd[0] = fd[0];
+    result->fd[1] = fd[1];
     result->waitingAmount = 0;
     result->prev = NULL;
     result->next = NULL;
@@ -205,8 +208,8 @@ static PCB * newPcbProcess(void * process, char *name, uint64_t argc, char *argv
     return result;
 }
 
-int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground){
-    PCB *newProcess = newPcbProcess(process, name, argc, argv, isForeground);
+int64_t createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void* *fd){
+    PCB *newProcess = newPcbProcess(process, name, argc, argv, isForeground, fd);
     addProcessToList(newProcess, newProcess->priority);
     return (newProcess->pid);
 }

@@ -317,8 +317,8 @@ void free(void * ptr){
     system_free(ptr);
 }
 
-int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground){
-    return system_create_process(process, name, argc, argv, isForeground);
+int64_t my_createProcess(void * process, char *name, uint64_t argc, char *argv[], uint64_t isForeground, void**fd){
+    return system_create_process(process, name, argc, argv, isForeground, fd);
 }
 
 int64_t getpid(){
@@ -415,7 +415,7 @@ int64_t wc(){
             count++;
         }
     }
-    while(read != EOFILE);
+    while(read != EOFILE && read != '\0');
     printf("\nAmount of lines: %d\n", count);
     return 0;
 }
@@ -430,4 +430,15 @@ int64_t filter(){
     }
     while(read != EOFILE);
     return 0;
+}
+
+
+
+void strcpy(char *dest, const char *src) {
+    while (*src != '\0') {
+        *dest = *src;
+        src++;
+        dest++;
+    }
+    *dest = '\0';
 }

@@ -42,10 +42,14 @@ section .text
     push r12
     push r13
     push r15
+    push r10
+
+    mov r10, [rbp+8]
 
     mov rax, %1
     int 80h
 
+    pop r10
     pop r15
     pop r13
     pop r12

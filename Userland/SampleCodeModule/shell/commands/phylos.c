@@ -32,7 +32,10 @@ void phylos(){
     argv[0] = c;
 
 
-    my_createProcess(&controllers_handler, "controllers_handler", 1, argv, 1);
+    void* fd[2];
+    fd[0] = NULL;
+    fd[1] = NULL;
+    my_createProcess(&controllers_handler, "controllers_handler", 1, argv, 1, fd);
 
     for(int i= 0; i < thinkers; i++){
         char *sem = (char*)malloc(sizeof(char)*2); // me guardo la direccion de chars

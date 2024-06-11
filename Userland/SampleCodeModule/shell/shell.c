@@ -139,7 +139,10 @@ void getCommand(char* buffer) {
         if (strcmp(commands[n].name, command) > 0) {
             cfound = 1;
             if(strcmp(args[0], "|") == 0){
-                int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount, args, isForeground1);
+                void *fd[2];
+                fd[0] = NULL;
+                fd[1] = NULL;
+                int64_t pid = my_createProcess(commands[n].fn, commands[n].name, argsAmount, args, isForeground1, fd);
                 if(isForeground1)
                     wait(pid);
             }
@@ -147,17 +150,23 @@ void getCommand(char* buffer) {
     }
     if(cfound && strcmp(args[0],"|") > 0){
         char *pArgs[2];
-        pArgs[0] = commands[n-1].name;
+
+        pArgs[0] = (char*)malloc(sizeof(char)*MAX_ARG_LENGTH);
+        pArgs[1] = (char*)malloc(sizeof(char)*MAX_ARG_LENGTH);;
+        strcpy(pArgs[0], commands[n-1].name);
         int i = 0;
         int pfound = 0;
         for(;!pfound && i < AMOUNT_COMMANDS; i++){
             if (strcmp(args[1], commands[i].name) > 0) {
-                pArgs[1] = commands[i].name;
+                strcpy(pArgs[1], commands[i].name);
                 pfound = 1;
             }
         }
         if(pfound){
-            int64_t pid = my_createProcess(&pipe_command, "pipe",2, pArgs, isForeground2);
+            void *fdp[2];
+            fdp[0] = NULL;
+            fdp[1] = NULL;
+            int64_t pid = my_createProcess(&pipe_command, "pipe",2, pArgs, isForeground2,fdp);
             wait(pid);
         }else {
             setColor(255, 51, 51);
