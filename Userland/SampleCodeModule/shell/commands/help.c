@@ -19,6 +19,7 @@
 #define SIZE            "size"
 #define SNAKE           "snake"
 #define TIME            "time"
+#define UNBLOCK         "unblock"
 #define WC              "wc"
 #define EXCP_6          "ioexception"
 #define EXCP_0          "zeroexception"
@@ -32,7 +33,7 @@
 
 
 // Command functionalities messages
-#define BLOCK_MSG		"Modifies process's state between BLOCKED and READY.\n"
+#define BLOCK_MSG		"Modifies process's state from READY to BLOCKED.\n"
 #define CAT_MSG		    "Prints on the standard output what it receives from standard input.\n"
 #define CLEAR_MSG		"Clears the shell screen.\n"
 #define EXIT_MSG        "Causes normal process termination.\n"
@@ -48,6 +49,7 @@
 #define SIZE_MSG        "Use 'size +' to increase the font size and 'size -' to decrease it.\n"
 #define SNAKE_MSG		"Game 'Snake'.\n"
 #define TIME_MSG 	    "Prints the current time.\n"
+#define UNBLOCK_MSG		"Modifies process's state from BLOCKED to READY.\n"
 #define WC_MSG		    "Prints newline count from input.\n"
 #define EXCP_6_MSG		"Command to check the undefined instruction exception routine.\n"
 #define EXCP_0_MSG		"Command to check the division by zero exception routine.\n"
@@ -58,14 +60,14 @@
 #define TSYNC_MSG       "Use 'test_sync <inc> <use_sem>', with use_sem a boolean to indicate whether to use semaphores and inc to indicate the desired increments\n"
 #define TPROC_MSG       "Use 'test_proc <process amount>' to display the create, block, unblock, kill, nice and yield functionalities\n "
 
-#define COM_SIZE 19
+#define COM_SIZE 20
 
 char * comm[] = {BLOCK, CAT, CLEAR, EXIT, FILTER, HELP, KILL, LOOP,
                  MEM,NICE, PHYLO, PS, REGS, SIZE, SNAKE, TIME,
-                 WC, EXCP_6, EXCP_0};
+                 UNBLOCK, WC, EXCP_6, EXCP_0};
 char * msg[] = {BLOCK_MSG, CAT_MSG, CLEAR_MSG, EXIT_MSG, FILTER_MSG, HELP_MSG, KILL_MSG, LOOP_MSG,
                 MEM_MSG,NICE_MSG, PHYLO_MSG, PS_MSG, REGS_MSG, SIZE_MSG, SNAKE_MSG, TIME_MSG,
-                WC_MSG, EXCP_6_MSG, EXCP_0_MSG};
+                UNBLOCK_MSG, WC_MSG, EXCP_6_MSG, EXCP_0_MSG};
 
 #define tcm_size 4
 
@@ -169,6 +171,8 @@ void helpWithParams(char * command){
         printCOMMAND(SNAKE, SNAKE_MSG);
     } else if(strcmp(command, TIME) > 0){
         printCOMMAND(TIME, TIME_MSG);
+    } else if(strcmp(command, UNBLOCK) > 0){
+        printCOMMAND(UNBLOCK, UNBLOCK_MSG);
     } else if(strcmp(command, WC) > 0){
         printCOMMAND(WC, WC_MSG);
     } else if(strcmp(command, EXCP_6) > 0){

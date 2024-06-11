@@ -21,7 +21,7 @@
 #include <stdarg.h>
 
 #define USERNAME_MAX_SIZE 20
-#define AMOUNT_COMMANDS 24
+#define AMOUNT_COMMANDS 25
 
 
 typedef struct tcommand{
