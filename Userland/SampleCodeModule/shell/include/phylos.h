@@ -4,7 +4,7 @@
 #include "../../include/library.h"
 #define NULL ((void*)0)
 
-void phylos();
+void phylosProcess();
 
 
 

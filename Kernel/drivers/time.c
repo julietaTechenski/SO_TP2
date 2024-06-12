@@ -1,27 +1,71 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "../include/time.h"
+#include "../include/process.h"
 
-static unsigned long ticks = 0;
+// Estructura para un nodo en la cola
+typedef struct Node {
+    int pid;              // ID del proceso
+    unsigned int time_ms; // Tiempo en milisegundos para dormir
+    struct Node *next;    // Puntero al siguiente nodo
+} Node;
 
+Node * head = NULL;
+int ticks = 0;
+
+// Handler para el temporizador
 void timer_handler() {
-	ticks++;
+    ticks++;
+
+    Node *current = head;
+    Node *prev = NULL;
+
+    while (current != NULL && current->time_ms <= ticks) {
+        // Despertar proceso
+        unblock(current->pid);
+        // Eliminar nodo de la lista
+        if (prev == NULL) {
+            head = current->next;
+        } else {
+            prev->next = current->next;
+        }
+        Node *to_free = current;
+        current = current->next;
+        mm_free(to_free);
+    }
 }
 
-void sleep(unsigned int ms){
+// Función para agregar un proceso a la cola de espera
+void sleep(unsigned int ms) {
+    Node *new_node = (Node *) mm_alloc(sizeof(Node));
 
-    int count = ticks_elapsed();
 
-    //Cada tick son 55 milisegundos
-    while(ticks_elapsed() < count + ms/55)
-        _hlt();
+    new_node->pid = getPID();
+    new_node->time_ms = ms + ticks;
+    new_node->next = NULL;
 
+    // Insertar el nodo en la lista ordenada por `time_ms`
+    if (head == NULL || head->time_ms > new_node->time_ms) {
+        new_node->next = head;
+        head = new_node;
+    } else {
+        Node *current = head;
+        while (current->next != NULL && current->next->time_ms <= new_node->time_ms) {
+            current = current->next;
+        }
+        new_node->next = current->next;
+        current->next = new_node;
+    }
+
+    block(new_node->pid);
 }
 
+// Función para obtener el número actual de ticks
 int ticks_elapsed() {
-	return ticks;
+    return ticks;
 }
 
+// Función para obtener los segundos transcurridos desde el inicio
 int seconds_elapsed() {
-	return ticks / 18;
+    return ticks / 18; // Ejemplo de conversión de ticks a segundos
 }

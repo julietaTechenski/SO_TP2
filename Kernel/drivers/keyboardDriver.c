@@ -159,8 +159,7 @@ int read(unsigned int fd, char * buffer, int count){
 
 //system call 4
 int write(unsigned int fd, char * string, int count){
-    uint64_t ppid = getPID();
-    PCB *p = findProcess(ppid);
+    PCB *p = findProcess(getPID());
     if(p->fd[fd] != 0){  //pipe write
         char *rReady = "rReady";
         my_sem_open(rReady, 0);
@@ -185,7 +184,7 @@ int write(unsigned int fd, char * string, int count){
             }
         }
         my_sem_post(wReady);
-    } else{ // STDOUT
+    } else { // STDOUT
         writeString(STDOUT, string, count);
     }
     return count;

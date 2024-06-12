@@ -28,8 +28,6 @@ static PCB * priorityArray[PRIORITY_AMOUNT] = {NULL};
 static PCB * current = NULL;
 static PCB * foreground = NULL;
 
-//GLOBAL ITER VAR
-static PCB * first = NULL;
 
 // GLOBAL AUX VAR
 static PCB * halt = NULL;
@@ -46,12 +44,16 @@ char * stateArray[] = {"r", "R", "B"};
 
 static void addProcessToList(PCB *newProcess, int priority){
     newProcess->next = newProcess->prev = NULL;
-    first = priorityArray[priority];
-    if(first != NULL) {
-        newProcess->next = first;
-        first->prev = newProcess;
+    PCB * iter = priorityArray[priority];
+    if(iter == NULL) {
+        priorityArray[priority] = newProcess;
+        return;
     }
-    priorityArray[priority] = newProcess;
+    while(iter->next != NULL){
+        iter = iter->next;
+    }
+    iter->next = newProcess;
+    newProcess->prev = iter;
 }
 
 static void removeProcessFromList(PCB *process, int priority){
@@ -133,6 +135,10 @@ void * scheduler(void * prevRsp){
         } else if (current->state == RUNNING) {
             if (current->priority < PRIORITY_AMOUNT-1)
                 changePriority(current, current->priority + 1);
+            else{
+                removeProcessFromList(current, current->priority);
+                addProcessToList(current, current->priority);
+            }
             changeState(current, READY);
         } else if (current->state == BLOCKED) {
             if (current->priority > 0)
@@ -329,7 +335,9 @@ int64_t block(uint64_t pid){
         writeString(2, "Block: Invalid change of state\n", 32);
         return -1;
     }
-    int20();
+
+    if(pid == current->pid)
+        int20();
     return ans;
 }
 

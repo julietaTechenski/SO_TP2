@@ -4,160 +4,126 @@
 #include "../include/test_util.h"
 #define MAX_PHYLOS 10
 #define MIN_PHYLOS 3
+#define INITIAL_THINKERS 5
 
-static void phylo(int argc, char *argv[]);
+
+static void phyloProcess(int argc, char *argv[]);
 static void think(int phy);
 static void eat(int phy);
-static void add_philosopher();
-static void remove_philosopher();
 static void reprint();
 static void controllers_handler();
+static void add_philosopher(int phy);
 
-static int thinkers = 5;
 
-static char *palillos[MAX_PHYLOS];  // Semaphore array for forks
-static int state[MAX_PHYLOS]; // State array for philosophers
-static int pids[MAX_PHYLOS]; // Store PIDs of philosophers
+typedef struct phylo {
+    char * sem;
+    int state; // State array for philosophers
+} phylo;
 
 #define MUTEX_ARRAY "access_array"
-#define MUTEX_CHAR "char_mutex"
-static char command = 0;  // Shared command variable
+static phylo philosophers[MAX_PHYLOS];
 
-void phylos() {
+#define MUTEX_THINKERS "thinkers_mutex"
+static int thinkers = INITIAL_THINKERS;
+
+void phylosProcess() {
     // Initializing semaphores
     sem_init(MUTEX_ARRAY, 1);
-    sem_init(MUTEX_CHAR, 1);
-    void *fd[2];
-    fd[0] = NULL;
-    fd[1] = NULL;
+    sem_init(MUTEX_THINKERS, 1);
+
+    void *fd[2] = {NULL};
     my_createProcess(&controllers_handler, "controllers_handler", 0, NULL, 1, fd);
 
-    // Initialize semaphores for forks and create philosopher processes
-    for (int i = 0; i < thinkers; i++) {
-        char *sem = malloc(sizeof(char) * 2);
-        intToString(i, sem);
-        sem_init(sem, 1);
-        palillos[i] = sem;
 
-        char *index_str = malloc(sizeof(char) * 2);
-        intToString(i, index_str);
-        char *philo_argv[1] = { index_str };
-        pids[i] = my_createProcess(&phylo, "phylo", 1, philo_argv, 1, fd);
-    }
+    // Initialize semaphores for forks and create philosopher processes
+    for (int i = 0; i < MAX_PHYLOS; i++)
+        add_philosopher(i);
 
     while (1) {
-        sem_wait(MUTEX_CHAR);
-        if (command != 0) {
-            switch (command) {
-                case 'a':
-                    command = 0;
-                    sem_post(MUTEX_CHAR);
-                    add_philosopher();
-                    sem_wait(MUTEX_ARRAY);
-                    reprint();
-                    sem_post(MUTEX_ARRAY);
-                    break;
-                case 'r':
-                    command = 0;
-                    sem_post(MUTEX_CHAR);
-                    remove_philosopher();
-                    sem_wait(MUTEX_ARRAY);
-                    reprint();
-                    sem_post(MUTEX_ARRAY);
-                    break;
-                default:
-                    command = 0;
-                    sem_post(MUTEX_CHAR);
-                    break;
-            }
-        } else {
-            sem_post(MUTEX_CHAR);
-        }
-        sleep(1);
+        reprint();
+        sleep(5);
     }
+
 }
 
-static void phylo(int argc, char *argv[]) {
-    int i = satoi(argv[0]);  // Get philosopher index
-    while (1) {
-        int left = i;
-        int right = (i + 1) % thinkers;
+static void phyloProcess(int argc, char *argv[]) {
+    int id = satoi(argv[0]);
+    int left = id;
+    int right = (id + 1) % MAX_PHYLOS;
 
-        if (i % 2) { // odd philosopher
-            sem_wait(palillos[left]);
-            sem_wait(palillos[right]);
-        } else { // even philosopher
-            sem_wait(palillos[right]);
-            sem_wait(palillos[left]);
+    while (1) {
+        if (id == MAX_PHYLOS - 1) {
+            sem_wait(philosophers[right].sem);
+            sem_wait(philosophers[left].sem);
+        } else {
+            sem_wait(philosophers[left].sem);
+            sem_wait(philosophers[right].sem);
         }
 
-        eat(i);
+        eat(id);
 
-        sem_post(palillos[left]);
-        sem_post(palillos[right]);
+        sem_post(philosophers[left].sem);
+        sem_post(philosophers[right].sem);
 
-        think(i);
+        think(id);
     }
 }
 
 static void think(int phy) {
     sem_wait(MUTEX_ARRAY);
-    state[phy] = 0;
-    reprint();
+    philosophers[phy].state = 0;
     sem_post(MUTEX_ARRAY);
-    sleep(2); // Simulate thinking
+    sleep(GetUniform(phy));
 }
 
 static void eat(int phy) {
     sem_wait(MUTEX_ARRAY);
-    state[phy] = 1;
-    reprint();
+    philosophers[phy].state = 1;
     sem_post(MUTEX_ARRAY);
-    sleep(2); // Simulate eating
+    sleep(GetUniform(phy));
 }
 
-static void add_philosopher() {
-    if (thinkers + 1 <= MAX_PHYLOS) {
-        char *sem = malloc(sizeof(char) * 2);
-        intToString(thinkers, sem);
-        sem_init(sem, 1);
-        palillos[thinkers] = sem;
+static void add_philosopher(int phy) {
+    char * indexStr = malloc(sizeof(char) * 2);
+    intToString(phy, indexStr);
 
-        char *index_str = malloc(sizeof(char) * 2);
-        intToString(thinkers, index_str);
-        char *philo_argv[1] = { index_str };
-        void *fd[2] = { NULL, NULL };
-        pids[thinkers] = my_createProcess(&phylo, "phylo", 1, philo_argv, 1, fd);
+    sem_init(indexStr, 1);
+    philosophers[phy].sem = indexStr;
 
-        thinkers++;
-    }
-}
-
-static void remove_philosopher() {
-    if (thinkers - 1 >= MIN_PHYLOS) {
-        // Terminate the last philosopher
-        thinkers--;
-        // Kill the philosopher process
-        kill(pids[thinkers]);
-        // Free the semaphore memory
-        sem_close(palillos[thinkers]);
-        free(palillos[thinkers]);
-    }
+    char *philo_argv[1] = { indexStr };
+    void *fd[2] = { NULL };
+    my_createProcess(&phyloProcess, "phylo", 1, philo_argv, 0, fd);
 }
 
 static void controllers_handler() {
     while (1) {
         char aux = getChar();
-        sem_wait(MUTEX_CHAR);
-        command = aux;
-        sem_post(MUTEX_CHAR);
+
+        switch (aux) {
+            case 'a':
+                sem_wait(MUTEX_THINKERS);
+                if(thinkers < MAX_PHYLOS)
+                    thinkers++;
+                sem_post(MUTEX_THINKERS);
+                break;
+            case 'r':
+                sem_wait(MUTEX_THINKERS);
+                if(thinkers > MIN_PHYLOS)
+                    thinkers--;
+                sem_post(MUTEX_THINKERS);
+                break;
+        }
+
     }
 }
 
 static void reprint() {
+    sem_wait(MUTEX_ARRAY);
+    sem_wait(MUTEX_THINKERS);
     printf("%d ->\t ", thinkers);
-    for (int i = 0; i < thinkers; i++) {
-        printf("%s", state[i] == 1 ? "E   " : ".   ");
-    }
+    for (int i = 0; i < thinkers; i++)
+        printf("%s", philosophers[i].state == 1 ? "E   " : ".   ");
     printf("\n\n");
+    sem_post(MUTEX_THINKERS);
+    sem_post(MUTEX_ARRAY);
 }
