@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "lib.h"
 #include "videoDriver.h"
+#include "keyboardDriver.h"
 
 #define NULL ((void *)0)
 

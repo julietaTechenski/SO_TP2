@@ -181,20 +181,20 @@ void mm_state(){
     int longitud;
 
     longitud = intToString(total, s);
-    writeString(1, "Memoria total: ", 15);
-    writeString(1, s, longitud);
-    writeString(1, "\n", 1);
+    write(1, "Memoria total: ", 15);
+    write(1, s, longitud);
+    write(1, "\n", 1);
 
 
     longitud = intToString(freeMem, s);
-    writeString(1, "Memoria libre: ", 15);
-    writeString(1, s, longitud);
-    writeString(1, "\n", 1);
+    write(1, "Memoria libre: ", 15);
+    write(1, s, longitud);
+    write(1, "\n", 1);
 
     longitud = intToString(total - freeMem, s);
-    writeString(1, "Memoria ocupada: ", 17);
-    writeString(1, s, longitud);
-    writeString(1, "\n", 1);
+    write(1, "Memoria ocupada: ", 17);
+    write(1, s, longitud);
+    write(1, "\n", 1);
 
 }
 

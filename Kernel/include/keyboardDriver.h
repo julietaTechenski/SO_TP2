@@ -101,5 +101,6 @@ void keyboard_handler(uint64_t infoRegs);
  */
 int read(unsigned int fd, char * buffer, int count);
 
+int write(unsigned int fd, char *string, int count);
 
 #endif //KEYBOARDDRIVER_H

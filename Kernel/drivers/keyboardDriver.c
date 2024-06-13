@@ -180,9 +180,11 @@ int write(unsigned int fd, char *string, int count) {
 
         int i = 0;
         int c = count;
-        while (c > 0 && string[i] != 0) {
-            for (; c > 0 && string[i] != 0 && i < 128; i++, c--) {
+        while (c > 0 && string[i] != 0 && string[i] == EOFILE) {
+            while ( c > 0 && string[i] != 0 && i < 128 && string[i] != EOFILE) {
                 p->fd[fd][i] = string[i];
+                i++;
+                c--;
             }
             if (i == 128) {
                 i = 0; // restart buffer pos counters
