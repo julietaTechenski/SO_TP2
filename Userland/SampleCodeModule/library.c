@@ -430,7 +430,7 @@ int64_t cat(){
     char buffer[MAX_SIZE];
     int c = 0;
     int flag = 0;
-    while( (c = read(0,buffer, MAX_SIZE)) != '\0' && !flag) {
+    while( (c = read(0,buffer, MAX_SIZE)) != -1  && !flag) {
         int i = 0;
         while(i < c && buffer[i] != EOFILE){
             putChar(buffer[i++]);
