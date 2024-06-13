@@ -9,7 +9,7 @@ int pipe(void* pipesfd[2]){
         return -1;
     }
 
-    for(int i=0; i < 128; i++, aux++){  // set memory space to '\0' to avoid garbage readings
+    for(int i=0; i < 128; i++)  // set memory space to '\0' to avoid garbage readings
         aux[i] = '\0';
     }
     return 1;
