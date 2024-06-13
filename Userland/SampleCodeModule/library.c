@@ -184,6 +184,16 @@ int strToNum(char *str) {
     return num;
 }
 
+int write(unsigned int fd, const char * buffer, int count) {
+    for (int i = 0; i < count; i++) {
+        if(buffer[i]== EOFILE)
+            return -1;
+        fputChar(fd, buffer[i]);
+    }
+    return count;
+}
+
+
 //================================= similar to <stdlib.h> ==================================
 
 int charToInt(char c) {
@@ -286,6 +296,8 @@ int readDelim(int fd, char * buffer, int count, char delim) {
                 putChar(c); //Print the backspace
                 i--;
                 break;
+            case EOFILE:
+                return 0;
             default:
                 if(i >= count){
                     break;
@@ -428,18 +440,13 @@ int64_t loop(){
 
 int64_t cat(){
     char buffer[MAX_SIZE];
-    int c = 0;
+    int bytesRead;
+
     int flag = 0;
-    while( (c = read(0,buffer, MAX_SIZE)) != -1  && !flag) {
-        int i = 0;
-        while(i < c && buffer[i] != EOFILE){
-            putChar(buffer[i++]);
-        }
-        if(buffer[i] == EOFILE){
-            flag = 1;
-        }
-        putChar('\n');
+    while ((bytesRead = read(0, buffer, MAX_SIZE)) > 0 && flag != -1) {
+        flag = write(1, buffer, bytesRead);
     }
+
     return 0;
 }
 
