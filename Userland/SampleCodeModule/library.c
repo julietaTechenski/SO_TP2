@@ -450,22 +450,38 @@ int64_t cat(){
     return 0;
 }
 
-int64_t wc(){
-    int count = 0;
+
+int64_t wc() {
+    int lines = 0, words = 0, characters = 0;
+    int inWord = 0;
     char read;
+
     do {
         read = getChar();
-        if(read != EOFILE){
+        if (read != EOFILE) {
             putChar(read);
+            characters++;
+
+            if (read == '\n') {
+                lines++;
+            }
+
+            if (read == ' ' || read == '\n' || read == '\t') {
+                inWord = 0;
+            } else if (inWord == 0) {
+                inWord = 1;
+                words++;
+            }
         }
-        if(read == '\n'){
-            count++;
-        }
-    }
-    while(read != EOFILE && read != '\0');
-    printf("\nAmount of lines: %d\n", count);
+    } while (read != EOFILE && read != '\0');
+
+    printf("\nAmount of lines: %d\n", lines);
+    printf("Amount of words: %d\n", words);
+    printf("Amount of characters: %d\n", characters);
+
     return 0;
 }
+
 
 int64_t filter(){
     char read;
