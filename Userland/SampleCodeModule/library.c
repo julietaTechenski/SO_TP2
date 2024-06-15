@@ -499,6 +499,6 @@ int64_t filter(){
 }
 
 void hola(){
-    printf("The quick brown fox jumps over the lazy stupid dog, while the sly cat watches from the sidelines, ready to pounce on you at any moment.\n");
+    printf("Hola\n");
 
 }

@@ -42,22 +42,13 @@ int writePipe(char * pipe,char * string, int count){
     my_sem_open(wReady, 0);
 
     int c = count;
-    while (c > 0 && *string != 0 && *string != EOFILE) {
-        while ( c > 0 && *string != 0 && pipepos_w < 128 && *string != EOFILE) {
-            pipe[pipepos_w] = *string;
-            pipe[pipepos_w+1] = EOFILE;
-            string++;
-            pipepos_w++;
-            c--;
-        }
-        if(*string == EOFILE){
-            return -1;
-        }
-        if (pipepos_w == 128) {
-            pipepos_w = 0; // restart buffer pos counters
-            my_sem_post(wReady);
-            my_sem_wait(rReady);  // waiting buffer to be read
-        }
+
+    int i = 0;
+    while(i < c){
+        pipe[pipepos_w] = string[i];
+        pipepos_w = (pipepos_w +1 )%128;
+        i++;
+        my_sem_post(wReady);
     }
     my_sem_post(wReady);
 }
@@ -73,17 +64,10 @@ int readPipe(char* pipe, char * buffer, int count){
 
     while(i < count){
         my_sem_wait(wReady);
-        buffer[i] = pipe[pipepos_r++];
-
-        if(buffer[i] == EOFILE){
-            return -1;
-        }
-        if(pipepos_r == 128){
-            pipepos_r = 0;
-            my_sem_post(rReady);
-            my_sem_wait(wReady);
-        }
+        buffer[i] = pipe[pipepos_r];
+        pipepos_r = (pipepos_r+1)%128;
         i++;
+        my_sem_post(rReady);
     }
     return count;
 }
