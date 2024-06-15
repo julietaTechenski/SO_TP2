@@ -5,6 +5,7 @@
 #include "semaphore.h"
 #include "process.h"
 
+#define EOFILE '\377'
 
 
 typedef struct fd {

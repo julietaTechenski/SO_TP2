@@ -23,6 +23,63 @@ int dup(int pid,int oldfd, void* pipedir){
     return 1;
 }
 
+
+
+int writePipe(char * pipe,char * string, int count){
+    char *rReady = "rReady";
+    my_sem_open(rReady, 0);
+
+    char *wReady = "wReady";
+    my_sem_open(wReady, 0);
+
+    int i = 0;
+    int c = count;
+    while (c > 0 && string[i] != 0 && string[i] == EOFILE) {
+        while ( c > 0 && string[i] != 0 && i < 128 && string[i] != EOFILE) {
+            pipe[i] = string[i];
+            i++;
+            c--;
+        }
+        if (i == 128) {
+            i = 0; // restart buffer pos counters
+            my_sem_post(wReady);
+            my_sem_wait(rReady);  // waiting buffer to be read
+        }
+    }
+    my_sem_post(wReady);
+}
+
+int readPipe(char* pipe, char * buffer, int count){
+    int c = count;
+    char *rReady = "rReady";
+    my_sem_open(rReady, 0); // read => rReady = 1
+
+    char *wReady = "wReady";
+    my_sem_open(wReady, 0);
+
+    my_sem_wait(wReady); // waits for input
+
+    int i = 0;
+    while (c > 0 && pipe[i] != 0) {
+        while(c > 0 && pipe[i] != 0 && pipe[i] != EOFILE && i < 128) {
+            buffer[i] = pipe[i];
+            c--;
+            i++;
+        }
+        if(pipe[i] == EOFILE)
+            return -1;
+        if (i == 128) {
+            i = 0;
+            my_sem_post(rReady);
+            my_sem_wait(wReady);
+        }
+
+    }
+    my_sem_post(rReady);
+    return c;
+}
+
+
 /**
 * typedef struct PCB {
     char name[MAX_NAME_LENGTH];

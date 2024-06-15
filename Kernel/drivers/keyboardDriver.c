@@ -76,10 +76,8 @@ void keyboard_handler(uint64_t infoRegs) {
         killForeground();
         return;
     } else if (key == 'd' && ctrlFlag) {
-        char eofile = EOFILE;
-        //writeString(1, &eofile, 1);
         blocked->count--;
-        addEntry(eofile);
+        addEntry(EOFILE);
         return;
     } else if (key >= 'a' && key <= 'z')
         key = keyboardTable[keyCode][bloqMayus ^ shiftFlag];
@@ -126,32 +124,7 @@ int read(unsigned int fd, char *buffer, int count) {
     if (p != NULL) {
         int i = 0;
         if (p->fd[STDIN] != 0) { // pipe read
-            int c = count;
-            char *rReady = "rReady";
-            my_sem_open(rReady, 0); // read => rReady = 1
-
-            char *wReady = "wReady";
-            my_sem_open(wReady, 0);
-
-            my_sem_wait(wReady); // waits for input
-
-            while (c > 0 && p->fd[fd][i] != 0) {
-                while(c > 0 && p->fd[fd][i] != 0 && p->fd[fd][i] != EOFILE && i < 128) {
-                    buffer[i] = p->fd[fd][i];
-                    c--;
-                    i++;
-                }
-                if(p->fd[fd][i] != EOFILE)
-                    return -1;
-                if (i == 128) {
-                    i = 0;
-                    my_sem_post(rReady);
-                    my_sem_wait(wReady);
-                }
-
-            }
-            my_sem_post(rReady);
-            return c;
+            return readPipe(p->fd[STDIN], buffer, count);
         } else { // reads from keyboard interrupts
             if (first == last) {
                 block(pid);
@@ -172,27 +145,7 @@ int write(unsigned int fd, char *string, int count) {
     string[count] = '\0';
     PCB *p = findProcess(getPID());
     if (p->fd[fd] != 0) {  // pipe write
-        char *rReady = "rReady";
-        my_sem_open(rReady, 0);
-
-        char *wReady = "wReady";
-        my_sem_open(wReady, 0);
-
-        int i = 0;
-        int c = count;
-        while (c > 0 && string[i] != 0 && string[i] == EOFILE) {
-            while ( c > 0 && string[i] != 0 && i < 128 && string[i] != EOFILE) {
-                p->fd[fd][i] = string[i];
-                i++;
-                c--;
-            }
-            if (i == 128) {
-                i = 0; // restart buffer pos counters
-                my_sem_post(wReady);
-                my_sem_wait(rReady);  // waiting buffer to be read
-            }
-        }
-        my_sem_post(wReady);
+        writePipe(p->fd[fd], string, count);
     } else { // STDOUT
         writeString(STDOUT, string, count);
     }
