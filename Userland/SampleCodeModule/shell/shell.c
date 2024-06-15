@@ -53,7 +53,7 @@ tcommand commands[] = {
 
 void shell() {
     //Into
-//    intro();
+    intro();
     //Username
     int c;
     setColor(141, 132, 255);

@@ -18,20 +18,15 @@ void timer_handler() {
     ticks++;
 
     Node *current = head;
-    Node *prev = NULL;
 
     while (current != NULL && current->time_ms <= ticks) {
         // Despertar proceso
         unblock(current->pid);
         // Eliminar nodo de la lista
-        if (prev == NULL) {
-            head = current->next;
-        } else {
-            prev->next = current->next;
-        }
-        Node *to_free = current;
-        current = current->next;
-        mm_free(to_free);
+        head = current->next;
+        mm_free(current);
+
+        current = head;
     }
 }
 
@@ -41,8 +36,7 @@ void sleep(unsigned int ms) {
 
 
     new_node->pid = getPID();
-    new_node->time_ms = ms + ticks;
-    new_node->next = NULL;
+    new_node->time_ms = ticks + ms/55;
 
     // Insertar el nodo en la lista ordenada por `time_ms`
     if (head == NULL || head->time_ms > new_node->time_ms) {
