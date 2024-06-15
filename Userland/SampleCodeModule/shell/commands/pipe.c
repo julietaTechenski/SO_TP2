@@ -7,7 +7,7 @@
 
 #define NULL  ((void*)0)
 
-#define AMOUNT_COMMANDS 24
+#define AMOUNT_COMMANDS 25
 
 
 
@@ -40,7 +40,8 @@ tcommand pipe_commands[] = {
         {"cat", &cat}, //wrapper?
         {"wc", &wc},  //wrapper?
         {"filter", &filter}, //wrapper?
-        {"phylo", &phylosProcess} //wrapper?
+        {"phylo", &phylosProcess}, //wrapper?
+        {"hola", &hola}
 
 };
 

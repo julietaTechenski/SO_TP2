@@ -44,7 +44,8 @@ tcommand commands[] = {
         {"wc", &wc},  //wrapper?
         {"filter", &filter}, //wrapper?
         {"phylo", &phylosProcess}, //wrapper?
-        {"unblock", &unblockProcess}
+        {"unblock", &unblockProcess},
+        {"hola", &hola}
 };
 
 

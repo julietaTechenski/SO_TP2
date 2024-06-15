@@ -2,6 +2,15 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/pipes.h"
 
+
+static int pipepos_w = 0;
+static int pipepos_r = 0;
+
+static char* pipe_mutex = "pipe_mutex";
+
+static int first_write = 1;
+
+
 int pipe(void* pipesfd[2]){
     char* aux = pipesfd[0] = pipesfd[1] = (char*)mm_alloc(sizeof(char)*128);
 
@@ -10,7 +19,7 @@ int pipe(void* pipesfd[2]){
     }
 
     for(int i=0; i < 128; i++)  // set memory space to '\0' to avoid garbage readings
-        aux[i] = '\0';
+        aux[pipepos_w] = '\0';
 
     return 1;
 }
@@ -27,21 +36,24 @@ int dup(int pid,int oldfd, void* pipedir){
 
 int writePipe(char * pipe,char * string, int count){
     char *rReady = "rReady";
-    my_sem_open(rReady, 0);
-
     char *wReady = "wReady";
+
+    my_sem_open(rReady, 0);
     my_sem_open(wReady, 0);
 
-    int i = 0;
     int c = count;
-    while (c > 0 && string[i] != 0 && string[i] == EOFILE) {
-        while ( c > 0 && string[i] != 0 && i < 128 && string[i] != EOFILE) {
-            pipe[i] = string[i];
-            i++;
+    while (c > 0 && *string != 0 && *string != EOFILE) {
+        while ( c > 0 && *string != 0 && pipepos_w < 128 && *string != EOFILE) {
+            pipe[pipepos_w] = *string;
+            string++;
+            pipepos_w++;
             c--;
         }
-        if (i == 128) {
-            i = 0; // restart buffer pos counters
+        if(*string == EOFILE){
+            return -1;
+        }
+        if (pipepos_w == 128) {
+            pipepos_w = 0; // restart buffer pos counters
             my_sem_post(wReady);
             my_sem_wait(rReady);  // waiting buffer to be read
         }
@@ -50,33 +62,60 @@ int writePipe(char * pipe,char * string, int count){
 }
 
 int readPipe(char* pipe, char * buffer, int count){
-    int c = count;
+    int  i = 0;
     char *rReady = "rReady";
-    my_sem_open(rReady, 0); // read => rReady = 1
 
     char *wReady = "wReady";
+
     my_sem_open(wReady, 0);
+    my_sem_open(rReady, 0); // read => rReady = 1
 
-    my_sem_wait(wReady); // waits for input
+    while(i < count){
+        my_sem_wait(wReady);
+        buffer[i] = pipe[pipepos_r++];
 
-    int i = 0;
-    while (c > 0 && pipe[i] != 0) {
-        while(c > 0 && pipe[i] != 0 && pipe[i] != EOFILE && i < 128) {
-            buffer[i] = pipe[i];
-            c--;
-            i++;
-        }
-        if(pipe[i] == EOFILE)
+        if(buffer[i] == EOFILE){
             return -1;
-        if (i == 128) {
-            i = 0;
+        }
+        if(pipepos_r == 128){
+            pipepos_r = 0;
             my_sem_post(rReady);
             my_sem_wait(wReady);
         }
-
+        i++;
     }
-    my_sem_post(rReady);
-    return c;
+
+
+
+
+//
+//    while (c > 0){
+//        my_sem_wait(wReady); // waits for input
+//        while(pipepos_r < pipepos_w && pipe[pipepos_r] != 0){
+//            *buffer = pipe[pipepos_r];
+//            pipepos_r++;
+//            buffer++;
+//            c--;
+//        }
+//
+////        while(c > 0 && pipe[pipepos_r] != 0 && pipe[pipepos_r] != EOFILE && pipepos_r < 128) {
+////            buffer[pipepos_r] = pipe[pipepos_r];
+////            pipepos_r++;
+////            c--;
+////        }
+////        if(pipe[pipepos_r] == EOFILE){
+////            my_sem_post(pipe_mutex);
+////            return -1;
+////        }
+////        if (pipepos_r == 128) {
+////            pipepos_r = 0;
+////            my_sem_post(pipe_mutex);
+////            my_sem_post(rReady);
+////            my_sem_wait(wReady);
+////        }
+//
+//    }
+    return count;
 }
 
 

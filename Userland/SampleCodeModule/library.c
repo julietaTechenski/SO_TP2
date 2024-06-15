@@ -186,7 +186,7 @@ int strToNum(char *str) {
 
 int write(unsigned int fd, const char * buffer, int count) {
     for (int i = 0; i < count; i++) {
-        if(buffer[i]== EOFILE)
+        if(buffer[i] == EOFILE)
             return -1;
         fputChar(fd, buffer[i]);
     }
@@ -443,7 +443,7 @@ int64_t cat(){
     int bytesRead;
 
     int flag = 0;
-    while ((bytesRead = read(0, buffer, MAX_SIZE)) > 0 && flag != -1) {
+    while ((bytesRead = system_read(0, buffer, MAX_SIZE)) > 0 && flag != -1) {
         flag = write(1, buffer, bytesRead);
     }
 
@@ -493,4 +493,9 @@ int64_t filter(){
     }
     while(read != EOFILE);
     return 0;
+}
+
+void hola(){
+    printf("The quick brown fox jumps over the lazy stupid dog, while the sly cat watches from the sidelines, ready to pounce on you at any moment.\n");
+
 }

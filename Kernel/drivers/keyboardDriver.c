@@ -97,7 +97,7 @@ void addEntry(char c) {
         return;
     myBuffer[last] = c;
     last = (last + 1) % INITIAL_SIZE;
-    if (blocked->count == 0) {
+    if (blocked->count == 0 || c == EOFILE) {
         unblock(blocked->pid);
     }
 }
@@ -130,8 +130,11 @@ int read(unsigned int fd, char *buffer, int count) {
                 block(pid);
             }
             char c;
-            while (i < count && (c = getEntry()) != 0) {
+            int eoflag = 0;
+            while (i < count && (c = getEntry()) != 0 && !eoflag) {
                 buffer[i++] = c;
+                if(c == EOFILE)
+                    eoflag = !eoflag;
             }
             return i;
         }

@@ -397,6 +397,7 @@ int64_t filter();
 int pipe(void * pipefd[2]);
 
 
+void hola();
 
 #endif //LIBRARY_H
 
