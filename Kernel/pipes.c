@@ -45,6 +45,7 @@ int writePipe(char * pipe,char * string, int count){
     while (c > 0 && *string != 0 && *string != EOFILE) {
         while ( c > 0 && *string != 0 && pipepos_w < 128 && *string != EOFILE) {
             pipe[pipepos_w] = *string;
+            pipe[pipepos_w+1] = EOFILE;
             string++;
             pipepos_w++;
             c--;
