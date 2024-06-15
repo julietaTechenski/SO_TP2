@@ -275,14 +275,10 @@ int isVowel(char letter){
 //================================= Reading Functions ==================================
 
 int readDelim(int fd, char * buffer, int count, char delim) {
-    if(fd != 0){
-        return 0;
-    }
-
     char c;
     int i = 0; //read characters tracker
 
-    while((c = getChar()) != delim){ //analyze the selected key to decide whether or not to keep reading
+    while((c = getChar()) != delim && c != 0){ //analyze the selected key to decide whether or not to keep reading
 
         switch (c) {
             case 0: //The buffer is empty
@@ -439,16 +435,11 @@ int64_t loop(){
 }
 int64_t cat(){
     char buffer[MAX_SIZE];
-    int c = 0;
-    int flag = 0;
-    while( (c = read(0,buffer, MAX_SIZE)) != -1  && !flag) {
+    int c;
+    while( (c = read(0, buffer, MAX_SIZE)) != 0) {
         int i = 0;
-        while(i < c && buffer[i] != EOFILE){
+        while(i < c)
             putChar(buffer[i++]);
-        }
-        if(buffer[i] == EOFILE){
-            flag = 1;
-        }
         putChar('\n');
     }
     return 0;
@@ -459,24 +450,21 @@ int64_t wc() {
     int inWord = 0;
     char read;
 
-    do {
-        read = getChar();
-        if (read != EOFILE) {
-            putChar(read);
-            characters++;
+    while ((read = getChar()) != 0) {
+        putChar(read);
+        characters++;
 
-            if (read == '\n') {
-                lines++;
-            }
-
-            if (read == ' ' || read == '\n' || read == '\t') {
-                inWord = 0;
-            } else if (inWord == 0) {
-                inWord = 1;
-                words++;
-            }
+        if (read == '\n') {
+            lines++;
         }
-    } while (read != '\0' && read != EOFILE);
+
+        if (read == ' ' || read == '\n' || read == '\t') {
+            inWord = 0;
+        } else if (inWord == 0) {
+            inWord = 1;
+            words++;
+        }
+    }
 
     printf("\nAmount of lines: %d\n", lines);
     printf("Amount of words: %d\n", words);

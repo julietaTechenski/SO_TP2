@@ -58,6 +58,7 @@ int main() {
     fd[0] = NULL;
     fd[1] = NULL;
     createProcess((EntryPoint)sampleCodeModuleAddress, "init", 0, 0, 1,  fd);
-    initScheduler();
+    initKeyboard();
+    initScheduler(); //ALWAYS LAST
     return 0;
 }

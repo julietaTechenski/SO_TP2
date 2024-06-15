@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "keyboardDriver.h"
 
+#define SEM "keyboard_sem"
+
 //Auxiliary functions
 void addEntry(char c);
 
@@ -10,6 +12,7 @@ char getEntry();
 
 static char myBuffer[INITIAL_SIZE];
 
+
 static int first = 0;
 static int last = 0;
 
@@ -17,17 +20,12 @@ static int shiftFlag = 0;
 static int bloqMayus = 0;
 static int ctrlFlag = 0;
 
-typedef struct bproc {
-    uint64_t pid;
-    int count;
-} bproc;
-
-
-static bproc *blocked;
+void initKeyboard(){
+    my_sem_open(SEM, 0);
+}
 
 //Keyboard IRQ
 void keyboard_handler(uint64_t infoRegs) {
-
     unsigned char keyCode = getKeyPressed();
     RegAux *aux = (RegAux *) infoRegs;
 
@@ -76,7 +74,6 @@ void keyboard_handler(uint64_t infoRegs) {
         killForeground();
         return;
     } else if (key == 'd' && ctrlFlag) {
-        blocked->count--;
         addEntry(EOFILE);
         return;
     } else if (key >= 'a' && key <= 'z')
@@ -86,7 +83,6 @@ void keyboard_handler(uint64_t infoRegs) {
 
     //Only adds it if it has an ASCII representation
     if (key != 0) {
-        blocked->count--;
         addEntry(key);
     }
 }
@@ -97,16 +93,13 @@ void addEntry(char c) {
         return;
     myBuffer[last] = c;
     last = (last + 1) % INITIAL_SIZE;
-    if (blocked->count == 0 || c == EOFILE) {
-        unblock(blocked->pid);
-    }
+    my_sem_post(SEM);
+
 }
 
 //Gets first entry from the buffer
 char getEntry() {
-    if (first == last) {
-        return 0;
-    }
+    my_sem_wait(SEM);
     char ret = myBuffer[first];
     first = (first + 1) % INITIAL_SIZE;
     return ret;
@@ -116,25 +109,23 @@ char getEntry() {
 int read(unsigned int fd, char *buffer, int count) {
     uint64_t pid = getPID();
     PCB *p = findProcess(pid);
-    if (!p->isForeground) {
-        return 0;
-    }
+
     if (p != NULL) {
+        if (!p -> isForeground) {
+            return 0;
+        }
         int i = 0;
         if (p->fd[STDIN] != 0) { // pipe read
             return readPipe(p->fd[STDIN], buffer, count);
         } else { // reads from keyboard interrupts
-            blocked->pid = pid;
-            blocked->count = count;
-            if (first == last) {
-                block(pid);
-            }
             char c;
             int eoflag = 0;
-            while (i < count && (c = getEntry()) != 0 && !eoflag) {
-                buffer[i++] = c;
+            while (i < count && !eoflag) {
+                c = getEntry();
                 if(c == EOFILE)
-                    eoflag = !eoflag;
+                    eoflag = 1;
+                else
+                    buffer[i++] = c;
             }
             return i;
         }
@@ -154,5 +145,7 @@ int write(unsigned int fd, char *string, int count) {
     }
     return count;
 }
+
+
 
 

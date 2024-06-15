@@ -8,7 +8,7 @@
 #include "lib.h"
 #include "pipes.h"
 
-#define INITIAL_SIZE 10
+#define INITIAL_SIZE 25
 
 #define LSHIFT 0x2A
 #define LSHIFT_RELEASE (LSHIFT+0x80)
@@ -103,5 +103,7 @@ void keyboard_handler(uint64_t infoRegs);
 int read(unsigned int fd, char * buffer, int count);
 
 int write(unsigned int fd, char *string, int count);
+
+void initKeyboard();
 
 #endif //KEYBOARDDRIVER_H
