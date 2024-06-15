@@ -6,6 +6,7 @@
 #include "interrupts.h"
 #include "process.h"
 #include "lib.h"
+#include "pipes.h"
 
 #define INITIAL_SIZE 10
 
