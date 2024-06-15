@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-#define FIVE_SEGS 5000
+#define FIVE_SEGS 100
 #define EOFILE '\377'
 
 //EXTERNS ---------------------------------------------------------------------------------
