@@ -7,7 +7,7 @@
 
 #define NULL  ((void*)0)
 
-#define AMOUNT_COMMANDS 25
+#define AMOUNT_COMMANDS 26
 
 
 
@@ -21,29 +21,31 @@ tcommand pipe_commands[] = {
         {"help", &help},
         {"time", &printTime},
         {"snake", &play},
-        {"clear", &clear_screen}, //wrapper?
-        {"mem", &mem_state}, //wrapper?
+        {"clear", &clearScreen},
+        {"mem", &mem_state},
         {"exit", &exitProgram},
-        {"cat", &cat}, //wrapper?
+        {"cat", &cat},
         {"zeroexception", &zeroexception},
         {"ioexception", &ioexception},
-        {"regs", &getRegs},  //wrapper?
+        {"regs", &getRegs},
         {"test_mm", &test_mm},
         {"test_processes", &test_processes},
         {"test_prio", &test_prio},
         {"test_sync", &test_sync},
         {"ps", &print_processes},
         {"loop", &loop},
-        {"nice", &nice},
-        {"kill",&kill},
-        {"block", &block},
+        {"nice", &niceProcess},
+        {"kill",&killProcess},
+        {"block", &blockProcess},
         {"cat", &cat}, //wrapper?
         {"wc", &wc},  //wrapper?
         {"filter", &filter}, //wrapper?
         {"phylo", &phylosProcess}, //wrapper?
+        {"unblock", &unblockProcess},
         {"hola", &hola}
-
 };
+
+
 
 
 void pipe_command(uint64_t argc, char* argv[]){

@@ -119,13 +119,13 @@ int read(unsigned int fd, char *buffer, int count) {
     if (!p->isForeground) {
         return 0;
     }
-    blocked->pid = pid;
-    blocked->count = count;
     if (p != NULL) {
         int i = 0;
         if (p->fd[STDIN] != 0) { // pipe read
             return readPipe(p->fd[STDIN], buffer, count);
         } else { // reads from keyboard interrupts
+            blocked->pid = pid;
+            blocked->count = count;
             if (first == last) {
                 block(pid);
             }

@@ -85,37 +85,6 @@ int readPipe(char* pipe, char * buffer, int count){
         }
         i++;
     }
-
-
-
-
-//
-//    while (c > 0){
-//        my_sem_wait(wReady); // waits for input
-//        while(pipepos_r < pipepos_w && pipe[pipepos_r] != 0){
-//            *buffer = pipe[pipepos_r];
-//            pipepos_r++;
-//            buffer++;
-//            c--;
-//        }
-//
-////        while(c > 0 && pipe[pipepos_r] != 0 && pipe[pipepos_r] != EOFILE && pipepos_r < 128) {
-////            buffer[pipepos_r] = pipe[pipepos_r];
-////            pipepos_r++;
-////            c--;
-////        }
-////        if(pipe[pipepos_r] == EOFILE){
-////            my_sem_post(pipe_mutex);
-////            return -1;
-////        }
-////        if (pipepos_r == 128) {
-////            pipepos_r = 0;
-////            my_sem_post(pipe_mutex);
-////            my_sem_post(rReady);
-////            my_sem_wait(wReady);
-////        }
-//
-//    }
     return count;
 }
 

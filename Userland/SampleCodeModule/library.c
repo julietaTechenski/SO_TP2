@@ -437,19 +437,22 @@ int64_t loop(){
     }
     return 0;
 }
-
 int64_t cat(){
     char buffer[MAX_SIZE];
-    int bytesRead;
-
+    int c = 0;
     int flag = 0;
-    while ((bytesRead = system_read(0, buffer, MAX_SIZE)) > 0 && flag != -1) {
-        flag = write(1, buffer, bytesRead);
+    while( (c = read(0,buffer, MAX_SIZE)) != -1  && !flag) {
+        int i = 0;
+        while(i < c && buffer[i] != EOFILE){
+            putChar(buffer[i++]);
+        }
+        if(buffer[i] == EOFILE){
+            flag = 1;
+        }
+        putChar('\n');
     }
-
     return 0;
 }
-
 
 int64_t wc() {
     int lines = 0, words = 0, characters = 0;
@@ -473,7 +476,7 @@ int64_t wc() {
                 words++;
             }
         }
-    } while (read != EOFILE && read != '\0');
+    } while (read != '\0' && read != EOFILE);
 
     printf("\nAmount of lines: %d\n", lines);
     printf("Amount of words: %d\n", words);
