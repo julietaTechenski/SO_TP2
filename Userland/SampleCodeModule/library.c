@@ -8,7 +8,6 @@ char charBuf;
 
 //============================== Function Declarations ==============================
 
-int readDelim(int fd, char * buffer, int count, char delim);
 int getSeconds();
 
 //================================= Writing Functions ==================================
@@ -102,7 +101,7 @@ int scanf(char* format, ...) {
         if( format[i] == '%') {
             i++;
 
-            num = readDelim(1, aux, 100, '\n');
+            num = read(1, aux, 100);
             aux[num] = 0;
             argRead += num;
 
@@ -274,42 +273,8 @@ int isVowel(char letter){
 
 //================================= Reading Functions ==================================
 
-int readDelim(int fd, char * buffer, int count, char delim) {
-    char c;
-    int i = 0; //read characters tracker
-
-    while((c = getChar()) != delim && c != 0){ //analyze the selected key to decide whether or not to keep reading
-
-        switch (c) {
-            case 0: //The buffer is empty
-                    //There was a keyBoard interruption that does not provide an ASCII
-                    //There was a different interruption
-                break;
-            case '\b':
-                if(i == 0){
-                    break;
-                }
-                putChar(c); //Print the backspace
-                i--;
-                break;
-            case EOFILE:
-                return 0;
-            default:
-                if(i >= count){
-                    break;
-                }
-                buffer[i++] = c;
-                putChar(c);
-        }
-
-    }
-
-    return i; // Returns the amount of copied characters
-}
-
 int read(int fd, char * buffer, int count) {
-    int ret = readDelim(fd,buffer,count,'\n');
-    putChar('\n');
+    int ret = system_read(fd, buffer, count);
     return ret;
 }
 
@@ -412,6 +377,9 @@ int dup(uint64_t pid,int oldfd, void* pipedir){
     return system_dup(pid, oldfd, pipedir);
 }
 
+void closePipe(){
+    system_close_pipe();
+}
 
 int64_t print_processes(){
     setColor(20, 205, 197);
@@ -433,6 +401,7 @@ int64_t loop(){
     }
     return 0;
 }
+
 int64_t cat(){
     char buffer[MAX_SIZE];
     int c;

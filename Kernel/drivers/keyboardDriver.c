@@ -115,18 +115,28 @@ int read(unsigned int fd, char *buffer, int count) {
             return 0;
         }
         int i = 0;
-        if (p->fd[STDIN] != 0) { // pipe read
+        if (p->fd[STDIN] != NULL) { // pipe read
             return readPipe(p->fd[STDIN], buffer, count);
         } else { // reads from keyboard interrupts
             char c;
-            int eoflag = 0;
-            while (i < count && !eoflag) {
+            while (i < count) {
                 c = getEntry();
-                if(c == EOFILE)
-                    eoflag = 1;
-                else
-                    buffer[i++] = c;
+                if(c == EOFILE || c == '\n')
+                    break;
+
+                switch (c) {
+                    case '\b':
+                        if(i == 0)
+                            break;
+                        writeString(1,&c,1); //Print the backspace
+                        i--;
+                        break;
+                    default:
+                        buffer[i++] = c;
+                        writeString(1,&c,1); //Print the backspace
+                }
             }
+            writeString(1,"\n",1);
             return i;
         }
     }
@@ -138,8 +148,8 @@ int read(unsigned int fd, char *buffer, int count) {
 int write(unsigned int fd, char *string, int count) {
     string[count] = '\0';
     PCB *p = findProcess(getPID());
-    if (p->fd[fd] != NULL) {  // pipe write
-        writePipe(p->fd[fd], string, count);
+    if (p->fd[STDOUT] != NULL) {  // pipe write
+        writePipe(p->fd[STDOUT], string, count);
     } else { // STDOUT
         writeString(STDOUT, string, count);
     }

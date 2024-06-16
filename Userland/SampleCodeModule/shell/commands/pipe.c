@@ -94,6 +94,7 @@ void pipe_command(uint64_t argc, char* argv[]){
         }
         if(pid1 != 0 && pid2 != 0 ){
             wait(pid1);
+            closePipe();
             wait(pid2);
         }else {
             printf("Error in pipe process creation\n");

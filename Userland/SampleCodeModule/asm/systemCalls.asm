@@ -28,7 +28,7 @@ GLOBAL sys_mem_state   ; syscall 27
 GLOBAL system_dup      ; syscall 28
 GLOBAL system_print_processes ; syscall 29
 GLOBAL system_pipe     ; syscall 30
-
+GLOBAL system_close_pipe
 
 GLOBAL getTimeRTC
 
@@ -149,6 +149,9 @@ system_print_processes:
 
 system_pipe:
     sysCall 30
+
+system_close_pipe:
+    sysCall 31
 
 ;-------------------------------------------------------
 ;   Recibe un  puntero a un struct typedef struct{

@@ -2,16 +2,19 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "include/pipes.h"
 
+#define SEM "counter_pipe"
 
-static int pipepos_w = 0;
-static int pipepos_r = 0;
-
-static char* pipe_mutex = "pipe_mutex";
-
-static int first_write = 1;
+static int pipepos_w;
+static int pipepos_r;
+static char closed;
 
 
 int pipe(void* pipesfd[2]){
+    closed = 0;
+    pipepos_w = 0;
+    pipepos_r= 0;
+    my_sem_close(SEM);
+    my_sem_open(SEM, 0);
     char* aux = pipesfd[0] = pipesfd[1] = (char*) mm_alloc(sizeof(char)*128);
 
     if(pipesfd[0] == NULL){
@@ -32,35 +35,37 @@ int dup(int pid,int oldfd, void* pipedir){
     return 1;
 }
 
-
+void closePipe(){
+    closed = 1;
+    my_sem_post(SEM);
+}
 
 int writePipe(char * pipe,char * string, int count){
-    char * countSem = "counter_pipe";
-
-    my_sem_open(countSem, 0);
 
     int i = 0;
     while(i < count){
         pipe[pipepos_w] = string[i];
         pipepos_w = (pipepos_w +1) % 128;
         i++;
-        my_sem_post(countSem);
+        my_sem_post(SEM);
     }
 }
 
 int readPipe(char* pipe, char * buffer, int count){
-    char * countSem = "counter_pipe";
-
-    my_sem_open(countSem, 0);
+    if(closed)
+        return 0;
 
     int  i = 0;
-    while(i < count){
-        my_sem_wait(countSem);
+    while(i < count && (pipepos_r != pipepos_w || i==0)){
+        my_sem_wait(SEM);
+        if(closed)
+            return i;
         buffer[i] = pipe[pipepos_r];
         pipepos_r = (pipepos_r+1)%128;
         i++;
+
     }
-    return count;
+    return i;
 }
 
 

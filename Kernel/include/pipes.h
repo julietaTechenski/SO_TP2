@@ -17,5 +17,6 @@ int pipe(void * pipesfd[2]);
 int dup(int pid,int oldfd, void* pipedir);
 int writePipe(char * pipe,char * string, int count);
 int readPipe(char* pipe, char * buffer, int count);
+void closePipe();
 
 #endif //SO_TP2_PIPES_H

@@ -39,7 +39,7 @@ extern int system_pipe(void * pipefd[2]);
 extern int system_dup(uint64_t pid, int oldfd, void *pipedir);
 extern void system_print_processes();
 extern int system_pipe(void * pipefd[2]);
-
+extern void system_close_pipe();
 
 //FUNCTIONS -------------------------------------------------------------------------------
 
@@ -396,6 +396,7 @@ int64_t filter();
  */
 int pipe(void * pipefd[2]);
 
+void closePipe();
 
 void hola();
 

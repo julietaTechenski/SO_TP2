@@ -108,6 +108,9 @@ uint64_t sysCallHandler(Registers registers){
                 return 0;
             case 30:
                 return pipe((void**)registers->rdi);
+            case 31:
+                closePipe();
+                return 0;
         }
         return 0;
     }
