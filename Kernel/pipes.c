@@ -12,7 +12,7 @@ static int first_write = 1;
 
 
 int pipe(void* pipesfd[2]){
-    char* aux = pipesfd[0] = pipesfd[1] = (char*)mm_alloc(sizeof(char)*128);
+    char* aux = pipesfd[0] = pipesfd[1] = (char*) mm_alloc(sizeof(char)*128);
 
     if(pipesfd[0] == NULL){
         return -1;
@@ -35,39 +35,30 @@ int dup(int pid,int oldfd, void* pipedir){
 
 
 int writePipe(char * pipe,char * string, int count){
-    char *rReady = "rReady";
-    char *wReady = "wReady";
+    char * countSem = "counter_pipe";
 
-    my_sem_open(rReady, 0);
-    my_sem_open(wReady, 0);
-
-    int c = count;
+    my_sem_open(countSem, 0);
 
     int i = 0;
-    while(i < c){
+    while(i < count){
         pipe[pipepos_w] = string[i];
-        pipepos_w = (pipepos_w +1 )%128;
+        pipepos_w = (pipepos_w +1) % 128;
         i++;
-        my_sem_post(wReady);
+        my_sem_post(countSem);
     }
-    my_sem_post(wReady);
 }
 
 int readPipe(char* pipe, char * buffer, int count){
+    char * countSem = "counter_pipe";
+
+    my_sem_open(countSem, 0);
+
     int  i = 0;
-    char *rReady = "rReady";
-
-    char *wReady = "wReady";
-
-    my_sem_open(wReady, 0);
-    my_sem_open(rReady, 0); // read => rReady = 1
-
     while(i < count){
-        my_sem_wait(wReady);
+        my_sem_wait(countSem);
         buffer[i] = pipe[pipepos_r];
         pipepos_r = (pipepos_r+1)%128;
         i++;
-        my_sem_post(rReady);
     }
     return count;
 }

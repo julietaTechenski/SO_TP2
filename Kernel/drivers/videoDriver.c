@@ -181,9 +181,7 @@ int writeString(unsigned int fd, char * string, int count) {
         return 0;
     }
     for (int i = 0 ; i < count ; ++i){
-        if(string[i] != EOFILE){
-            printChar(string[i], aux, defBackGround);
-        }
+        printChar(string[i], aux, defBackGround);
     }
 
     return count;

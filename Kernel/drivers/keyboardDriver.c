@@ -138,7 +138,7 @@ int read(unsigned int fd, char *buffer, int count) {
 int write(unsigned int fd, char *string, int count) {
     string[count] = '\0';
     PCB *p = findProcess(getPID());
-    if (p->fd[fd] != 0) {  // pipe write
+    if (p->fd[fd] != NULL) {  // pipe write
         writePipe(p->fd[fd], string, count);
     } else { // STDOUT
         writeString(STDOUT, string, count);
