@@ -3,25 +3,26 @@
 #include "include/pipes.h"
 
 #define SEM "counter_pipe"
+#define MAX_SIZE 1024
 
 static int pipepos_w;
 static int pipepos_r;
 static char closed;
 
 
-int pipe(void* pipesfd[2]){
+int pipe(void* pipesfd[2]) {
     closed = 0;
     pipepos_w = 0;
     pipepos_r= 0;
     my_sem_close(SEM);
     my_sem_open(SEM, 0);
-    char* aux = pipesfd[0] = pipesfd[1] = (char*) mm_alloc(sizeof(char)*128);
+    char* aux = pipesfd[0] = pipesfd[1] = (char*) mm_alloc(sizeof(char)*MAX_SIZE);
 
     if(pipesfd[0] == NULL){
         return -1;
     }
 
-    for(int i=0; i < 128; i++)  // set memory space to '\0' to avoid garbage readings
+    for(int i=0; i < MAX_SIZE; i++)  // set memory space to '\0' to avoid garbage readings
         aux[pipepos_w] = '\0';
 
     return 1;
@@ -41,11 +42,13 @@ void closePipe(){
 }
 
 int writePipe(char * pipe,char * string, int count){
+    if(closed)
+        return 0;
 
     int i = 0;
     while(i < count){
         pipe[pipepos_w] = string[i];
-        pipepos_w = (pipepos_w +1) % 128;
+        pipepos_w = (pipepos_w +1) % MAX_SIZE;
         i++;
         my_sem_post(SEM);
     }
@@ -58,10 +61,10 @@ int readPipe(char* pipe, char * buffer, int count){
     int  i = 0;
     while(i < count && (pipepos_r != pipepos_w || i==0)){
         my_sem_wait(SEM);
-        if(closed)
+        if(pipepos_w == pipepos_r)
             return i;
         buffer[i] = pipe[pipepos_r];
-        pipepos_r = (pipepos_r+1)%128;
+        pipepos_r = (pipepos_r+1)%MAX_SIZE;
         i++;
 
     }
