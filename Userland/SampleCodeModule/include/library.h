@@ -6,6 +6,7 @@
 
 #define SEC_WAIT 1000
 #define EOFILE '\377'
+#define MAX_ARRAY_SCANF 100
 
 //EXTERNS ---------------------------------------------------------------------------------
 
