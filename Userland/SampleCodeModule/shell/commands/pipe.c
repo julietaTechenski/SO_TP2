@@ -41,8 +41,7 @@ tcommand pipe_commands[] = {
         {"wc", &wc},  //wrapper?
         {"filter", &filter}, //wrapper?
         {"phylo", &phylosProcess}, //wrapper?
-        {"unblock", &unblockProcess},
-        {"hola", &hola}
+        {"unblock", &unblockProcess}
 };
 
 
