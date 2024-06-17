@@ -3,7 +3,7 @@
 #include "../include/test_processes.h"
 
 #define MINOR_WAIT 10 // TODO: Change this value to prevent a process from flooding the screen
-#define WAIT 10      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
+#define WAIT 10000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
 
 #define TOTAL_PROCESSES 3
 #define LOWEST 9  // TODO: Change as required
@@ -27,13 +27,13 @@ void test_prio() {
         pids[i] = my_createProcess(&endless_loop_print, "endless_loop_print", 1, argv, 0, fd);
     }
 
-    bussy_wait(WAIT);
+    sleep(WAIT);
     printf("\nCHANGING PRIORITIES...\n");
 
     for (i = 0; i < TOTAL_PROCESSES; i++)
         nice(pids[i], prio[i]);
 
-    bussy_wait(WAIT);
+    sleep(WAIT);
     printf("\nBLOCKING...\n");
 
     for (i = 0; i < TOTAL_PROCESSES; i++)
@@ -49,7 +49,7 @@ void test_prio() {
     for (i = 0; i < TOTAL_PROCESSES; i++)
         unblock(pids[i]);
 
-    bussy_wait(WAIT);
+    sleep(WAIT);
     printf("\nKILLING...\n");
 
     for (i = 0; i < TOTAL_PROCESSES; i++){
