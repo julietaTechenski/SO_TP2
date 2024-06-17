@@ -40,12 +40,11 @@ tcommand commands[] = {
         {"nice", &niceProcess},
         {"kill",&killProcess},
         {"block", &blockProcess},
-        {"cat", &cat}, //wrapper?
-        {"wc", &wc},  //wrapper?
-        {"filter", &filter}, //wrapper?
-        {"phylo", &phylosProcess}, //wrapper?
-        {"unblock", &unblockProcess},
-        {"hola", &hola}
+        {"cat", &cat},
+        {"wc", &wc},
+        {"filter", &filter},
+        {"phylo", &phylosProcess},
+        {"unblock", &unblockProcess}
 };
 
 

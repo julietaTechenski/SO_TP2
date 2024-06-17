@@ -454,7 +454,3 @@ int64_t filter(){
     return 0;
 }
 
-void hola(){
-    printf("Hola\n");
-
-}
