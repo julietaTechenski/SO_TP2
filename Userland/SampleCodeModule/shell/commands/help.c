@@ -27,9 +27,9 @@
 
 // test commands
 #define TMM             "test_mm"
-#define TPRIO           "test_prio"
-#define TSYNC           "test_sync"
-#define TPROC           "test_proc"
+#define TPRIO           "test_priority"
+#define TSYNC           "test_synchro"
+#define TPROC           "test_processes"
 
 
 // Command functionalities messages
@@ -43,7 +43,7 @@
 #define LOOP_MSG		"Prints its ID and a greeting every n amount of seconds.\n"
 #define MEM_MSG		    "Prints memory state.\n"
 #define NICE_MSG		"Changes process's priority given its ID and new priority.\nHighest priority: 0\nLowest priority: 10\n"
-#define PHYLO_MSG		"Implementation of the Dining Philosophers Problem.\n\t\"A\" key: adds philosopher\n\t\"R\" key: removes philosopher\n\t\"X\" key: kills philosophers\n"
+#define PHYLO_MSG		"Implementation of the Dining Philosophers Problem.\n\t\"A\" key: adds philosopher\n\t\"R\" key: removes philosopher\n\t\"X\" key: kills phylo and the processes created by phylo closing the program successfully\n"
 #define PS_MSG		    "Prints all process's properties.\n"
 #define REGS_MSG 	    "Shows the registers at the time the ALT key was pressed during the program.\n"
 #define SIZE_MSG        "Use 'size +' to increase the font size and 'size -' to decrease it.\n"

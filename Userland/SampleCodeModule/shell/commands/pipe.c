@@ -7,7 +7,7 @@
 
 #define NULL  ((void*)0)
 
-#define AMOUNT_COMMANDS 26
+#define AMOUNT_COMMANDS 25
 
 
 
