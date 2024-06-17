@@ -69,7 +69,7 @@ void endless_loop_print(int argc, char *argv[]) {
   int64_t pid = getpid();
 
   while (1) {
-    printf("%d ", pid);
+    printf("%d ", (int)pid);
     bussy_wait(satoi(argv[0]));
   }
 }
