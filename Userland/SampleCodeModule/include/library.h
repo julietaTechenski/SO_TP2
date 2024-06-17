@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-#define TIME 1000
+#define SEC_WAIT 1000
 #define EOFILE '\377'
 
 //EXTERNS ---------------------------------------------------------------------------------
