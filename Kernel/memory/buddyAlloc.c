@@ -202,18 +202,18 @@ void mm_state() {
     unsigned freeMem = totalMem - takenMem;
 
     longitud = intToString(totalMem, s);
-    write(1, "Total memory: ", 15);
+    write(1, "Total memory: ", 14);
     write(1, s, longitud);
     write(1, "\n", 1);
 
 
     longitud = intToString(totalMem - takenMem, s);
-    write(1, "Free memory: ", 15);
+    write(1, "Free memory: ", 13);
     write(1, s,  longitud);
     write(1, "\n", 1);
 
     longitud = intToString(takenMem, s);
-    write(1, "Allocated memory: ", 17);
+    write(1, "Allocated memory: ", 18);
     write(1, s, longitud);
     write(1, "\n", 1);
 }
