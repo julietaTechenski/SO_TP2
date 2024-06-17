@@ -43,7 +43,7 @@
 #define LOOP_MSG		"Prints its ID and a greeting every n amount of seconds.\n"
 #define MEM_MSG		    "Prints memory state.\n"
 #define NICE_MSG		"Changes process's priority given its ID and new priority.\nHighest priority: 0\nLowest priority: 10\n"
-#define PHYLO_MSG		"Implementation of the Dining Philosophers Problem.\n\"A\" key: adds philosopher\n\"R\" key: removes philosopher\n"
+#define PHYLO_MSG		"Implementation of the Dining Philosophers Problem.\n\"A\" key: adds philosopher\n\"R\" key: removes philosopher\n\"X\" key: kills phylo and the processes created by phylo closing the program successfully\n"
 #define PS_MSG		    "Prints all process's properties.\n"
 #define REGS_MSG 	    "Shows the registers at the time the ALT key was pressed during the program.\n"
 #define SIZE_MSG        "Use 'size +' to increase the font size and 'size -' to decrease it.\n"
