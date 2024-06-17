@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-#define SEC_WAIT 1000
+#define SEC_WAIT 5000
 #define EOFILE '\377'
 #define MAX_ARRAY_SCANF 100
 
