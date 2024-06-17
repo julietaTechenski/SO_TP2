@@ -1,4 +1,4 @@
-# TPE - 20232Q
+# TP2 - 20241Q
 
 ### Environment setup
 
@@ -31,15 +31,15 @@ On the project directory, start the container:
 In compilation time, user can set the MMU of choice :
     - Buddy
     - Free List
-The default memory is Buddy.
+The default memory is freeList.
 
 Execute the following commands on the project directory (outside Docker):
 
     ./compile.sh
 
-To run freeList MMU execute the following commands on the project directory (outside Docker):
+To run Buddy MMU execute the following commands on the project directory (outside Docker):
 
-    ./compile.sh LIST
+    ./compile.sh BUDDY
 
 ### Project execution
 
