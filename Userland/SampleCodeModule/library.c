@@ -459,7 +459,7 @@ int64_t filter(){
         }
         putChar('\n');
     }
-    while(amount != 0 && buff[amount - 1] != '\n' && amount < MAX_SIZE);
+    while(amount > 0 && buff[amount - 1] != '\n' && amount < MAX_SIZE);
     return 0;
 }
 
