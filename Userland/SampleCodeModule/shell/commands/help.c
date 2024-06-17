@@ -27,9 +27,9 @@
 
 // test commands
 #define TMM             "test_mm"
-#define TPRIO           "test_prio"
-#define TSYNC           "test_sync"
-#define TPROC           "test_proc"
+#define TPRIO           "test_priority"
+#define TSYNC           "test_synchro"
+#define TPROC           "test_processes"
 
 
 // Command functionalities messages

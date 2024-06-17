@@ -396,7 +396,7 @@ int64_t mem_state(){
 
 int64_t loop(){
     while(1){
-        sleep(FIVE_SEGS);
+        sleep(TIME);
         printf("Hi! I'm process %d!\n", (int32_t)getpid());
     }
     return 0;

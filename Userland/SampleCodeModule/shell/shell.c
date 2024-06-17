@@ -34,7 +34,7 @@ tcommand commands[] = {
         {"test_mm", &test_mm},
         {"test_processes", &test_processes},
         {"test_priority", &test_prio},
-        {"test_sync", &test_sync},
+        {"test_synchro", &test_sync},
         {"ps", &print_processes},
         {"loop", &loop},
         {"nice", &niceProcess},
