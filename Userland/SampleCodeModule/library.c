@@ -60,7 +60,10 @@ void printf(char * string, ...) {
                     break;
                 case 's':  // format tag for char * found
                     auxStr = va_arg(argptr, char*); // next argument passed w type char * obtained with va_arg(argptr, char *)
-                    printf(auxStr);  // recursive call to the function
+                    while(*auxStr != 0){
+                        putChar(*auxStr);  // recursive call to the function
+                        auxStr++;
+                    }
                     break;
             }
             i+=2;
