@@ -91,7 +91,7 @@ int scanf(char* format, ...) {
 
     int argRead = 0;
     int num;
-    char aux[100];
+    char aux[MAX_ARRAY_SCANF];
 
     int* argD;
     char* argS;
@@ -102,7 +102,9 @@ int scanf(char* format, ...) {
             i++;
 
             num = read(1, aux, 100);
-            aux[num] = 0;
+            if(0 <= num && num < MAX_ARRAY_SCANF){
+                aux[num] = 0;
+            }
             argRead += num;
 
             putChar(' ');
@@ -443,14 +445,21 @@ int64_t wc() {
 
 
 int64_t filter(){
-    char read;
+    char buff[MAX_SIZE];
+    int amount = 0;
     do {
-        read = getChar();
-        if(isVowel(read) == 0){
-            putChar(read);
+        amount = read(0, buff, MAX_SIZE);
+        for(int i = 0 ; i < amount ; i++){
+            if(buff[i] == '\0'){
+                return -1;
+            }
+            if(isVowel(buff[i]) == 0){
+               putChar(buff[i]);
+            }
         }
+        putChar('\n');
     }
-    while(read != EOFILE);
+    while(amount > 0 && buff[amount - 1] != '\n' && amount < MAX_SIZE);
     return 0;
 }
 

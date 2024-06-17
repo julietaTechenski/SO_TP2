@@ -56,6 +56,7 @@ int writePipe(char * pipe,char * string, int count){
         i++;
         my_sem_post(SEM);
     }
+    return i;
 }
 
 int readPipe(char* pipe, char * buffer, int count){
