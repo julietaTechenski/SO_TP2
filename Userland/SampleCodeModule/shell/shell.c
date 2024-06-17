@@ -33,7 +33,7 @@ tcommand commands[] = {
         {"regs", &getRegs},
         {"test_mm", &test_mm},
         {"test_processes", &test_processes},
-        {"test_prio", &test_prio},
+        {"test_priority", &test_prio},
         {"test_sync", &test_sync},
         {"ps", &print_processes},
         {"loop", &loop},
