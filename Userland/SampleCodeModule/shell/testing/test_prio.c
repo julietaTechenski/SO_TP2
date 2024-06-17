@@ -15,13 +15,16 @@ int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 void test_prio() {
     int64_t pids[TOTAL_PROCESSES];
     char *argv[] = {0};
+    char arg[20];
+    intToString(MINOR_WAIT, arg);
+    argv[0] = arg;
     uint64_t i;
 
     for (i = 0; i < TOTAL_PROCESSES; i++){
         void *fd[2];
         fd[0] = NULL;
         fd[1] = NULL;
-        pids[i] = my_createProcess(&endless_loop_print, "endless_loop_print", 0, argv, 0, fd);
+        pids[i] = my_createProcess(&endless_loop_print, "endless_loop_print", 1, argv, 0, fd);
     }
 
     bussy_wait(WAIT);
