@@ -65,7 +65,7 @@ static Node * resize(Node * ptr, size_t size) {
 void mm_free(void *ptr) {
     Node *nodePtr = (Node *) ptr - 1;  // Limite inferior
     Node *endOfNode = (Node *) ((size_t) nodePtr + nodePtr->size + sizeof(Node));  // Limite superior
-
+    freeMem += nodePtr->size;
     if (endOfNode <= first) {  // Va al principio
         if (endOfNode == first) {
             nodePtr->next = first->next;
